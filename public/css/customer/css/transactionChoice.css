@@ -1,0 +1,252 @@
+.customer-payment-parent-container{
+    background-color: var(--customer-card-bg-color);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.customer-transaction-choice-form{
+    margin-bottom: 20px;
+}
+
+.customer-transaction-form-header{
+    margin-bottom: 40px;
+    text-align: center;
+    color: var(--customer-text-color);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.customer-transaction-choices-parent-container{
+
+
+}
+
+.customer-transaction-choices-ewallet-parent-container{
+    max-width: 800px;
+    margin: auto;
+}
+
+.customer-transaction-choices-ewallet-header{
+    display: flex;
+    align-items: center;
+    color: var(--customer-text-color);
+    margin-bottom: 30px;
+}
+
+.customer-transaction-choices-icon{
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.customer-transaction-choices-recommended{
+    font-size: 14px;
+    color: var(--customer-placeholder-color);
+}
+
+.customer-transaction-choices-ewallet-parent-container .checkbox-flex-container{
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.customer-transaction-choice .checkbox-tile{
+    height: 130px;
+}
+
+.customer-transaction-choice .checkbox-wrapper{
+    width: 170px;
+}
+
+.transaction-choice-img{
+    width: 70px;
+    height: 70px;
+}
+
+.transaction-choice-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.customer-transaction-modal-header{
+    background-color: var(--customer-placeholder-color);
+    justify-content: center;
+}
+
+.customer-transaction-form-img{
+    width: 80px;
+    height: 80px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.customer-transaction-form-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.customer-transaction-input-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.customer-transaction-input-container:not(:first-child){
+    margin-top: 20px;
+}
+
+.customer-transaction-input-container p{
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.customer-transaction-input-container input{
+    width: 240px;
+    height: 45px;
+    border-radius: 5px;
+}
+
+.customer-transaction-receipt-img{
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    /* flex-flow:column wrap; */
+    /* justify-content:center; */
+    margin-top: 20px;
+    gap: 10px;
+}
+
+  .preview{
+    border:none;
+    width:100px;
+    height:100px;
+    border: none;
+    object-fit: cover;
+  }
+
+  .selectImage{
+    /* width:35%; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 14px;
+  }
+
+  #myfile{
+    /* width: 25%; */
+    /* border:none; */
+  }
+
+  .customer-screenshot-upload-btn {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+
+  .customer-screenshot-upload-btn p{
+    margin-bottom: 0;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  .customer-screenshot-upload-btn input{
+    position: absolute;
+    /* font-size: 50px; */
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+  }
+
+  .customer-screenshot-upload-btn-icon{
+    font-size: 20px;
+  }
+
+  .customer-transaction-clear-btn{
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 2px solid black;
+    background-color: white;
+  }
+
+  .customer-transaction-admin-details{
+    padding: 15px 40px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+
+  .customer-transaction-admin-phone, .customer-transaction-admin-phone{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 10px;
+  }
+
+  .customer-transaction-admin-phone p, .customer-transaction-admin-phone p{
+    font-size: 14px;
+  }
+
+  .customer-transaction-form-btn-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .customer-transaction-form-submit{
+    padding: 15px 30px;
+    border: none;
+    background-color: var(--customer-primary-color);
+    color:white;
+    border-radius: 5px;
+  }
+
+  .customer-transaction-form-cencel{
+    padding: 13px 28px;
+    border: 2px solid var(--customer-primary-color);
+    color: var(--customer-primary-color);
+    border-radius: 5px;
+    background-color: white;
+    margin-left: 10px;
+  }
+
+  .customer-transaction-line{
+    width: 100%;
+    height: 1px;
+    background-color: var(--customer-text-color);
+    margin: 30px 0;
+  }
+
+  .customer-payment-parent-container .checkbox-tile{
+    border: 2px solid var(--customer-text-color);
+  }
+
+  .customer-payment-parent-container .checkbox-icon, .customer-payment-parent-container .checkbox-label{
+    color: var(--customer-text-color);
+  }
+
+  @media screen and (max-width:600px){
+    .customer-transaction-choices-ewallet-parent-container .checkbox-flex-container{
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .customer-transaction-input-container input{
+        width: 170px;
+    }
+
+    .customer-transaction-admin-details{
+        padding: 15px 10px;
+    }
+  }

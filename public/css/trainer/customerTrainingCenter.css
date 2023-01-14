@@ -1,0 +1,589 @@
+.customer-trainingcenter-group-chat-container{
+    width: 550px;
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.customer-trainingcenter-group-chat-container .group-chat-messages-container{
+    height: calc(100% - 60px);
+}
+
+.customer-training-center-header-container{
+    margin-top: 40px;
+    text-align: center;
+}
+
+.customer-training-center-header-container h1{
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--customer-text-color);
+}
+
+.customer-training-center-header-container p{
+    font-size: 14px;
+    color: var(--customer-light-text-color);
+}
+
+.customer-group-chat-view-members-header{
+    margin-top: 15px;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-between; */
+    margin-bottom: 30px;
+}
+
+.customer-group-chat-members-container{
+    height: calc(100% - 140px);
+    overflow-y: scroll;
+}
+
+.customer-group-chat-member-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.customer-group-chat-member-row .customer-secondary-btn{
+    border: 2px solid var(--customer-text-color);
+    color: var(--customer-text-color);
+}
+
+.customer-group-chat-member-row .customer-secondary-btn:hover{
+    border: 2px solid var(--customer-primary-color);
+    color: var(--customer-primary-color);
+}
+
+.customer-group-chat-member-name{
+    display: flex;
+    align-items: center;
+}
+
+.customer-group-chat-member-name img{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.customer-group-chat-member-name p{
+    margin-bottom: 0;
+    margin-left: 5px;
+    color: var(--customer-text-color);
+}
+
+.customer-trainingcenter-media-container{
+    height: calc(100% - 140px);
+}
+
+.customer-training-center-plans-container{
+    width: 400px;
+    margin: auto;
+    margin-top: 40px;
+}
+
+.customer-training-center-plan-container{
+    height: 100px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    padding: 0 20px;
+    color: black;
+    text-decoration: none;
+    transition: all 0.1s ease-in-out;
+}
+
+.customer-training-center-plan-container:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.customer-training-center-plan-container:hover p, .customer-training-center-plan-container:hover span,.customer-training-center-plan-container:hover .customer-training-plan-icon{
+    color: white;
+}
+
+.customer-training-center-plan-name-container{
+    display: flex;
+    align-items: center;
+}
+
+.customer-training-center-plan-name-icon{
+    font-size: 60px;
+}
+
+.customer-training-center-plan-name-text{
+    margin-left: 15px;
+
+}
+
+.customer-training-center-plan-name-text p{
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.customer-training-center-plan-name-text span{
+    font-size: 12px;
+    color: var(--customer-light-text-color);
+}
+
+.customer-workout-plan-header-container{
+    text-align: center;
+}
+
+.customer-workout-plan-header-container > h1{
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.customer-workout-plan-header-details-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.customer-workout-plan-header-detail-container{
+    display: flex;
+    align-items: center;
+}
+
+.customer-workout-plan-header-detail-container:nth-child(2){
+    margin-left: 60px;
+}
+
+.customer-workout-plan-header-detail-container p{
+    margin-bottom: 0;
+}
+
+.customer-workout-plan-header-detail-container span{
+    color: var(--customer-primary-color);
+    font-weight: 600;
+}
+
+.customer-workout-plan-detail-icon{
+    font-size: 40px;
+    margin-right: 10px;
+}
+
+.customer-workout-letsgo-btn{
+    margin-top: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.customer-workout-plan-details-parent-container{
+    width: 1000px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    padding: 20px;
+    margin: auto;
+    background-color: white;
+    margin-bottom: 40px;
+}
+
+.customer-workout-plan-details-equipment-container > h1{
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.customer-workout-plan-equipments-container {
+
+}
+
+.customer-workout-plan-equipment-container{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.customer-workout-plan-equipment-container img{
+    width: 60px;
+    height: 60px;
+
+}
+
+.customer-workout-plan-equipment-container p{
+    margin-bottom: 0;
+    margin-left: 10px;
+}
+
+.customer-workout-plan-details-workouts-container > h1{
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.customer-workout-plan-workouts-container{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-gap: 30px 0;
+}
+
+.customer-workout-plan-workout-container{
+    display: flex;
+    align-items: center;
+}
+
+.customer-workout-plan-video-container {
+    width: 90px;
+    height: 90px;
+    border-radius: 5px;
+}
+
+.customer-workout-plan-video-container video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.customer-workout-plan-name{
+    margin-left: 10px;
+}
+
+.customer-workout-plan-name p{
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.customer-workout-plan-name span{
+    font-size: 12px;
+    color: var(--customer-light-text-color);
+}
+
+.customer-workout-video-parent-container{
+    width: 600px;
+    margin: auto;
+    margin-top: 40px;
+}
+
+.customer-workout-video-parent-container video{
+    width: 100%;
+    height: auto;
+}
+
+.customer-workout-video-progress {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.customer-workout-video-progress div{
+    height: 5px;
+    flex-grow: 1;
+    margin: 0 2px;
+    /* background-color: var(--customer-primary-color); */
+    background-color: #d9d9d9;
+}
+
+.completed-workout{
+    background-color: var(--customer-primary-color) !important;
+}
+
+.customer-workout-btns-container{
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: auto;
+}
+
+.customer-workout-pause-btn{
+    background-color: transparent;
+    border: none;
+    margin: 20px 0;
+}
+
+.customer-workout-play-btn, .customer-workout-next-btn, .customer-workout-prev-btn{
+    background-color: transparent;
+    border: none;
+    margin: 20px 0;
+}
+
+
+
+.customer-workout-pause-icon, .customer-workout-next-icon, .customer-workout-prev-icon {
+    font-size: 60px;
+}
+
+.customer-workout-play-icon{
+    font-size: 60px;
+}
+
+.customer-workout-name{
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.customer-workout-counter{
+    font-size: 60px;
+    color: var(--customer-primary-color);
+}
+
+/* #workoutVideo{
+    pointer-events: none;
+}
+
+video::-webkit-media-controls-fullscreen-button {
+    display: none;
+}
+
+#workoutVideo::-webkit-media-controls-play-button {
+    display: none;
+}
+#workoutVideo::-webkit-media-controls-timeline {
+    display: none;
+}
+#workoutVideo::-webkit-media-controls-current-time-display{}
+#workoutVideo::-webkit-media-controls-time-remaining-display {}
+#workoutVideo::-webkit-media-controls-mute-button {
+    display: none;
+}
+#workoutVideo::-webkit-media-controls-toggle-closed-captions-button {
+    display: none;
+}
+#workoutVideo::-webkit-media-controls-volume-slider {
+    display: none;
+} */
+
+.customer-workout-completed-container{
+    text-align: center;
+}
+
+.customer-workout-completed-header{
+    margin-bottom: 100px;
+}
+
+.customer-workout-completed-header > h1{
+    font-size: 35px;
+    font-weight: 600;
+
+}
+
+.customer-workout-completed-header > span{
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--customer-light-text-color);
+}
+
+.customer-workout-completed-details-container{
+    display: flex;
+    gap:0 50px;
+    align-items: center;
+    justify-content: center;
+}
+
+.customer-workout-completed-detail:not(:first-child){
+    margin-left: 100px;
+}
+
+.customer-workout-completed-detail h1{
+    font-weight: 600;
+    font-size: 35px;
+}
+
+.customer-workout-completed-detail span{
+    font-weight: 600;
+    font-size: 25px;
+    color: var(--customer-light-text-color);
+}
+
+.customer-workout-completed-save-btn{
+    margin-top: 40px;
+}
+
+.customer-plat-total-cal{
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 80px;
+}
+
+.customer-plat-total-cal span{
+    color: var(--customer-primary-color);
+    margin-left: 20px;
+}
+
+.customer-plat-food-track-header{
+    font-size: 30px;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.customer-food-tracker-parent-container{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-gap: 0 10px;
+    margin-bottom: 40px;
+}
+
+.customer-food-tracker-container{
+    background-color: white;
+    box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
+    border-radius: 10px;
+    padding: 20px;
+    height: 500px;
+}
+
+.customer-food-tracker-header{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.customer-food-tracker-header > h1{
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--customer-text-color);
+}
+
+.customer-food-tracker-header > p span{
+    color: var(--customer-primary-color);
+}
+
+.customer-food-tracker-checkboxes-container{
+    height: calc(100% - 70px);
+    overflow-y: scroll;
+}
+
+.customer-plat-food-tracker{
+    pointer-events: none;
+}
+
+.customer-food-tracker-checkbox{
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    transition: all 0.2s ease-in-out;
+    padding: 10px 5px;
+    border-radius: 5px;
+}
+
+.customer-food-tracker-checkbox:hover{
+    background-color: var(--customer-primary-color);
+}
+
+.customer-food-tracker-checkbox:hover .customer-food-tracker-checkbox-label{
+    /* transform: scale(1.1);  */
+    /* color: var(--customer-primary-color); */
+    color: white;
+}
+
+.customer-food-tracker-checkbox:hover .customer-food-tracker-checkbox-label span{
+    color: white;
+}
+
+.customer-food-tracker-checkbox input{
+    width: 15px;
+    height: 15px;
+    /* border:1px solid var(--customer-primary-color); */
+    cursor: pointer;
+}
+
+.customer-food-tracker-checkbox-label{
+    margin-left: 10px;
+    transition: all 0.1s ease-in-out;
+}
+
+.customer-food-tracker-checkbox-label p{
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.customer-food-tracker-checkbox-label span{
+    font-size: 12px;
+    color: var(--customer-light-text-color);
+    transition: all 0.2s ease-in-out;
+}
+
+.customer-diamond-food-track-header{
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.customer-diamond-food-track-header h1{
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--customer-text-color);
+}
+
+.customer-diamond-food-track-header span{
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--customer-light-text-color);
+}
+
+
+.card-chart{
+    position: relative;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.card-center{
+    line-height: 1.5;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+}
+
+.card-label{
+    color: var(--customer-light-text-color);
+    /* font-weight: $normal; */
+    font-size: 14px;
+}
+
+.card-value{
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--customer-primary-color);
+}
+
+.customer-water-track-details-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.customer-water-track-intake-container{
+    text-align: center;
+}
+
+.customer-water-track-days-container{
+    margin-left: 60px;
+    text-align: center;
+}
+
+.customer-water-track-intake-container span, .customer-water-track-days-container span{
+    font-size: 18px;
+    color: var(--customer-light-text-color);
+    font-weight: 600;
+}
+
+.customer-water-track-intake-container p, .customer-water-track-days-container p{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.customer-water-track-btn{
+    /* margin: auto; */
+    display: block;
+    margin: 40px auto 40px auto;
+    /* text-align: center; */
+}
