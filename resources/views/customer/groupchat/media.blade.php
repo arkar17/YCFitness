@@ -46,11 +46,13 @@
                                     pathinfo($me->media, PATHINFO_EXTENSION) == 'mov' ||
                                     pathinfo($me->media, PATHINFO_EXTENSION) == 'webm')
                                         <video class="w-100" controls>
-            <source src="{{ asset('/storage/trainer_message_media/' . $me->media) }}" type="video/mp4">
+            <source 
+            src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{ $me->media}}" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     @else
-                                <img src="{{ asset('/storage/trainer_message_media/' . $me->media) }}" alt="test" class="w-100">
+                                <img 
+            src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{ $me->media}}" alt="test" class="w-100">
                                     @endif
                                 </div>
                             </div>
@@ -63,7 +65,8 @@
                         <div class="group-chat-media">
                             <a data-bs-toggle="modal" href="#exampleModalToggle1{{ $me->id }}" role="button">
                                 <video style="z-index: -1;">
-                <source src="{{ asset('storage/trainer_message_media/'.$me->media) }}" type="video/mp4">
+                <source 
+                src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{ $me->media}}" type="video/mp4">
                                 </video>
                             </a>
                         </div>
@@ -71,7 +74,8 @@
                     @else
                         <div class="group-chat-media">
                             <a data-bs-toggle="modal" href="#exampleModalToggle1{{ $me->id }}" role="button">
-                                <img src="{{ asset('/storage/trainer_message_media/' . $me->media) }}" alt="test">
+                                <img 
+                                src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{ $me->media}}" alt="test">
                             </a>
                         </div>
                     @endif

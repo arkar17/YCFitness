@@ -50,7 +50,7 @@
                                             <div class="modal-body">
                                                 <video class="w-100" controls>
                                                     <source
-                                                        src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
+                                                        src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{$media->media}}"
                                                         type="video/mp4">
                                                     Your browser does not support the video tag.
                                                 </video>
@@ -62,7 +62,8 @@
                                 <div class="trainer-group-chat-media">
                                     <a data-bs-toggle="modal" href="#exampleModalToggle1{{ $media->id }}" role="button">
                                         <video style="z-index: -1;">
-                                            <source src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
+                                            <source 
+                                            src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{$media->media}}"
                                                 type="video/mp4">
                                         </video>
                                     </a>
@@ -77,7 +78,8 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <img src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
+                                                <img 
+                                                src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{$media->media}}"
                                                     alt="test" class="w-100">
                                             </div>
                                         </div>
@@ -86,7 +88,8 @@
 
                                 <div class="trainer-group-chat-media">
                                     <a data-bs-toggle="modal" href="#exampleModalToggle2{{ $media->id }}" role="button">
-                                        <img src="{{ asset('/storage/trainer_message_media/' . $media->media) }}"
+                                        <img 
+                                        src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{$media->media}}"
                                             alt="test">
                                     </a>
                                 </div>

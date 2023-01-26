@@ -505,7 +505,10 @@ class SocialmediaController extends Controller
             foreach ($images as $file) {
                 $extension = $file->extension();
                 $name = rand() . "." . $extension;
-                $file->storeAs('/public/post/', $name);
+                Storage::put(
+                    'public/post/'.$name,
+                    file_get_contents($file),'public'
+                   );
                 $imgData[] = $name;
                 $edit_post->media = json_encode($imgData);
             }
@@ -528,7 +531,10 @@ class SocialmediaController extends Controller
             foreach ($images as $file) {
                 $extension = $file->extension();
                 $name = rand() . "." . $extension;
-                $file->storeAs('/public/post/', $name);
+                Storage::put(
+                    'public/post/'.$name,
+                    file_get_contents($file),'public'
+                   );
                 $imgData[] = $name;
                 $new_images = $imgData;
             }
@@ -555,7 +561,7 @@ class SocialmediaController extends Controller
             foreach($images as $key=>$value){
                      for($i=0;$i<count($images);$i++){
 
-                        $img_size=File::size(public_path('storage/post/'.$value));
+                        $img_size=File::size(public_path('public/post/'.$value));
 
                         // $obj['size']=$img_size;
                         // $obj['name']=$images[$i];
@@ -886,7 +892,10 @@ class SocialmediaController extends Controller
                 foreach ($images as $file) {
                     $extension = $file->extension();
                     $name = rand() . "." . $extension;
-                    $file->storeAs('/public/post/', $name);
+                    Storage::put(
+                        'public/post/'.$name,
+                        file_get_contents($file),'public'
+                       );
                     $imgData[] = $name;
                     $post->media = json_encode($imgData);
                 }
@@ -898,7 +907,11 @@ class SocialmediaController extends Controller
                 foreach ($images as $file) {
                     $extension = $file->extension();
                     $name = rand() . "." . $extension;
-                    $file->storeAs('/public/post/', $name);
+                   // Storage::put('/public/post/'.$name ,'public');
+                   Storage::put(
+                    'public/post/'.$name,
+                    file_get_contents($file),'public'
+                   );
                     $imgData[] = $name;
                     $post->media = json_encode($imgData);
                 }

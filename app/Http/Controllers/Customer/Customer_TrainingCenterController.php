@@ -656,7 +656,11 @@ class Customer_TrainingCenterController extends Controller
             $file = $request->file('cover');
             $extension = $file->extension();
             $name = rand().".".$extension;
-            $file->storeAs('/public/post/', $name);
+            // $file->storeAs('/public/post/', $name);
+            Storage::put(
+                'public/post/'.$name,
+                file_get_contents($file),'public'
+               );
             $imgData = $name;
 
         }
@@ -679,7 +683,11 @@ class Customer_TrainingCenterController extends Controller
             $file = $request->file('profile_image');
             $extension = $file->extension();
             $name = rand().".".$extension;
-            $file->storeAs('/public/post/', $name);
+            // $file->storeAs('/public/post/', $name);
+            Storage::put(
+                'public/post/'.$name,
+                file_get_contents($file),'public'
+               );
             $imgData = $name;
 
         }

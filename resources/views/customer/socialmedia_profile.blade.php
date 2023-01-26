@@ -104,7 +104,7 @@
                         @if ($img==null)
                             <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
-                            <img src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image }}"/>
                         @endif
 
                     </div>
@@ -189,7 +189,7 @@
                                 @if ($img==null)
                                     <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                 @else
-                                    <img src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image }}"/>
                                 @endif
 
 
@@ -223,7 +223,7 @@
                                             @if ($img==null)
                                                 <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                             @else
-                                                <img src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image }}"/>
                                             @endif
                                         </a>
                                         <div class="social-media-post-name">
@@ -269,10 +269,10 @@
                                         <div class="social-media-media">
                                             @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                                 <video controls>
-                                                    <source src="{{asset('storage/post/'.$m) }}">
+                                                    <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m}}">
                                                 </video>
                                             @else
-                                                <img src="{{asset('storage/post/'.$m) }}">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m}}">
                                             @endif
                                         </div>
                                         <?php }?>
@@ -288,12 +288,12 @@
                                                     @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                                     <li>
                                                         <video controls>
-                                                            <source src="{{asset('storage/post/'.$m) }}">
+                                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m}}">
                                                         </video>
                                                     </li>
                                                     @else
                                                         <li>
-                                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m}}" alt="" />
                                                         </li>
                                                     @endif
 
@@ -309,12 +309,12 @@
                                                     @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                                     <li>
                                                         <video>
-                                                            <source src="{{asset('storage/post/'.$m) }}">
+                                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m}}">
                                                         </video>
                                                     </li>
                                                     @else
                                                         <li>
-                                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m}}" alt="" />
                                                         </li>
                                                     @endif
 

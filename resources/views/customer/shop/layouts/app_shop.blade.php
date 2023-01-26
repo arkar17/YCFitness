@@ -297,7 +297,7 @@
                                         @if ($img==null)
                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         @else
-                            <img  class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                            <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image }}`"/>
                                         @endif
                                         <p>{{$friend->name}}</p>
                                     </a>
@@ -369,7 +369,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {{-- comment emoji --}}
-    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
     <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
 
 

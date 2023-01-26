@@ -86,7 +86,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {{-- comment emoji --}}
-    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
     <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
 
 

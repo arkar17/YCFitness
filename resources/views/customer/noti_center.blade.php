@@ -25,7 +25,7 @@
                     @elseif($noti->profile_image == null)
                             <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
-                            <img src="{{asset('storage/post/'.$noti->profile_image)}}"/>
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
                     @endif
                         <p>{{$noti->description}}</p>
                     </div>
@@ -52,7 +52,7 @@
                     @if($noti_earli->profile_image == null)
                             <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
-                            <img src="{{asset('storage/post/'.$noti_earli->profile_image)}}"/>
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
                     @endif
                         <p>{{$noti_earli->description}}</p>
                     </div>

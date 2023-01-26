@@ -34,7 +34,9 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <img src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" alt="test"
+                                <img 
+                                src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{ $chat->media}}"
+                                alt="test"
                                     class="w-100">
                             </div>
                         </div>
@@ -57,7 +59,8 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <video width="100%" height="100%" controls>
-                                <source src="{{ asset('storage/trainer_message_media/' . $chat->media) }}" type="video/mp4">
+                                <source 
+                                src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{ $chat->media}}" type="video/mp4">
                             </video>
                         </div>
                         <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
@@ -69,7 +72,9 @@
                         <div class="group-chat-sender-text-container">
                             <span>Group Member</span>
                             <a data-bs-toggle="modal" href="#exampleModalToggle{{ $chat->id }}" role="button">
-                                <img src="{{ asset('/storage/trainer_message_media/' . $chat->media) }}" alt="">
+                                <img 
+                                src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/{{ $chat->media}}"
+                                alt="">
                             </a>
                         </div>
                         <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
@@ -92,7 +97,8 @@
                             @if ($member->user->profile == null)
                                 <img src="{{asset('img/customer/imgs/user_default.jpg')}}" alt="">
                             @else
-                                <img src="{{asset('storage/post/'.$member->user->profile->profile_image)}}">
+                                <img 
+                                src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$member->user->profile->profile_image}}"/>
                             @endif
                             <p>{{ $member->user->name }}</p>
                         </div>
@@ -162,7 +168,7 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                    <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" alt="test" class="w-100">
+                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/${data.message.media}" alt="test" class="w-100">
                                 </div>
                             </div>
                         </div>
@@ -171,7 +177,7 @@
                             <div class="group-chat-sender-text-container">
                                 <span>Group Member</span>
                                 <a data-bs-toggle="modal" href="#exampleModalToggle3${data.message.id}" role="button">
-                                    <img src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}">
+                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/${data.message.media}" alt="test" >
                                 </a>
                             </div>
                             <img src="{{ asset('img/customer/imgs/group_default.png') }}" />
@@ -182,7 +188,8 @@
                             <div class="group-chat-sender-text-container">
                                 <span>Group Member</span>
                                 <video width="100%" height="100%" controls>
-                            <source src="{{ asset('/storage/trainer_message_media/${data.message.media}') }}" type="video/mp4">
+                            <source 
+                            src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/${data.message.media}" type="video/mp4">
                                 </video>
                             </div>
                             <img src="{{ asset('img/customer/imgs/group_default.png') }}" />

@@ -19,7 +19,10 @@
 
                 <div class="row g-0">
                     <div class="col-md-4 shadow mt-3 ms-3" style="width:300px; height:600px">
-                        <img src="{{asset('/storage/payments/'.$payment->photo)}}" class="img-fluit rounded" alt="..." style="width: 100%;
+                        <img 
+                        src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/payments/{{ $payment->photo}}"
+                    
+                        class="img-fluit rounded" alt="..." style="width: 100%;
                         height:100%">
                     </div>
                     <div class="col-md-6 d-flex align-items-center">

@@ -76,9 +76,9 @@ class RegisterPaymentController extends Controller
          if($request->hasFile('image')) {
             $image = $request->file('image');
             $imgName = uniqid() . '_' . $image->getClientOriginalName();
-            Storage::disk('local')->put(
+            Storage::put(
                 'public/payments/'.$imgName,
-                file_get_contents($image)
+                file_get_contents($image),'public'
             );
         }
         $payment = new Payment();
@@ -136,9 +136,9 @@ class RegisterPaymentController extends Controller
          if($request->hasFile('image')) {
             $image = $request->file('image');
             $imgName = uniqid() . '_' . $image->getClientOriginalName();
-            Storage::disk('local')->put(
+            Storage::put(
                 'public/payments/'.$imgName,
-                file_get_contents($image)
+                file_get_contents($image),'public'
             );
         }
         $payment = new Payment();

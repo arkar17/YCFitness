@@ -162,7 +162,9 @@
         @if($user_profile_cover==null || auth()->user()->cover_id==null)
         <img class="customer-cover-photo" src="{{asset('image/cover.jpg')}}">
         @else
-        <img class="customer-cover-photo" src="{{asset('storage/post/'.$user_profile_cover->cover_photo)}}">
+
+        <img class="customer-cover-photo" 
+        src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $user_profile_cover->cover_photo}}">
         @endif
         {{-- <h1>{{auth()->user()->profiles->id}}</h1> --}}
         {{-- src="{{asset('storage/post/',auth()->user()->profiles->profile_image)}}" --}}
@@ -188,7 +190,8 @@
                         @if($user_profile_image==null || auth()->user()->profile_id==null)
                             <img class="customer-profile-img" src="{{asset('img/user.jpg')}}">
                         @else
-                        <img class="customer-profile-img" src="{{asset('storage/post/'.$user_profile_image->profile_image)}}" >
+                        <img class="customer-profile-img"
+                        src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $user_profile_image->profile_image}}">
                         @endif
                         <label class="customer-profile-img-change-btn">
                             <input type="file" name="profile_image" class="customer-profile-img-change-input">
@@ -282,7 +285,9 @@
                         </a>
                         @else
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
-                        <img src="{{asset('storage/post/'.$img->profile_image)}}">
+                            
+                        <img
+                        src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image}}">
                         </a>
                         @endif
                         <a href="{{route('socialmedia.profile',$friend->id)}}" style="text-decoration:none">
@@ -330,7 +335,7 @@
 
                     @else
                         <div class="social-media-photo">
-                            <img src="{{asset('storage/post/'.$profile->profile_image)}}" style="max-width:100%;cursor:pointer"
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $profile->profile_image}}" style="max-width:100%;cursor:pointer"
                             onclick="onClick(this)" id="{{$profile->id}}" class="modal-hover-opacity">
                         </div>
                     @endif
@@ -344,7 +349,10 @@
                     @if ($profile->profile_image)
                     @else
                         <div class="social-media-photo">
-                            <img src="{{asset('storage/post/'.$profile->cover_photo)}}" style="max-width:100%;cursor:pointer"
+                            <img
+                            
+                             src="
+                             https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $profile->cover_photo}}" style="max-width:100%;cursor:pointer"
                             onclick="onClick(this)" id="{{$profile->id}}" class="modal-hover-opacity">
                         </div>
                     @endif
@@ -1586,7 +1594,7 @@
                                     }else{
                                         console.log(post_likes[i].name +"has profile")
                                         htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
-                                                    <img src="{{asset('storage/post/`+post_likes[i].profile_image+`') }}" alt="" style="width:30px;height:30px"/>
+                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+post_likes[i].profile_image+`" alt="" style="width:30px;height:30px"/>
                                                     <p>`+post_likes[i].name+`</p>
                                                 </a>`
                                     }
@@ -1646,7 +1654,7 @@
                                     htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
 
                                 }else{
-                                    htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+save_posts[i].profile_image+`')}}"/>`
+                                    htmlView +=`<img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+save_posts[i].profile_image+`"/>`
                                 }
                                 htmlView +=`<div class="customer-post-name">
                                                         <p>`+save_posts[i].name+`</p>
@@ -1701,13 +1709,13 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += ` <div class="customer-media">
-                                                                        <img src="{{asset('storage/post/`+val+`') }}">
+                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                         </div>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += ` <div class="customer-media">
                                                                         <video controls>
-                                                                        <source src="{{asset('storage/post/`+val+`') }}">
+                                                                        <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                         </video>
                                                                         </div>`
                                                                 break;
@@ -1729,12 +1737,12 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += `<li>
-                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                                     </li>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += `<li><video controls>
-                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                             </video> </li>`
                                                                 break;
                                                                     }
@@ -1752,12 +1760,12 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += `<li>
-                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                                     </li>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += `<li><video controls>
-                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                             </video> </li>`
                                                                 break;
                                                                     }
@@ -1981,13 +1989,13 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += ` <div class="customer-media">
-                                                                        <img src="{{asset('storage/post/`+val+`') }}">
+                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                         </div>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += ` <div class="customer-media">
                                                                         <video controls>
-                                                                        <source src="{{asset('storage/post/`+val+`') }}">
+                                                                        <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                         </video>
                                                                         </div>`
                                                                 break;
@@ -2009,12 +2017,12 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += `<li>
-                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                                     </li>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += `<li><video controls>
-                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                             </video> </li>`
                                                                 break;
                                                                     }
@@ -2032,12 +2040,12 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += `<li>
-                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                                     </li>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += `<li><video controls>
-                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                             </video> </li>`
                                                                 break;
                                                                     }
@@ -2206,7 +2214,7 @@
                                     htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
 
                                 }else{
-                                    htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+save_posts[i].profile_image+`')}}"/>`
+                                    htmlView +=`<img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+save_posts[i].profile_image+`" />`
                                 }
                                 htmlView +=`<div class="customer-post-name">
                                                         <p>`+save_posts[i].name+`</p>
@@ -2267,13 +2275,13 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += ` <div class="customer-media">
-                                                                        <img src="{{asset('storage/post/`+val+`') }}">
+                                                                        <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                         </div>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += ` <div class="customer-media">
                                                                         <video controls>
-                                                                        <source src="{{asset('storage/post/`+val+`') }}">
+                                                                        <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                         </video>
                                                                         </div>`
                                                                 break;
@@ -2295,12 +2303,12 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += `<li>
-                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                        <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                                     </li>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += `<li><video controls>
-                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                             </video> </li>`
                                                                 break;
                                                                     }
@@ -2318,12 +2326,12 @@
                                                                 case 'gif':
                                                                 case 'jpeg':
                                                                 htmlView += `<li>
-                                                                        <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                        <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                                     </li>`
                                                                 break;
                                                                 case 'mp4':
                                                                 htmlView += `<li><video controls>
-                                                                            <source src="{{asset('storage/post/`+v+`') }}">
+                                                                            <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                             </video> </li>`
                                                                 break;
                                                                     }
@@ -2498,7 +2506,7 @@
                         htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
 
                     }else{
-                        htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+save_posts[i].profile_image+`')}}"/>`
+                        htmlView +=`<img class="nav-profile-img" src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+save_posts[i].profile_image+`" />`
                     }
                     htmlView +=`<div class="customer-post-name">
                                             <p>`+save_posts[i].name+`</p>
@@ -2559,13 +2567,13 @@
                                                     case 'gif':
                                                     case 'jpeg':
                                                     htmlView += ` <div class="customer-media">
-                                                            <img src="{{asset('storage/post/`+val+`') }}">
+                                                            <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                             </div>`
                                                     break;
                                                     case 'mp4':
                                                     htmlView += ` <div class="customer-media">
                                                             <video controls>
-                                                            <source src="{{asset('storage/post/`+val+`') }}">
+                                                            <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`" >
                                                             </video>
                                                             </div>`
                                                     break;
@@ -2587,12 +2595,12 @@
                                                     case 'gif':
                                                     case 'jpeg':
                                                     htmlView += `<li>
-                                                            <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                            <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                         </li>`
                                                     break;
                                                     case 'mp4':
                                                     htmlView += `<li><video controls>
-                                                                <source src="{{asset('storage/post/`+v+`') }}">
+                                                                <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                 </video> </li>`
                                                     break;
                                                         }
@@ -2610,12 +2618,12 @@
                                                     case 'gif':
                                                     case 'jpeg':
                                                     htmlView += `<li>
-                                                            <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                            <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                         </li>`
                                                     break;
                                                     case 'mp4':
                                                     htmlView += `<li><video controls>
-                                                                <source src="{{asset('storage/post/`+v+`') }}">
+                                                                <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                 </video> </li>`
                                                     break;
                                                         }
@@ -3103,7 +3111,7 @@
                                         if(res.comment[i].profile_image===null){
                                             htmlView+= `<img src="{{ asset('/img/customer/imgs/user_default.jpg') }}" >`
                                         }else{
-                                            htmlView+= `<img src="{{ asset('/storage/post/${res.comment[i].profile_image}') }}" >`
+                                            htmlView+= `<img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.comment[i].profile_image}" >`
                                         }
                                      htmlView+= `
                                       <div class="social-media-comment-box">
@@ -3372,7 +3380,7 @@
                                     htmlView += `
                                     <div class="social-media-fris-fri-row">
                                         <div class="social-media-fris-fri-img">
-                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                                <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.friends[i].profile_image}">
                                             <p>`+res.friends[i].name+`</p>
                                         </div>
 
@@ -3413,7 +3421,7 @@
                                     htmlView += `
                                     <div class="social-media-fris-fri-row">
                                         <div class="social-media-fris-fri-img">
-                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                                <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.friends[i].profile_image}">
                                             <p>`+res.friends[i].name+`</p>
                                         </div>
 
@@ -3800,20 +3808,20 @@
                              console.log(data.imageData,'img data a ti naw')
                              var imageDataDb = data.imageData
 
-
+                            
                             filesdb.forEach(function(f) {
                                 fileExtension = f.replace(/^.*\./, '');
                                 console.log(fileExtension);
                                 if(fileExtension=='mp4') {
                                     var html="<div class='addpost-preview'>\
                                         <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
-                                        <video controls><source src='storage/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
+                                        <video controls><source src='https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/" + f + "' data-file='" + f+ "' class='selFile' title='Click to remove'>" + f + "<br clear=\"left\"/>\
                                         <video>\
                                     </div>"
                                     $(".editpost-photo-video-imgpreview-container").append(html);
 
                                 }else{
-                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src='storage/post/"+f+"' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
+                                    var html = "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon><img src=' https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/" + f + "' data-file='" + f + "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container").append(html);
                                 }
 

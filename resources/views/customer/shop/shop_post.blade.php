@@ -144,7 +144,7 @@
                             htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
 
                         }else{
-                            htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+posts[i].profile_image+`')}}"/>`
+                            htmlView +=`<img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+posts[i].profile_image+`"/>`
                         }
                         htmlView +=`<div class="shop-post-name">
                                                 <p>`+posts[i].name+`</p>
@@ -203,13 +203,13 @@
                                                         case 'gif':
                                                         case 'jpeg':
                                                         htmlView += ` <div class="shop-media">
-                                                                <img src="{{asset('storage/post/`+val+`') }}">
+                                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                 </div>`
                                                         break;
                                                         case 'mp4':
                                                         htmlView += ` <div class="shop-media">
                                                                 <video controls>
-                                                                <source src="{{asset('storage/post/`+val+`') }}">
+                                                                <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+val+`">
                                                                 </video>
                                                                 </div>`
                                                         break;
@@ -231,12 +231,12 @@
                                                         case 'gif':
                                                         case 'jpeg':
                                                         htmlView += `<li>
-                                                                <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                             </li>`
                                                         break;
                                                         case 'mp4':
                                                         htmlView += `<li><video controls>
-                                                                    <source src="{{asset('storage/post/`+v+`') }}">
+                                                                    <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                     </video> </li>`
                                                         break;
                                                             }
@@ -254,12 +254,12 @@
                                                         case 'gif':
                                                         case 'jpeg':
                                                         htmlView += `<li>
-                                                                <img src="{{asset('storage/post/`+v+`') }}" alt="" />
+                                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`" alt="" />
                                                             </li>`
                                                         break;
                                                         case 'mp4':
                                                         htmlView += `<li><video controls>
-                                                                    <source src="{{asset('storage/post/`+v+`') }}">
+                                                                    <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+v+`">
                                                                     </video> </li>`
                                                         break;
                                                             }

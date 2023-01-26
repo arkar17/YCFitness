@@ -58,7 +58,8 @@
                         @if ($user_profileimage==null)
                             <img class="nav-profile-img" src="{{asset('img/user.jpg')}}"/>
                         @else
-                            <img class="nav-profile-img" src="{{asset('storage/post/'.$user_profileimage->profile_image)}}"/>
+                            <img class="nav-profile-img" src="
+                            https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $user_profileimage->profile_image}}"/>
                         @endif
                         <i class="icon-arrow"></i>
                         {{-- <p class="customer-dropdown-name">{{auth()->user()->name}}</p> --}}

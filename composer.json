@@ -12,6 +12,7 @@
         "laravel/sanctum": "2.*",
         "laravel/tinker": "^2.5",
         "laravel/ui": "3.*",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "proengsoft/laravel-jsvalidation": "^4.7",
         "pusher/pusher-php-server": "^7.2",
         "realrashid/sweet-alert": "^5.1",

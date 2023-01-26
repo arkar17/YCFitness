@@ -343,9 +343,9 @@ class AuthController extends Controller
         $file = base64_decode($tmp);
         $image_name = $request->name;
 
-        Storage::disk('local')->put(
+        Storage::put(
             'public/payments/' . $image_name,
-            $file
+            $file,'public'
         );
 
         $payment->photo = $image_name;
@@ -385,9 +385,9 @@ class AuthController extends Controller
         $file = base64_decode($tmp);
         $image_name = $request->name;
 
-        Storage::disk('local')->put(
+        Storage::put(
             'public/payments/' . $image_name,
-            $file
+            $file,'public'
         );
 
         $payment->photo = $image_name;

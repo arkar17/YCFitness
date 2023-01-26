@@ -479,7 +479,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {{-- comment emoji --}}
-    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
     <script src="{{ asset('js/customer/DisMojiPicker.js') }}"></script>
 
 
@@ -518,7 +518,8 @@
                 if (data[i].is_group == 0) {
                     if (data[i].profile_image != null) {
                         htmlView += `<a href=` + url + ` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{ asset('storage/post/`+data[i].profile_image+`') }}"/>
+                                            <img  class="nav-profile-img" src="
+                                            src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+data[i].profile_image+`"/>
                                         <p>
                                             ` + data[i].name + `<br>
                                             <span>` + text + ` </span>
@@ -586,7 +587,8 @@
                     } else {
                         htmlView += `
                                     <a href=` + url + ` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{ asset('storage/post/`+latest_messages[i].profile_image+`') }}"/>
+                                            <img  class="nav-profile-img" src="
+                                            "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+latest_messages[i].profile_image+`"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
                                             <span>` + text + ` </span>
@@ -1229,7 +1231,7 @@
                                 if (fileExtension == 'mp4') {
                                     var html = "<div class='addpost-preview'>\
                                                     <iconify-icon icon='akar-icons:cross' data-file='" + f + "' class='delete-preview-db-icon'></iconify-icon>\
-                                                    <video controls><source src='storage/post/" + f + "' data-file='" + f +
+                                                    <video controls><source src='https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/" + f + "' data-file='" + f +
                                         "' class='selFile' title='Click to remove'>" +
                                         f + "<br clear=\"left\"/>\
                                                     <video>\
@@ -1241,7 +1243,7 @@
                                     var html =
                                         "<div class='addpost-preview'><iconify-icon icon='akar-icons:cross' data-file='" +
                                         f + "' class='delete-preview-db-icon'></iconify-icon>\
-                                                    <img src='storage/post/" + f + "' data-file='" + f +
+                                                    <img src='https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/" + f + "' data-file='" + f +
                                         "' class='selFile' title='Click to remove'></div>";
                                     $(".editpost-photo-video-imgpreview-container")
                                         .append(html);

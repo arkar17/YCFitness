@@ -87,7 +87,7 @@
       <script src="{{asset('js/customer/jquery.mentiony.js')}}"></script>
 
       {{-- comment emoji --}}
-        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
         <script src="{{asset('js/customer/DisMojiPicker.js')}}"></script>
       <script>
         window.addEventListener("load", ()=> {
