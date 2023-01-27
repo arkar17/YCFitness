@@ -208,14 +208,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('customer/register', [App\Http\Controllers\HomeController::class, 'customer_register'])->name('customer_register');
     //Route::post('customer/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('customer_register');
     Route::post('customer/register', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'register'])->name('customer_register');
-
+    Route::get('getOPT', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'getOPT'])->name('getOPT');
     Route::post('customer/updateinfo/', [App\Http\Controllers\Customer\CustomerRegisterController::class, 'updateinfo'])->name('updateinfo');
 
     Route::get('/user/workout/start', [UserWorkoutController::class, 'getstart'])->name('userworkout.getstart');
 
     Route::get('password_reset_view', [PassResetController::class, 'passResetView'])->name('password_reset_view');
     Route::get('checkPhoneGetOTP', [PassResetController::class, 'checkPhoneGetOTP'])->name('checkPhoneGetOTP');
-
 
     Route::post('password_reset', [PassResetController::class, 'password_reset'])->name('password_reset');
 

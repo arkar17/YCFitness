@@ -87,7 +87,12 @@
                         var ClickedDate = Date($.now());
                         localStorage.setItem('DateClicked', ClickedDate);
                         localStorage.setItem('Phone', phoneNumber);
-                        Swal.fire('Check your phone message inbox.', '', 'success')
+                        Swal.fire({
+                                        text: "Check your phone message inbox.",
+                                        timerProgressBar: true,
+                                        timer: 3000,
+                                        icon: 'success',
+                                })
                     }
                 },
         });
@@ -116,7 +121,7 @@
         $("#checkOTP").keyup(function(){
             if(otpStatus.status === 200){
                 var code = $('#checkOTP').val();
-                                fetch(`https://verify.smspoh.com/api/v1/verify?access-token=gND4P7JNgbd5supML5ZT5ayuRmG0gS1cr6C09apXkkpc5m2QzBEOH3Euc5jX27t0&request_id=${otpStatus.message}&code=${code}`)
+                                fetch(`https://verify.smspoh.com/api/v1/verify?access-token=vJMxoWJOITaHCjm-bMoUe8PNZcFh79Z1-R4VpzRPjOnMB6mTd06FE6U497SldLe-&request_id=${otpStatus.message}&code=${code}`)
                                 .then(function(response) {
                                     // handle the response
                                     console.log(response.status)

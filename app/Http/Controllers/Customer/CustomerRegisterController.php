@@ -14,6 +14,7 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use App\Http\Requests\CustomerRequest;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -122,6 +123,56 @@ class CustomerRegisterController extends Controller
             ]);
         }
     }
+
+    public function getOPT(Request $request){
+        $phone = $request->phone;
+        $email = $request->email;
+        $user_email = User::where('email', $request->email)->first();
+        $user_phone = User::where('phone', $phone)->first();
+        // dd($user_email);
+        if($user_phone != null and $user_email != null){
+            return response()->json([
+                'status' => 100,
+                'message' => "Your phone is already used",
+            ]);
+        }
+        else if($user_email != null){
+            return response()->json([
+                'status' => 101,
+                'message' => "Your email is already used",
+            ]);
+        }
+        else if($user_phone != null){
+            return response()->json([
+                'status' => 102,
+                'message' => "Your phone and email are already used",
+            ]);
+        }
+        else if($phone != null and $email != null){
+            $response = Http::get('https://verify.smspoh.com/api/v1/request', [
+                'access-token' => 'vJMxoWJOITaHCjm-bMoUe8PNZcFh79Z1-R4VpzRPjOnMB6mTd06FE6U497SldLe-',
+                'code_length' => '4',
+                'brand_name' => 'Gym',
+                'sender_name' => 'Gym',
+                'ttl' => '300',
+                'number' => $phone,
+            ]);
+            return response()->json([
+                'status' => 200,
+                'message' => $response['request_id'],
+                // 'message' => $response['request_id'],
+            ]);
+        }  
+        else{
+            return response()->json([
+                'status' => 300,
+                'message' => 'something went wrong',
+                // 'message' => $response['request_id'],
+            ]);
+        }     
+    }
+
+    
 
     public function checkemail(Request $request)
     {

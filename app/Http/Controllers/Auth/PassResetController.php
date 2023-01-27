@@ -27,7 +27,7 @@ class PassResetController extends Controller
                 //     'message' => $user->phone,
                 // ]);
                 $response = Http::get('https://verify.smspoh.com/api/v1/request', [
-                    'access-token' => 'gND4P7JNgbd5supML5ZT5ayuRmG0gS1cr6C09apXkkpc5m2QzBEOH3Euc5jX27t0',
+                    'access-token' => 'vJMxoWJOITaHCjm-bMoUe8PNZcFh79Z1-R4VpzRPjOnMB6mTd06FE6U497SldLe-',
                     'code_length' => '4',
                     'brand_name' => 'Gym',
                     'sender_name' => 'Gym',
