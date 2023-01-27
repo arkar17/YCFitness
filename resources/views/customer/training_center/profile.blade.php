@@ -55,7 +55,26 @@
       </div>
     </div>
 </div>
+    {{-- acc delete modal --}}
+<div class="modal fade" id="accDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Account</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form class="modal-body" id="edit_form" enctype= multipart/form-data>
+          <div class="addpost-caption">
+            <p>Account Delete</p>
+            <textarea placeholder="Caption goes here..." name="caption" id="editPostCaption" class="addpost-caption-input"></textarea>
+          </div>
+            <button type="submit" class="customer-primary-btn addpost-submit-btn">{{__('msg.delete')}}</button>
+        </form>
 
+      </div>
+    </div>
+</div>
+    {{-- end acc delete modal --}}
 <!-- The Image Modal -->
 <div id="modal01" class="modal-image" onclick="this.style.display='none'">
     <div class="view-media-modal-btns">
@@ -222,24 +241,33 @@
             </div>
         </div>
     </div>
-
-    <form class="customer-bio-form" method="POST" action="{{route('customer-profile-bio.update')}}">
-        @csrf
-        @method('POST')
-        <div class="customer-bio-text">
-            @if (auth()->user()->bio==null)
-                <p class="text-secondary" ></p>
-            @else
-            <p>{{auth()->user()->bio}}</p>
-            @endif
-            <input type="text" name="bio" id="bio" value="{{auth()->user()->bio}}">
-            <iconify-icon icon="cil:pen" class="customer-bio-change-icon" id={{auth()->user()->id}}></iconify-icon>
+    <div class="row d-flex">
+        <div class="col-6">
+            <form class="customer-bio-form" method="POST" action="{{route('customer-profile-bio.update')}}">
+                @csrf
+                @method('POST')
+                <div class="customer-bio-text">
+                    @if (auth()->user()->bio==null)
+                        <p class="text-secondary" ></p>
+                    @else
+                    <p>{{auth()->user()->bio}}</p>
+                    @endif
+                    <input type="text" name="bio" id="bio" value="{{auth()->user()->bio}}">
+                    <iconify-icon icon="cil:pen" class="customer-bio-change-icon" id={{auth()->user()->id}}></iconify-icon>
+                </div>
+                <div class="customer-bio-btns-container">
+                    <button type="submit" class="customer-primary-btn">{{__('msg.confirm')}}</button>
+                    <button type="button" class="customer-secondary-btn customer-bio-change-cancel-btn">{{__('msg.cancel')}}</button>
+                </div>
+            </form>
         </div>
-        <div class="customer-bio-btns-container">
-            <button type="submit" class="customer-primary-btn">{{__('msg.confirm')}}</button>
-            <button type="button" class="customer-secondary-btn customer-bio-change-cancel-btn">{{__('msg.cancel')}}</button>
+        <div class="col-6 d-flex justify-content-end" style="padding-right: 20px; margin-top:-15px;">
+            <button class="customer-primary-btn" id = "delete_account">
+                Account Delete
+            </button>
         </div>
-    </form>
+    </div>
+    
 
     <div class="customer-profile-tabs-container">
         <div class="customer-profile-training-center-tab">
@@ -3956,7 +3984,7 @@
                 })
 
         })
-
+       
         $("#addPostInput").on("change", handleFileSelect);
 
         $("#editPostInput").on("change", handleFileSelectEdit);
@@ -3966,6 +3994,23 @@
         $("body").on("click", ".delete-preview-icon", removeFile);
         $("body").on("click", ".delete-preview-edit-input-icon", removeFileFromEditInput);
 
+    });
+   //accDeleteModal
+    $(document).on('click','#delete_account',function(e){
+            e.preventDefault();
+            // $('#accDeleteModal'). modal('show');
+            Swal.fire({
+                text: 'Are you sure want to delete your account?',
+                timerProgressBar: true,
+                showCloseButton: true,
+                showCancelButton: true,
+                icon: 'warning',
+            }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/account_delete'
+            }
+
+    });
     });
 
     ////Edit Post
@@ -4132,7 +4177,7 @@
     }
 
     function deleteImage(element)
-{
+   {
     var profile_id=element.name;
     console.log(profile_id+" Profile ID");
     // $( ".close-image" ).load(window.location.href + " .close-image" );

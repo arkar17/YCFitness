@@ -77,7 +77,11 @@
                 <div class="social-media-request-row">
 
                         <div class="social-media-request-name">
-                            <img src="../imgs/trainer3.jpg">
+                            @if ($requests->profile_image==null)
+                            <img  src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $requests->profile_image}}">
+                            @endif
                             <p>{{$requests->name}}</p>
                         </div>
 
@@ -99,7 +103,11 @@
                 @forelse($friend_requests_earlier as $earlier)
                 <div class="social-media-request-row">
                     <div class="social-media-request-name">
-                        <img src="../imgs/trainer3.jpg">
+                        @if ($earlier->profile_image==null)
+                        <img  src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $earlier>profile_image}}">
+                        @endif
                         <p>{{$earlier->name}}</p>
                     </div>
                     <div class="social-media-btns-container">

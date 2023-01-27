@@ -38,6 +38,7 @@
 
     <!--comment emoji-->
     <link href="{{asset('css/customer/emojis.css')}}" rel="stylesheet"/>
+    <link href="{{ asset('css/customer/css/customerLogin.css')}}" rel="stylesheet"/>
 
     <title>YC-Training Center</title>
   </head>

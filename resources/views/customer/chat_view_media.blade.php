@@ -5,9 +5,9 @@
         <div class="group-chat-header">
             <a href="javascript:history.back()" class="group-chat-header-name-container">
                 @if ($receiver_user->user_profile != null)
-                    <img src="{{asset('storage/post/'.$receiver_user->user_profile->profile_image)}}" />
+                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $receiver_user->user_profile->profile_image}}" />
                 @else
-                    <img src="{{asset('img/customer/imgs/avatar.png')}}" />
+                <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                 @endif
 
                 <div class="group-chat-header-name-text-container">
@@ -37,14 +37,14 @@
                                         pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
                                         pathinfo($media, PATHINFO_EXTENSION) == 'webm')
                                         <video class="w-100" controls>
-                                            <source src="{{ asset('/storage/customer_message_media/' . $media) }}"
+                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$media}}"
                                                 type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     @elseif (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'jpg' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'jpeg')
-                                        <img src="{{ asset('/storage/customer_message_media/' . $media) }}" alt="test"
+                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$media}}" alt="test"
                                             class="w-100">
                                     @endif
                                 </div>
@@ -58,7 +58,7 @@
                         <div class="social-media-chat-media">
                             <a data-bs-toggle="modal" href="#exampleModalToggle{{ $message->id }}{{$key}}" role="button">
                                 <video style="z-index: -1;">
-                                    <source src="{{ asset('/storage/customer_message_media/' . $media) }}" type="video/mp4">
+                                    <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$media}}" type="video/mp4">
                                 </video>
                             </a>
                         </div>
@@ -67,7 +67,7 @@
                             pathinfo($media, PATHINFO_EXTENSION) == 'jpeg')
                         <div class="social-media-chat-media">
                             <a data-bs-toggle="modal" href="#exampleModalToggle{{ $message->id }}{{$key}}" role="button">
-                                <img src="{{ asset('/storage/customer_message_media/' . $media) }}" alt="test">
+                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$media}}" alt="test">
                             </a>
                         </div>
                     @endif

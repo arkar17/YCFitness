@@ -297,7 +297,7 @@
                                         @if ($img==null)
                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         @else
-                            <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image }}`"/>
+                            <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image }}"/>
                                         @endif
                                         <p>{{$friend->name}}</p>
                                     </a>
@@ -668,7 +668,7 @@
                 if(data[i].is_group == 0){
                     if(data[i].profile_image!=null){
                         htmlView += `<a href=`+url+` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
+                                            <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+data[i].profile_image+`"/>
                                         <p>
                                             ` + data[i].name + `<br>
                                             <span>` + text + ` </span>
@@ -737,7 +737,7 @@
                     }else{
                         htmlView += `
                                     <a href=`+url+` class="social-media-left-messages-row">
-                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+latest_messages[i].profile_image+`')}}"/>
+                                            <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+latest_messages[i].profile_image+`"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
                                             <span>` + text + ` </span>

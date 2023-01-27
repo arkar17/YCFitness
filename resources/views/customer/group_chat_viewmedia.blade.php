@@ -29,14 +29,14 @@
                                         pathinfo($mess, PATHINFO_EXTENSION) == 'mov' ||
                                         pathinfo($mess, PATHINFO_EXTENSION) == 'webm')
                                         <video class="w-100" controls>
-                                            <source src="{{ asset('/storage/customer_message_media/' . $mess) }}"
+                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$mess}}"
                                                 type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     @elseif (pathinfo($mess, PATHINFO_EXTENSION) == 'png' ||
                                         pathinfo($mess, PATHINFO_EXTENSION) == 'jpg' ||
                                         pathinfo($mess, PATHINFO_EXTENSION) == 'jpeg')
-                                        <img src="{{ asset('/storage/customer_message_media/' . $mess) }}" alt="test"
+                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$mess}}" alt="test"
                                             class="w-100">
                                     @endif
                                 </div>
@@ -51,7 +51,7 @@
                             <a data-bs-toggle="modal" href="#exampleModalToggle{{ $message->id }}{{ $key }}"
                                 role="button">
                                 <video style="z-index: -1;">
-                                    <source src="{{ asset('/storage/customer_message_media/' . $mess) }}" type="video/mp4">
+                                    <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$mess}}" type="video/mp4">
                                 </video>
                             </a>
                         </div>
@@ -61,7 +61,7 @@
                         <div class="social-media-chat-media">
                             <a data-bs-toggle="modal" href="#exampleModalToggle{{ $message->id }}{{ $key }}"
                                 role="button">
-                                <img src="{{ asset('storage/customer_message_media/' . $mess) }}" alt="test">
+                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$mess}}" alt="test">
                             </a>
                         </div>
                     @endif

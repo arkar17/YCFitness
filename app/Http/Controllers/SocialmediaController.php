@@ -705,17 +705,20 @@ class SocialmediaController extends Controller
 
     public function notification_center()
     {
-        $friend_requests = Friendship::select('sender.name', 'sender.id')
+        $friend_requests = Friendship::select('sender.name', 'sender.id','profiles.profile_image')
             ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
             ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
+            ->join('profiles', 'sender.profile_id', '=', 'profiles.id')
             ->where('receiver.id', auth()->user()->id)
             ->where('friend_status', 1)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), Carbon::Now()->toDateString())
             ->get();
+           // dd($friend_requests);
 
-        $friend_requests_earlier = Friendship::select('sender.name', 'sender.id')
+        $friend_requests_earlier = Friendship::select('sender.name', 'sender.id','profiles.profile_image')
             ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
             ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
+            ->join('profiles', 'sender.profile_id', '=', 'profiles.id')
             ->where('receiver.id', auth()->user()->id)
             ->where('friend_status', 1)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString())

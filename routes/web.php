@@ -4,8 +4,10 @@ use App\Models\TrainingCenter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\AccDeleteController;
 use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -24,6 +26,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ShopMemberController;
 use App\Http\Controllers\User\UserWorkoutController;
 use App\Http\Controllers\Admin\BankinginfoController;
+use App\Http\Controllers\Admin\ShopRequestController;
 use App\Http\Controllers\Admin\TrainingGroupController;
 use App\Http\Controllers\Admin\TrainingCenterController;
 use App\Http\Controllers\Trainer\TrainerGroupController;
@@ -31,11 +34,9 @@ use App\Http\Controllers\Customer\CustomerLoginController;
 use App\Http\Controllers\Customer\RegisterPaymentController;
 use App\Http\Controllers\Customer\CustomerRegisterController;
 use App\Http\Controllers\Admin\RequestAcceptDeclineController;
-use App\Http\Controllers\Admin\ShopRequestController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
-use App\Http\Controllers\ShopController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/locale/change', [HomeController::class, 'lang'])->name('langChange');
@@ -73,6 +74,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         //Social Media
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
 
+        Route::get('/account_delete', [AccDeleteController::class, 'acc_delete'])->name('acc_delete');
+        Route::post('/account_del', [AccDeleteController::class, 'acc_del'])->name('acc_del');
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
         Route::post('/shop/rating',[ShopController::class, 'shop_rating'])->name('shop_rating');
         Route::post('/shop/list', [ShopController::class, 'shop_list'])->name('shop.list');

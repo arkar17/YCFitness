@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use stdClass;
 use File;
+use stdClass;
 use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\User;
@@ -32,7 +32,10 @@ class ShopController extends Controller
                     ->orWhere('shop_request',3)
                     ->with('posts')
                     ->first();
-
+                    
+                    $post = Post::find(17);
+                   
+                    // dd($imageData);
         return view('customer.shop.shop',compact('shops'));
     }
 

@@ -1127,9 +1127,9 @@ class SocialMediaController extends Controller
         $tmp = $request->cover;
         $file = base64_decode($tmp);
         $image_name = $request->name;
-        Storage::disk('local')->put(
+        Storage::put(
             'public/post/' . $image_name,
-            $file
+            $file.'public'
         );
         $profile = new Profile();
         $profile->cover_photo = $image_name;
@@ -1148,9 +1148,9 @@ class SocialMediaController extends Controller
         $tmp = $request->profile;
         $file = base64_decode($tmp);
         $image_name = $request->name;
-        Storage::disk('local')->put(
+        Storage::put(
             'public/post/' . $image_name,
-            $file
+            $file,'public'
         );
         $profile = new Profile();
         $profile->profile_image = $image_name;
@@ -1522,9 +1522,9 @@ class SocialMediaController extends Controller
             foreach ($images as $index => $file) {
                 $tmp = base64_decode($file);
                 $file_name = $filenames[$index];
-                Storage::disk('public')->put(
-                    'customer_message_media/' . $file_name,
-                    $tmp
+                Storage::put(
+                    'public/customer_message_media/' . $file_name,
+                    $tmp,'public'
                 );
                 $imgData[] = $file_name;
                 $message->media = json_encode($imgData);
@@ -2493,9 +2493,9 @@ class SocialMediaController extends Controller
             foreach ($images as $index => $file) {
                 $tmp = base64_decode($file);
                 $file_name = $filenames[$index];
-                Storage::disk('public')->put(
+                Storage::put(
                     'customer_message_media/' . $file_name,
-                    $tmp
+                    $tmp,'public'
                 );
                 $imgData[] = $file_name;
                 $message->media = json_encode($imgData);

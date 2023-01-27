@@ -146,7 +146,7 @@
                 @if ($receiver_user->user_profile == null)
                     <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                 @else
-                    <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
+                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$receiver_user->user_profile->profile_image}}" />
                 @endif
 
                 <div class="group-chat-header-name-text-container">
@@ -219,7 +219,7 @@
                                                                 aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <img src="{{ asset('/storage/customer_message_media/' . $media) }}"
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$media}}"
                                                                 alt="test" class="w-100">
                                                         </div>
                                                     </div>
@@ -231,13 +231,13 @@
                                             <a data-bs-toggle="modal"
                                                 href="#exampleModalToggle{{ $send_message->id }}{{ $key }}"
                                                 role="button">
-                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
                                             </a>
                                         @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'webm')
                                             <video width="100%" height="100%" controls>
-                                                <source src="{{ asset('storage/customer_message_media/' . $media) }}"
+                                                <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media}}"
                                                     type="video/mp4">
                                             </video>
                                         @endif
@@ -248,7 +248,7 @@
                         @if ($sender_user->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="{{ asset('/storage/post/' . $sender_user->user_profile->profile_image) }}" />
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $sender_user->user_profile->profile_image }} " />
                         @endif
                     </div>
                 @elseif(auth()->user()->id != $send_message->from_user_id)
@@ -256,7 +256,7 @@
                         @if ($receiver_user->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="{{ asset('/storage/post/' . $receiver_user->user_profile->profile_image) }}" />
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $receiver_user->user_profile->profile_image }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
                             {{-- <span>{{ $send_message->name }}</span> --}}
@@ -280,7 +280,7 @@
                                                                 aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <img src="{{ asset('/storage/customer_message_media/' . $media) }}"
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}"
                                                                 alt="test" class="w-100">
                                                         </div>
                                                     </div>
@@ -292,13 +292,13 @@
                                             <a data-bs-toggle="modal"
                                                 href="#exampleModalToggle{{ $send_message->id }}{{ $key }}"
                                                 role="button">
-                                                <img src="{{ asset('storage/customer_message_media/' . $media) }}">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
                                             </a>
                                         @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'webm')
                                             <video width="100%" height="100%" controls>
-                                                <source src="{{ asset('storage/customer_message_media/' . $media) }}"
+                                                <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}"
                                                     type="video/mp4">
                                             </video>
                                         @endif
@@ -674,7 +674,7 @@
                                                                         aria-label="Close"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
                                                                         alt="test" class="w-100">
                                                                 </div>
                                                             </div>
@@ -682,7 +682,7 @@
                                                     </div>
 
                                                 <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                    <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
                                                 </a>`
 
 
@@ -690,7 +690,7 @@
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
                                                 return `<video width = "100%" height = "100%" controls>
-                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                                    <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
                                     </video>`
                         }
                     }).join('')
@@ -698,7 +698,7 @@
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                            <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
                                                             <div class="group-chat-receiver-text-container">
 
                                                                 ${receiverMessageMedia}
@@ -743,7 +743,7 @@
                                                                                             aria-label="Close"></button>
                                                                                     </div>
                                                                                     <div class="modal-body">
-                                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
                                                                                             alt="test" class="w-100">
                                                                                     </div>
                                                                                 </div>
@@ -751,7 +751,7 @@
                                                                     </div>
 
                                                             <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
                                                             </a>`
 
 
@@ -762,7 +762,7 @@
                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
 
                                 return `<video width = "100%" height = "100%" controls>
-                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                        <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
                         </video>`
 
             }
@@ -792,7 +792,7 @@
 
                                             ${messageMediaContainer}
                                             </div>
-                                        <img class="nav-profile-img" src="{{ asset('/storage/post/${sender_user_img}') }}" />
+                                        <img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${sender_user_img}" />
                                     </div>`;
         } else {
             messageContainer.innerHTML += `
@@ -844,7 +844,7 @@
 
                                             <p>${data.message.text}</p>
                                         </div>
-                                        <img class="nav-profile-img" src="{{ asset('/storage/post/${sender_user_img}') }}" />
+                                        <img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${sender_user_img}" />
                                     </div>`;
             } else {
                 messageContainer.innerHTML += `<div class="group-chat-sender-container">
@@ -906,7 +906,7 @@
                                                                                             aria-label="Close"></button>
                                                                                     </div>
                                                                                     <div class="modal-body">
-                                                                                        <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
                                                                                             alt="test" class="w-100">
                                                                                     </div>
                                                                                 </div>
@@ -914,7 +914,7 @@
                                                                         </div>
 
                                                                         <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
                                                                         </a>`;
 
 
@@ -922,7 +922,7 @@
                                             .pop() ===
                                             'mov' || imageArr[key].split('.').pop() === 'webm') {
                                                     return `<video width = "100%" height = "100%" controls>
-                                    <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                                    <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
                                     </video>`
 
                         }
@@ -931,7 +931,7 @@
 
                 if (receive_user_img != null) {
                     messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                                            <img src="{{ asset('storage/post/${receive_user_img}') }}" />
+                                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
                                                                             <div class="group-chat-receiver-text-container">
 
                                                                                 ${receiverMessageMedia}
@@ -952,7 +952,7 @@
 
             if (receive_user_img != null) {
                 messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                        <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
+                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
                                                         <div class="group-chat-receiver-text-container">
 
                                                             <p>${data.message.text}</p>
@@ -995,7 +995,7 @@
                                                                                     aria-label="Close"></button>
                                                                             </div>
                                                                             <div class="modal-body">
-                                                                                <img src="{{ asset('/storage/customer_message_media/${imageArr[key]}') }}"
+                                                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
                                                                                     alt="test" class="w-100">
                                                                             </div>
                                                                         </div>
@@ -1003,7 +1003,7 @@
                                                                 </div>
 
                                                         <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                            <img src="{{ asset('storage/customer_message_media/${imageArr[key]}') }}">
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
                                                         </a>`
 
 
@@ -1011,7 +1011,7 @@
                                                 .pop() ===
                                                 'mov' || imageArr[key].split('.').pop() === 'webm') {
                                                     return `<video width = "100%" height = "100%" controls>
-                        <source src = "{{ asset('storage/customer_message_media/${imageArr[key]}') }}" type = "video/mp4">
+                        <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
                         </video>`
 
             }
@@ -1020,7 +1020,7 @@
 
         if (receive_user_img != null) {
             messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                                                    <img src="{{ asset('storage/post/${receive_user_img}') }}" />
+                                                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
                                                                                     <div class="group-chat-receiver-text-container">
 
                                                                                         ${receiverMessageMedia}
@@ -1038,7 +1038,7 @@
         } else {
             if (receive_user_img != null) {
                 messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                            <img src="{{ asset('/storage/post/${receive_user_img}') }}" />
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
                                                             <div class="group-chat-receiver-text-container">
 
                                                                 <p>${data.message.text}</p>
