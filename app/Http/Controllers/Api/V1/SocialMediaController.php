@@ -618,9 +618,9 @@ class SocialMediaController extends Controller
 
                     $tmp = base64_decode($file);
                     $file_name = $filenames[$index];
-                    Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
+                    Storage::put(
+                        'public/post/' . $file_name,
+                        $tmp,'public'
                     );
                     $imgData[] = $file_name;
                     $post->media = json_encode($imgData);
@@ -637,9 +637,9 @@ class SocialMediaController extends Controller
 
                     $tmp = base64_decode($file);
                     $file_name = $filenames[$index];
-                    Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
+                    Storage::put(
+                        'public/post/' . $file_name,
+                        $tmp,'public'
                     );
                     $imgData[] = $file_name;
                     $post->media = json_encode($imgData);
@@ -745,8 +745,8 @@ class SocialMediaController extends Controller
 
                     $file_name = $newFilenames[$index];
                     Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
+                        'public/post/' . $file_name,
+                        $tmp,'public'
                     );
                     //  $imgData[] = $tmp;
                     //  $edit_post->media = json_encode($imgData);
@@ -772,9 +772,9 @@ class SocialMediaController extends Controller
                     $tmp = base64_decode($file);
 
                     $file_name = $newFilenames[$index];
-                    Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
+                    Storage::put(
+                        'public/post/' . $file_name,
+                        $tmp,'public'
                     );
                     //  $imgData[] = $tmp;
                     //  $edit_post->media = json_encode($imgData);
@@ -1127,10 +1127,7 @@ class SocialMediaController extends Controller
         $tmp = $request->cover;
         $file = base64_decode($tmp);
         $image_name = $request->name;
-        Storage::put(
-            'public/post/' . $image_name,
-            $file.'public'
-        );
+        Storage::put('public/post/' . $image_name,$file,'public');
         $profile = new Profile();
         $profile->cover_photo = $image_name;
         $profile->user_id = auth()->user()->id;
@@ -1148,10 +1145,7 @@ class SocialMediaController extends Controller
         $tmp = $request->profile;
         $file = base64_decode($tmp);
         $image_name = $request->name;
-        Storage::put(
-            'public/post/' . $image_name,
-            $file,'public'
-        );
+        Storage::put('public/post/' . $image_name,$file,'public');
         $profile = new Profile();
         $profile->profile_image = $image_name;
         $profile->user_id = auth()->user()->id;
@@ -2493,8 +2487,7 @@ class SocialMediaController extends Controller
             foreach ($images as $index => $file) {
                 $tmp = base64_decode($file);
                 $file_name = $filenames[$index];
-                Storage::put(
-                    'customer_message_media/' . $file_name,
+                Storage::put('customer_message_media/' . $file_name,
                     $tmp,'public'
                 );
                 $imgData[] = $file_name;
