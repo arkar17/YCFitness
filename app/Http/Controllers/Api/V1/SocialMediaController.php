@@ -2487,7 +2487,7 @@ class SocialMediaController extends Controller
             foreach ($images as $index => $file) {
                 $tmp = base64_decode($file);
                 $file_name = $filenames[$index];
-                Storage::put('customer_message_media/' . $file_name,
+                Storage::put('public/customer_message_media/' . $file_name,
                     $tmp,'public'
                 );
                 $imgData[] = $file_name;
