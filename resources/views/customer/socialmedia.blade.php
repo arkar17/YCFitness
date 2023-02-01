@@ -94,20 +94,21 @@
                     <div class="social-media-post-name">
                         <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
                             <p>{{$post->user->name}} 
+                                {{-- <span style = "color:#4444FF;font-weight:bold"> [G]</span> --}}
                                 @if($post->roles == 'Gold')
-                                    <span style = "color:gold;font-weight:bold"> [G]</span>
+                                    <span style = "color:#D1B000;font-weight:bold"> [G]</span>
                                 @elseif ($post->roles == 'Platinum')
-                                    <span style = "color:silver;font-weight:bold"> [D] </span>
+                                    <span style = "color:#A9A9A9;font-weight:bold"> [D] </span>
                                 @elseif ($post->roles == 'Diamond')
-                                <span style = "color:silver;font-weight:bold"> [P]</span>
+                                <span style = "color:#afeeee;font-weight:bold"> [P]</span>
                                 @elseif ($post->roles == 'Ruby')
-                                    <span style = "color:red;font-weight:bold"> [R] </span>
+                                    <span style = "color:#B22222;font-weight:bold"> [R] </span>
                                 @elseif ($post->roles == 'Ruby Premium')
-                                    <span style = "color:red;font-weight:bold"> [R <sup>+</sup>]</span>
+                                    <span style = "color:#B22222;font-weight:bold"> [R <sup>+</sup>]</span>
                                 @elseif ($post->roles == 'Trainer')
-                                    <span style = "color:silver;font-weight:bold"> [T]</span>
+                                    <span style = "color:#4444FF;font-weight:bold"> [T]</span>
                                 @elseif ($post->roles == 'Gym Member')
-                                    <span style = "color:silver;font-weight:bold"> [GM]</span>
+                                    <span style = "color:#A9A9A9;font-weight:bold"> [GM]</span>
                                 @endif
                                 </p>
                         </a>
