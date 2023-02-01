@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
+use Spatie\Permission\Contracts\Role;
 
 class HomeController extends Controller
 {
@@ -137,6 +138,16 @@ class HomeController extends Controller
                         ->orderBy('created_at', 'DESC')
                         ->with('user')
                         ->paginate(30);
+                         
+                    $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                    left join roles on model_has_roles.role_id = roles.id");
+                    foreach ($posts as $key=>$post){
+                        foreach($roles as $r){
+                            if($r->model_id == $post->user_id){
+                                $posts[$key]['roles'] = $r->name;
+                        }
+                    }
+                }
                 } else {
                     $n = array();
                     $posts = Post::where('user_id', $user->id)
@@ -145,7 +156,18 @@ class HomeController extends Controller
                         ->orderBy('created_at', 'DESC')
                         ->with('user')
                         ->paginate(30);
-
+                    
+                    $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                    left join roles on model_has_roles.role_id = roles.id");
+                    foreach ($posts as $key=>$post){
+                        foreach($roles as $r){
+                            if($r->model_id == $post->user_id){
+                                $posts[$key]['roles'] = $r->name;
+                        }
+                    }
+                }
+                    // dd($roles);
+                    
                     // foreach($posts as $post){
                     //     $final = [];
                     //     $images=json_decode($post->media);
@@ -170,6 +192,7 @@ class HomeController extends Controller
                         // }
 
                 }
+                //  dd($posts);
                         $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                         return view('customer.socialmedia', compact('member_plans','posts'));
             }
