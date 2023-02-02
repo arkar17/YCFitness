@@ -70,10 +70,6 @@ class SocialmediaController extends Controller
                 ->paginate(30);
         }
 
-        // $postdata ='Testing local storage';
-        // $date =Carbon::now();
-        // Storage::disk('local')->put('test/test.txt', $postdata);
-
         return view('customer.socialmedia', compact('posts'));
     }
 

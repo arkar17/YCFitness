@@ -166,7 +166,7 @@ class HomeController extends Controller
                         }
                     }
                 }
-                    // dd($roles);
+                //dd($posts);
                     
                     // foreach($posts as $post){
                     //     $final = [];
