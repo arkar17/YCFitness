@@ -138,7 +138,7 @@ class ShopController extends Controller
                 else{
                     $shop_list->avg_rating = 0;
                 }
-        }
+            }
         }
         return response()->json([
             'data' => $shop_list
@@ -248,6 +248,7 @@ class ShopController extends Controller
             $post_one['is_like'] = 0;
             $post_one['like_count'] = 0;
             $post_one['comment_count'] = 0;
+            $post_one['roles'] = null;
         }
         return response()->json([
             'data' => $post_one
@@ -275,13 +276,16 @@ class ShopController extends Controller
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
         $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
-        // dd($liked_post);
+        
+        $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id");
 
         foreach ($posts as $key => $value) {
             $posts[$key]['is_save'] = 0;
             $posts[$key]['is_like'] = 0;
             $posts[$key]['like_count'] = 0;
             $posts[$key]['comment_count'] = 0;
+            $posts[$key]['roles'] = 0;
             // dd($value->id);
             foreach ($saved_post as $saved_key => $save_value) {
 
@@ -315,6 +319,14 @@ class ShopController extends Controller
                 } else {
                     $posts[$key]['comment_count'] = 0;
                 }
+            }
+            foreach($roles as $r){
+                if($r->model_id == $value->user_id){
+                    $posts[$key]['roles'] = $r->name;
+              }
+              else{
+                    $posts[$key]['roles'] = null;
+              }
             }
         }
         return response()->json([
