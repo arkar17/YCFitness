@@ -339,6 +339,22 @@ class SocialmediaController extends Controller
                 ->paginate(6);
             $friend = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth )
                             AND (receiver_id = $id or sender_id = $id)");
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id");
+            foreach($posts as $key=>$value){
+                    if(!empty($roles)){
+                        foreach($roles as $r){
+                        if($r->model_id == $value->user_id){
+                            $posts[$key]['roles'] = $r->name;
+                            break;
+                        }
+                        else{
+                                $posts[$key]['roles'] = null;
+                            }
+                        }
+                        }
+                    }
+                    //dd($posts);
             return view('customer.socialmedia_profile', compact('user', 'posts', 'friends', 'friend'));
         }
     }
@@ -426,8 +442,23 @@ class SocialmediaController extends Controller
                     $post_likes[$key]['friend_status'] = "add friend";
                 }
             }
+           
         }
-
+        foreach($post as $key=>$value){
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+        left join roles on model_has_roles.role_id = roles.id where  model_id = $post->user_id");
+            foreach($roles as $r){
+                                    
+                if($r->model_id == $post->user_id){
+                    $post['roles'] = $r->name;
+                    break;
+                }
+                else{
+                        $post['roles'] = null;
+                    }
+                }   
+        }
+        // dd($post);
         return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
@@ -1188,13 +1219,25 @@ class SocialmediaController extends Controller
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('post_id', $id)->orderBy('created_at', 'DESC')->get();
-
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
-
-
-
+       // dd($post);
+        
+           
+        $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                         left join roles on model_has_roles.role_id = roles.id where  model_id = $post->user_id");
+               
+                        foreach($roles as $r){
+                           
+                        if($r->model_id == $post->user_id){
+                            $post['roles'] = $r->name;
+                            break;
+                        }
+                        else{
+                                $post['roles'] = null;
+                            }
+                        }      
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 
@@ -1370,9 +1413,27 @@ class SocialmediaController extends Controller
             } else {
                 $comments[$key]['Replace'] = $comm1->comment;
             }
+
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $comm1->user_id ");
+            foreach($roles as $r){
+                if(!empty($roles)){
+                    
+                    foreach($roles as $r){
+                        if($r->model_id == $comm1->user_id){
+                            $comments[$key]['roles'] = $r->name;
+                            break;
+                    }
+                    else{
+                            $comments[$key]['roles'] = null;
+                    }
+                    }
+                }
+                else{
+                    $comments[$key]['roles'] = null;
+            }
+            }
         }
-
-
         return response()->json([
             'comment' => $comments
         ]);

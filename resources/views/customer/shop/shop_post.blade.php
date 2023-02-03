@@ -147,7 +147,44 @@
                             htmlView +=`<img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+posts[i].profile_image+`"/>`
                         }
                         htmlView +=`<div class="shop-post-name">
-                                                <p>`+posts[i].name+`</p>
+                                                <p>`+posts[i].name+``
+                        if(posts[i].roles == 'Gold'){
+                            htmlView +=      `
+                                       <span style = "color:#D1B000;font-weight:bold"> [G]</span>
+                            `
+                        }
+                        if(posts[i].roles == 'Platinum'){
+                            htmlView +=      `
+                                        <span style = "color:#A9A9A9;font-weight:bold"> [P] </span>
+                            `
+                        }
+                        if(posts[i].roles == 'Diamond'){
+                            htmlView +=      `
+                                        <span style = "color:#afeeee;font-weight:bold"> [D]</span>
+                            `
+                        }
+                        if(posts[i].roles == 'Ruby'){
+                            htmlView +=      `
+                                        <span style = "color:#B22222;font-weight:bold"> [R] </span>
+                            `
+                        }
+                        if(posts[i].roles == 'Ruby Premium'){
+                            htmlView +=      `
+                                        <span style = "color:#B22222;font-weight:bold"> [R <sup>+</sup>] </span>
+                            `
+                        }
+                        if(posts[i].roles == 'Trainer'){
+                            htmlView +=      `
+                                        <span style = "color:#4444FF;font-weight:bold"> [T]</span>
+                            `
+                        }
+                        if(posts[i].roles == 'Gym Member'){
+                            htmlView +=      `
+                            <span style = "color:#A9A9A9;font-weight:bold"> [GM]</span>
+                            `
+                        }
+                       
+                        htmlView +=`            </p>
                                                 <span>`+posts[i].date+`</span>
                                             </div>
                                             </div>

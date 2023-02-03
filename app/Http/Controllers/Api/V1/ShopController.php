@@ -242,6 +242,8 @@ class ShopController extends Controller
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->first();
+        $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id");
 
         foreach ($post_one as $key => $value) {
             $post_one['is_save'] = 0;
@@ -249,6 +251,14 @@ class ShopController extends Controller
             $post_one['like_count'] = 0;
             $post_one['comment_count'] = 0;
             $post_one['roles'] = null;
+            foreach($roles as $r){
+                if($r->model_id == $value->user_id){
+                    $post_one[$key]['roles'] = $r->name;
+              }
+              else{
+                    $post_one[$key]['roles'] = null;
+              }
+            }
         }
         return response()->json([
             'data' => $post_one
@@ -323,6 +333,7 @@ class ShopController extends Controller
             foreach($roles as $r){
                 if($r->model_id == $value->user_id){
                     $posts[$key]['roles'] = $r->name;
+                    break;
               }
               else{
                     $posts[$key]['roles'] = null;

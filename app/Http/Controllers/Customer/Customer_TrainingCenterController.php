@@ -352,9 +352,25 @@ class Customer_TrainingCenterController extends Controller
             $posts[$key]->date= $date;
             $posts[$key]->isLike=$isLike;
             $posts[$key]->already_saved=$already_saved;
+
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id where  model_has_roles.model_id = $value->user_id");
+
+            foreach($roles as $r){
+                                    
+                if($r->model_id == $value->user_id){
+                    $posts[$key]['roles'] = $r->name;
+                    break;
+                }
+                else{
+                        $posts[$key]['roles'] = null;
+                    }
+                }        
+
             }
 
-        return response()->json([
+            // dd($posts);
+            return response()->json([
             'posts' => $posts
             ]);
     }
@@ -415,6 +431,20 @@ class Customer_TrainingCenterController extends Controller
         $posts[$key]->date= $date;
         $posts[$key]->isLike=$isLike;
         $posts[$key]->already_saved=$already_saved;
+        
+        $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+        left join roles on model_has_roles.role_id = roles.id where  model_has_roles.model_id = $value->user_id");
+
+        foreach($roles as $r){
+                                
+            if($r->model_id == $value->user_id){
+                $posts[$key]->roles = $r->name;
+                break;
+            }
+            else{
+                    $posts[$key]->roles = null;
+                }
+            } 
         }
 
     return response()->json([

@@ -145,6 +145,10 @@ class HomeController extends Controller
                         foreach($roles as $r){
                             if($r->model_id == $post->user_id){
                                 $posts[$key]['roles'] = $r->name;
+                                break;
+                        }
+                        else{                   
+                            $posts[$key]['roles'] = null;
                         }
                     }
                 }
@@ -163,7 +167,11 @@ class HomeController extends Controller
                         foreach($roles as $r){
                             if($r->model_id == $post->user_id){
                                 $posts[$key]['roles'] = $r->name;
-                        }
+                                break;
+                            }
+                            else{
+                                $posts[$key]['roles'] = null;
+                            }
                     }
                 }
                 //dd($posts);

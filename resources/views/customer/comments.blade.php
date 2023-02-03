@@ -50,7 +50,23 @@
                     </a>
                     <div class="social-media-post-name">
                         <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                        <p>{{$post->name}}</p>
+                        <p>{{$post->name}} 
+                            @if($post->roles == 'Gold')
+                                <span style = "color:#D1B000;font-weight:bold"> [G]</span>
+                            @elseif ($post->roles == 'Platinum')
+                                <span style = "color:#A9A9A9;font-weight:bold"> [D] </span>
+                            @elseif ($post->roles == 'Diamond')
+                            <span style = "color:#afeeee;font-weight:bold"> [P]</span>
+                            @elseif ($post->roles == 'Ruby')
+                                <span style = "color:#B22222;font-weight:bold"> [R] </span>
+                            @elseif ($post->roles == 'Ruby Premium')
+                                <span style = "color:#B22222;font-weight:bold"> [R <sup>+</sup>]</span>
+                            @elseif ($post->roles == 'Trainer')
+                                <span style = "color:#4444FF;font-weight:bold"> [T]</span>
+                            @elseif ($post->roles == 'Gym Member')
+                                <span style = "color:#A9A9A9;font-weight:bold"> [GM]</span>
+                            @endif
+                        </p>
                         </a>
                         <span>{{ \Carbon\Carbon::parse($post->created_at)->format('d M Y , g:i A')}}</span>
                     </div>
@@ -632,6 +648,7 @@
                             var auth_id={{auth()->user()->id}};
 
                             for(let i = 0; i < res.comment.length; i++){
+                                console.log(res.comment)
                                 var comment_user=res.comment[i].user_id;
                                     var post_owner=res.comment[i].post_owner;
                                     if(res.comment[i].profile_image != null){
@@ -646,7 +663,46 @@
                                         htmlView += `<div class="social-media-comment-box">
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
-                                                    <p>`+res.comment[i].name+`</p>
+                                                    <p>`+res.comment[i].name+` `
+                                        if(res.comment[i].roles=='Gold'){
+                                        htmlView += `
+                                                      <span style = "color:#D1B000;font-weight:bold"> [G]</span>
+                                                `
+                                        }
+                                        if(res.comment[i].roles==='Platinum'){
+                                        htmlView += `
+                                                        <span style = "color:#A9A9A9;font-weight:bold"> [D] </span>
+                                                `
+                                        }
+                                        if(res.comment[i].roles==='Diamond'){
+                                        htmlView += `
+                                                        <span style = "color:#afeeee;font-weight:bold"> [P]</span>
+                                                `
+                                        }
+                                        if(res.comment[i].roles==='Ruby'){
+                                        htmlView += `
+                                                        <span style = "color:#B22222;font-weight:bold"> [R] </span>
+                                                `
+                                        }
+                                        if(res.comment[i].roles==='Ruby Premium'){
+                                            console.log("testing")
+                                        htmlView += `
+                                                        <span style = "color:#B22222;font-weight:bold"> [R <sup>+</sup>]</span>
+                                                `
+                                        }
+                                        if(res.comment[i].roles==='Trainer'){
+                                        htmlView += `
+                                                        <span style = "color:#4444FF;font-weight:bold"> [T]</span>
+                                                `
+                                        }
+                                        if(res.comment[i].roles==='Gym Member'){
+                                        htmlView += `
+                                                        <span style = "color:#A9A9A9;font-weight:bold"> [GM]</span>
+                                                `
+                                             
+                                        }
+                                        htmlView += `    
+                                                </p>
                                                     <span>`+res.comment[i].date+`</span>
                                                 </div>
                                             `

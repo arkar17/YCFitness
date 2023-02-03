@@ -514,7 +514,26 @@ class SocialMediaController extends Controller
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
-            ->paginate(3)->toArray();
+            ->paginate(3);
+            foreach($friends as $key=>$value){
+                $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $value->id");
+                if(!empty($roles)){
+                    foreach($roles as $r){
+                        if($value->id == $r->model_id){
+                            $friends[$key]['roles'] = $r->name;
+                            break;
+                        }
+                        else{
+                            $friends[$key]['roles'] = null;
+                        } 
+                    }
+                }
+                else{
+                    $friends[$key]['roles'] = null;
+                }
+                
+            }
         return response()->json([
             'friends' => $friends
         ]);
@@ -2165,6 +2184,18 @@ class SocialMediaController extends Controller
                     $post_likes[$key]['friend_status'] = "add friend";
                 }
             }
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $value->user_id");
+           
+                if(!empty($roles)){
+                foreach($roles as $r){
+                    $post_likes[$key]['roles'] = $r->name;  
+                    break;
+                 }
+                }
+                else{
+                    $post_likes[$key]['roles'] = null;
+                }
         }
 
         return response()->json([
@@ -2201,6 +2232,25 @@ class SocialMediaController extends Controller
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('comments.post_id', $id)->orderBy('comments.created_at', 'DESC')->get();
+        $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id");
+        foreach($comments as $key=>$value){
+            $comments[$key]['roles'] = null;
+            if(!empty($roles)){
+                foreach($roles as $r){
+                    if($r->model_id == $value->user_id){
+                        $comments[$key]['roles'] = $r->name;
+                        break;
+                  }
+                  else{
+                        $comments[$key]['roles'] = null;
+                  }
+                }
+            }
+            else{
+                $comments[$key]['roles'] = null;
+            }
+        }
         return response()->json([
             'comments' => $comments
         ]);
