@@ -443,6 +443,19 @@ class SocialmediaController extends Controller
                 }
             }
            
+                $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                left join roles on model_has_roles.role_id = roles.id where  model_id = $value->user_id");
+                foreach($roles as $r){
+                                        
+                    if($r->model_id == $value->user_id){
+                        $post_likes[$key]['roles'] = $r->name;
+                        break;
+                    }
+                    else{
+                            $post_likes[$key]['roles'] = null;
+                        }
+                    }   
+           
         }
         foreach($post as $key=>$value){
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
@@ -458,7 +471,6 @@ class SocialmediaController extends Controller
                     }
                 }   
         }
-        // dd($post);
         return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
@@ -1237,7 +1249,7 @@ class SocialmediaController extends Controller
                         else{
                                 $post['roles'] = null;
                             }
-                        }      
+                        }  
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 

@@ -84,7 +84,7 @@
                                     <div class="social-media-fris-fri-row">
                                         <div class="social-media-fris-fri-img">
                                             <a href=`+url+`>
-                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.friends[i].profile_image}">
                                             <p>`+res.friends[i].name+`</p>
                                             </a>
                                         </div>
@@ -126,7 +126,7 @@
                                     htmlView += `
                                     <div class="social-media-fris-fri-row">
                                         <div class="social-media-fris-fri-img">
-                                                <img src="{{ asset('/storage/post/${res.friends[i].profile_image}') }}">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.friends[i].profile_image}">
                                             <p>`+res.friends[i].name+`</p>
                                         </div>
 

@@ -732,29 +732,29 @@ class SocialMediaController extends Controller
         $id = $post->id;
 
         $post_one = Post::select('users.name', 'profiles.profile_image', 'posts.*')
-            ->where('posts.id', $id)
-            ->leftJoin('users', 'users.id', 'posts.user_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->first();
+        ->where('posts.id', $id)
+        ->leftJoin('users', 'users.id', 'posts.user_id')
+        ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+        ->first();
 
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
-            left join roles on model_has_roles.role_id = roles.id");
+        left join roles on model_has_roles.role_id = roles.id");
         foreach ($post_one as $key => $value) {
-            $post_one['is_save'] = 0;
-            $post_one['is_like'] = 0;
-            $post_one['like_count'] = 0;
-            $post_one['comment_count'] = 0;
-            $posts[$key]['roles'] = null;
-            foreach($roles as $r){
-                if($r->model_id == $value->user_id){
-                    $posts[$key]['roles'] = $r->name;
-                    break;
-              }
-              else{
-                    $posts[$key]['roles'] = null;
-              }
-            }
+        $post_one['is_save'] = 0;
+        $post_one['is_like'] = 0;
+        $post_one['like_count'] = 0;
+        $post_one['comment_count'] = 0;
+        $post_one['roles'] = null;
+        foreach($roles as $r){
+            if($r->model_id == $post_one->user_id){
+                $post_one['roles'] = $r->name;
+                break;
+          }
+          else{
+                $post_one['roles'] = null;
+          }
         }
+    }
         return response()->json([
             'data' => $post_one
         ]);
@@ -938,7 +938,7 @@ class SocialMediaController extends Controller
             }
 
             foreach($roles as $r){
-                if($r->model_id == $value->user_id){
+                if($r->model_id == $post->user_id){
                     $post['roles'] = $r->name;
                     break;
               }
@@ -1253,12 +1253,12 @@ class SocialMediaController extends Controller
                 $post['comment_count'] = 0;
             }
             foreach($roles as $r){
-                if($r->model_id == $value->user_id){
-                    $posts[$key]['roles'] = $r->name;
+                if($r->model_id == $post->user_id){
+                    $post['roles'] = $r->name;
                     break;
               }
               else{
-                    $posts[$key]['roles'] = null;
+                    $post['roles'] = null;
               }
             }
         }

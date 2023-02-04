@@ -217,22 +217,33 @@
                          $img=$user_like_post->user->profiles->where('id',$profile_id)->first();
                         ?>
 
+                        
+                        <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
                         @if($img==null)
-                        <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
                         <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
-                        </a>
-                        <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
-                        <p>{{$user_like_post->user->name}}</p>
-                        </a>
                         @else
-                        <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
                         <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$img->profile_image}}">
+                        @endif
                         </a>
                         <a href="{{route('socialmedia.profile',$user_like_post->user_id)}}" style="text-decoration:none">
-                        <p>{{$user_like_post->user->name}}</p>
+                        <p>{{$user_like_post->user->name}}
+                            @if($user_like_post->roles == 'Gold')
+                            <span style = "color:#D1B000;font-weight:bold"> [G]</span>
+                            @elseif ($user_like_post->roles == 'Platinum')
+                            <span style = "color:#A9A9A9;font-weight:bold"> [D] </span>
+                            @elseif ($user_like_post->roles == 'Diamond')
+                            <span style = "color:#afeeee;font-weight:bold"> [P]</span>
+                            @elseif ($user_like_post->roles == 'Ruby')
+                                <span style = "color:#B22222;font-weight:bold"> [R] </span>
+                            @elseif ($user_like_post->roles == 'Ruby Premium')
+                                <span style = "color:#B22222;font-weight:bold"> [R <sup>+</sup>]</span>
+                            @elseif ($user_like_post->roles == 'Trainer')
+                                <span style = "color:#4444FF;font-weight:bold"> [T]</span>
+                            @elseif ($user_like_post->roles == 'Gym Member')
+                                <span style = "color:#A9A9A9;font-weight:bold"> [GM]</span>
+                            @endif
+                        </p>
                         </a>
-                        @endif
-
                     </div>
                     <div class="social-media-all-likes-row-btns">
                         @if($user_like_post->friend_status=='myself')

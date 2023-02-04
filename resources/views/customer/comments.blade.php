@@ -648,10 +648,9 @@
                             var auth_id={{auth()->user()->id}};
 
                             for(let i = 0; i < res.comment.length; i++){
-                                console.log(res.comment)
+                                console.log(res.comment[i].roles)
                                 var comment_user=res.comment[i].user_id;
                                     var post_owner=res.comment[i].post_owner;
-                                    if(res.comment[i].profile_image != null){
                                         htmlView += `<div class="social-media-comment-container">`
                                         if(res.comment[i].profile_image===null){
                                             htmlView+= `<img src="{{ asset('/img/customer/imgs/user_default.jpg') }}" >`
@@ -664,7 +663,8 @@
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
                                                     <p>`+res.comment[i].name+` `
-                                        if(res.comment[i].roles=='Gold'){
+                                                        
+                                        if(res.comment[i].roles =='Gold'){
                                         htmlView += `
                                                       <span style = "color:#D1B000;font-weight:bold"> [G]</span>
                                                 `
@@ -674,17 +674,17 @@
                                                         <span style = "color:#A9A9A9;font-weight:bold"> [D] </span>
                                                 `
                                         }
-                                        if(res.comment[i].roles==='Diamond'){
+                                        if(res.comment[i].roles ==='Diamond'){
                                         htmlView += `
                                                         <span style = "color:#afeeee;font-weight:bold"> [P]</span>
                                                 `
                                         }
-                                        if(res.comment[i].roles==='Ruby'){
+                                        if(res.comment[i].roles ==='Ruby'){
                                         htmlView += `
                                                         <span style = "color:#B22222;font-weight:bold"> [R] </span>
                                                 `
                                         }
-                                        if(res.comment[i].roles==='Ruby Premium'){
+                                        if(res.comment[i].roles == 'Ruby Premium'){
                                             console.log("testing")
                                         htmlView += `
                                                         <span style = "color:#B22222;font-weight:bold"> [R <sup>+</sup>]</span>
@@ -754,67 +754,6 @@
                                                 </div>
                                             </div>
                                             `
-                                    }
-
-                    else{
-                        htmlView += `
-                                    <div class="social-media-comment-container">
-                                        <img src="{{ asset('img/customer/imgs/user_default.jpg') }}">
-                                        <div class="social-media-comment-box">
-                                            <div class="social-media-comment-box-header">
-                                                <div class="social-media-comment-box-name">
-                                                    <p>`+res.comment[i].name+`</p>
-                                                    <span>`+res.comment[i].date+`</span>
-                                                </div>`
-
-                                                if(auth_id==post_owner && auth_id==comment_user){
-                                                htmlView+=`
-                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                                                        <div class="comment-actions-container" >
-                                                        <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
-                                                            <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                                            <p>Edit</p>
-                                                        </div>
-                                                        <a id="delete_comment" data-id=`+res.comment[i].id+`>
-                                                        <div class="comment-action">
-                                                            <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                                            <p>Delete</p>
-                                                        </div>
-                                                        </a>
-                                                    </div>`
-                                            }else if(auth_id==post_owner && auth_id!=comment_user){
-                                                htmlView+=`
-                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                                                        <div class="comment-actions-container" >
-                                                        <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
-                                                            <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                                            <p>Edit</p>
-                                                        </div>
-                                                    </div>`
-                                            }else if(auth_id==comment_user){
-                                                htmlView+=`
-                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
-                                                        <div class="comment-actions-container" >
-                                                        <div class="comment-action" id="editCommentModal" data-id=`+res.comment[i].id+`>
-                                                            <iconify-icon icon="akar-icons:edit" class="comment-action-icon"></iconify-icon>
-                                                            <p>Edit</p>
-                                                        </div>
-                                                        <a id="delete_comment" data-id=`+res.comment[i].id+`>
-                                                        <div class="comment-action">
-                                                            <iconify-icon icon="fluent:delete-12-regular" class="comment-action-icon"></iconify-icon>
-                                                            <p>Delete</p>
-                                                        </div>
-                                                        </a>
-                                                    </div>`
-                                            }else{}
-                                        htmlView+=`
-                                                </div>
-                                                    <p>`+res.comment[i].Replace+`</p>
-                                                </div>
-                                            </div>
-                                            `
-                                }
-
                 }
 
                             $('.social-media-all-comments').html(htmlView);

@@ -251,7 +251,7 @@
 
 
                     </div>
-                    <button type="submit" class="customer-primary-btn addpost-submit-btn" id="">{{__('msg.post')}}</button>
+                    <button type="submit" class="customer-primary-btn addpost-submit-btn">{{__('msg.post')}}</button>
                     {{-- <button type="submit" class="customer-primary-btn addpost-submit-btn">Post</button> --}}
                 </form>
 
@@ -1108,7 +1108,12 @@
                 var $fileUpload = $('#addPostInput');
 
                 if (!$('.addpost-caption-input').val() && parseInt($fileUpload.get(0).files.length) === 0) {
-                    alert("Cannot post!!")
+                    Swal.fire({
+                            text: "Cannot Post",
+                            timerProgressBar: true,
+                            timer: 5000,
+                            icon: 'warning',
+                        });
                 } else {
                     if (parseInt($fileUpload.get(0).files.length) > 5) {
                         Swal.fire({
@@ -1129,6 +1134,7 @@
                     else {
                         e.preventDefault();
                         $('#addPostModal').modal('hide');
+                        $('.addpost-submit-btn').prop("disabled", true)
                         let formData = new FormData(form);
 
                         const totalImages = $("#addPostInput")[0].files.length;
