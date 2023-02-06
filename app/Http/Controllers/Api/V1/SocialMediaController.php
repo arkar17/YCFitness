@@ -801,55 +801,56 @@ class SocialMediaController extends Controller
             $edit_post->media = json_encode($updateFilenames);
         } elseif ($input['caption'] == null) {
             $caption = null;
-            if ($input['addPostInput']) {
+            // if ($input['addPostInput']) {
 
-                $images = $input['addPostInput'];
+            //     $images = $input['addPostInput'];
 
-                $updateFilenames = $input['filenames'];
-                $newFilenames = $input['newFileNames'];
+            //     $updateFilenames = $input['filenames'];
+            //     $newFilenames = $input['newFileNames'];
 
-                foreach ($images as $index => $file) {
+            //     foreach ($images as $index => $file) {
 
-                    $tmp = base64_decode($file);
+            //         $tmp = base64_decode($file);
 
-                    $file_name = $newFilenames[$index];
-                    Storage::disk('public')->put(
-                        'public/post/' . $file_name,
-                        $tmp,'public'
-                    );
-                    //  $imgData[] = $tmp;
-                    //  $edit_post->media = json_encode($imgData);
-                }
-                $edit_post->media = json_encode($updateFilenames);
-            }
-        } elseif ($input['addPostInput'] == null && $input['caption'] == null) {
+            //         $file_name = $newFilenames[$index];
+            //         Storage::put(
+            //             'public/post/' . $file_name,
+            //             $tmp,'public'
+            //         );
+            //         //  $imgData[] = $tmp;
+            //         //  $edit_post->media = json_encode($imgData);
+            //     }
+            //     $edit_post->media = json_encode($updateFilenames);
+            // }
+        } 
+        elseif ($input['addPostInput'] == null && $input['caption'] == null) {
             $caption = $input['caption'];
             $updateFilenames = $input['filenames'];
             $edit_post->media = json_encode($updateFilenames);
         } else {
-            $caption = $input['caption'];
-            $images = $input['addPostInput'];
-            if ($input['addPostInput']) {
+            // $caption = $input['caption'];
+            // $images = $input['addPostInput'];
+            // if ($input['addPostInput']) {
 
-                $images = $input['addPostInput'];
+            //     $images = $input['addPostInput'];
 
-                $updateFilenames = $input['filenames'];
-                $newFilenames = $input['newFileNames'];
+            //     $updateFilenames = $input['filenames'];
+            //     $newFilenames = $input['newFileNames'];
 
-                foreach ($images as $index => $file) {
+            //     foreach ($images as $index => $file) {
 
-                    $tmp = base64_decode($file);
+            //         $tmp = base64_decode($file);
 
-                    $file_name = $newFilenames[$index];
-                    Storage::put(
-                        'public/post/' . $file_name,
-                        $tmp,'public'
-                    );
-                    //  $imgData[] = $tmp;
-                    //  $edit_post->media = json_encode($imgData);
-                }
-                $edit_post->media = json_encode($updateFilenames);
-            }
+            //         $file_name = $newFilenames[$index];
+            //         Storage::put(
+            //             'public/post/' . $file_name,
+            //             $tmp,'public'
+            //         );
+            //         //  $imgData[] = $tmp;
+            //         //  $edit_post->media = json_encode($imgData);
+            //     }
+            //     $edit_post->media = json_encode($updateFilenames);
+            // }
         }
         $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
 
