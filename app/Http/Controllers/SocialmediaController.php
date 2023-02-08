@@ -1249,7 +1249,31 @@ class SocialmediaController extends Controller
                         else{
                                 $post['roles'] = null;
                             }
-                        }  
+                        }
+                        
+                        $post = Post::find($id);
+                        if($post->media==null){
+                            $imageData=null;
+                        }else{
+                            $images=json_decode($post->media);
+                            $imageData=new stdClass();
+                            foreach($images as $key=>$value){
+                                     for($i=0;$i<count($images);$i++){
+                                        $file = Storage::size('https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/').$value;
+                                        $img_size= 
+                                        Storage::size($file);
+                                        dd($img_size);
+                                        // $obj['size']=$img_size;
+                                        // $obj['name']=$images[$i];
+                                        $imageData->$key['size']=$img_size;
+                                        $imageData->$key['name']=$value;
+                                        }
+                
+                
+                                    }
+                            $imageData=(array)$imageData;
+                        }
+                        dd($imageData);
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 
