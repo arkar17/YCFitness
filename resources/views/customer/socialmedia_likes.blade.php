@@ -75,7 +75,7 @@
                             </div>
                         </a>
                     @else
-                    <div class="post-action">
+                    <div class="post-action" id="report" data-id="{{$post->id}}">
                         <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                         <p>Report</p>
                     </div>

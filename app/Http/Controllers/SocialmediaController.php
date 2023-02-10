@@ -24,6 +24,7 @@ use App\Models\NotiFriends;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Events\MessageDelete;
+use App\Models\BlockList;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use App\Models\ChatGroupMember;
@@ -678,9 +679,24 @@ class SocialmediaController extends Controller
     public function friendsList(Request $request)
     {
         //dd($request->user_id);
-        $id = $request->id;
+        // $id = $request->id;
+        $id = auth()->user()->id;
         $user = User::select('id', 'name')->where('id', $id)->first();
-
+        $user_id = Auth::user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $blockList = User::select('users.id', 'users.name', 'profiles.profile_image')
+        ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+        ->where('users.id', '!=', $id)
+        ->whereIn('users.id', $b)
+        ->where('users.id', '!=', $id)
+        
+        ->get();
+        // dd($blockList);
         return view('customer.friendlist', compact('user'));
     }
     public function friList(Request $request)
@@ -897,6 +913,16 @@ class SocialmediaController extends Controller
 
         $pusher->trigger('friend_request.' . $request->id, 'App\\Events\\Friend_Request', $data);
         return redirect()->back();
+    }
+
+    public function blockUser(Request $request){
+        $block = new BlockList();
+        $block->sender_id =  Auth::user()->id;
+        $block->receiver_id = $request->id;
+        $block->date = Carbon::Now()->toDateTimeString();
+        $block->save();
+        Alert::success('Success', 'Blcoked!');
+        return redirect()->route('home');
     }
 
     public function cancelRequest(Request $request)
@@ -1251,29 +1277,7 @@ class SocialmediaController extends Controller
                             }
                         }
                         
-                        $post = Post::find($id);
-                        if($post->media==null){
-                            $imageData=null;
-                        }else{
-                            $images=json_decode($post->media);
-                            $imageData=new stdClass();
-                            foreach($images as $key=>$value){
-                                     for($i=0;$i<count($images);$i++){
-                                        $file = Storage::size('https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/').$value;
-                                        $img_size= 
-                                        Storage::size($file);
-                                        dd($img_size);
-                                        // $obj['size']=$img_size;
-                                        // $obj['name']=$images[$i];
-                                        $imageData->$key['size']=$img_size;
-                                        $imageData->$key['name']=$value;
-                                        }
-                
-                
-                                    }
-                            $imageData=(array)$imageData;
-                        }
-                        dd($imageData);
+ 
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }
 
@@ -1419,7 +1423,9 @@ class SocialmediaController extends Controller
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->leftJoin('posts', 'posts.id', 'comments.post_id')
-            ->where('post_id', $id)->orderBy('created_at', 'DESC')->get();
+            ->where('post_id', $id)
+            ->where('report_status','!=' ,1)
+            ->orderBy('created_at', 'DESC')->get();
         foreach ($comments as $key => $comm1) {
             $date = $comm1['created_at'];
             $comments[$key]['date'] = $date->toDayDateTimeString();
@@ -1757,16 +1763,25 @@ class SocialmediaController extends Controller
 
     public function post_report(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $user_id = $request->user_id;
         $post_id = $request->post_id;
+        $comment_id = $request->comment_id;
         $admin_id = 1;
         $description = $request->report_msg;
-        $report = new Report();
-        $report->user_id = $user_id;
-        $report->post_id = $post_id;
-        $report->description = $description;
-        $report->save();
+        
+            $report = new Report();
+            $report->user_id = $user_id;
+            if($post_id != null && $comment_id == null){
+                $report->post_id = $post_id;
+            }
+            if($post_id == null && $comment_id != null){
+                $report->comment_id = $comment_id;
+            }
+            $report->description = $description;
+            $report->save();
+        
+        
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -1780,8 +1795,8 @@ class SocialmediaController extends Controller
             $options
         );
 
-        $data = 'Thanks for your report,we will check this post.';
-        $new_data = 'Post is Reported';
+        $data = 'Thanks for your report,we will check.';
+        $new_data = 'Reported';
 
         $user_rp = new Notification();
         $user_rp->description = $data;

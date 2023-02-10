@@ -7,6 +7,7 @@ use Pusher\Pusher;
 use App\Models\Post;
 use App\Models\Action;
 use App\Models\Report;
+use App\Models\Comment;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\New_;
@@ -113,22 +114,34 @@ class ReportController extends Controller
     public function accept_report($report_id)
     {
         $report=Report::findOrFail($report_id);
-
-        $post=Post::findOrFail($report->post_id);
-        $post_id=$post->id;
-        $post_owner=$post->user_id;
-        $admin_id=  auth()->user()->id;
-        $rp_posts=Report::where('post_id',$post_id)->get();
-
-        foreach($rp_posts as $rp_post){
-            $rp_post->action_message='delete post';
-            $rp_post->status=1;
-            $rp_post->update();
+        if($report->post_id != null){
+            $post=Post::findOrFail($report->post_id);
+            $post_id=$post->id;
+            $post_owner=$post->user_id;
+            $admin_id=  auth()->user()->id;
+            $rp_posts=Report::where('post_id',$post_id)->get();
+            foreach($rp_posts as $rp_post){
+                $rp_post->action_message='delete post';
+                $rp_post->status=1;
+                $rp_post->update();
         }
-
         $post->report_status=1;
         $post->update();
-
+        }
+       elseif($report->comment_id != null){
+         $comment=Comment::findOrFail($report->comment_id);
+         $comment_id=$comment->id;
+         $comment_owner=$comment->user_id;
+         $admin_id=  auth()->user()->id;
+            $rp_posts=Report::where('comment_id',$comment_id)->get();
+            foreach($rp_posts as $rp_post){
+                $rp_post->action_message='delete post';
+                $rp_post->status=1;
+                $rp_post->update();
+        }
+        $comment->report_status=1;
+        $comment->update();
+       }
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -140,9 +153,9 @@ class ReportController extends Controller
             $options
             );
 
-                $data = 'Your Post is Removed';
+                $data = 'Removed';
 
-                $description='Your Post Goes Against Our Community And Guidelines';
+                $description='Against Our Community And Guidelines';
                 $post_rp = new Notification();
                 $post_rp->description = $description;
                 $post_rp->date = Carbon::Now()->toDateTimeString();
@@ -156,7 +169,7 @@ class ReportController extends Controller
                 $pusher->trigger('friend_request.'.$post_owner , 'friendRequest', $data);
 
         return response()->json([
-            'success' => 'Reported Post is deleted',
+            'success' => 'Deleted',
         ]);
     }
 

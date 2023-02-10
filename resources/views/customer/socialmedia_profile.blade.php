@@ -113,6 +113,7 @@
                 <div class="social-media-profile-content-container">
 
                     <div id = "addFriclass" class="social-media-profile-btns-container">
+                       
                         @if (count($friend) < 1)
                         <a href ="?id={{$user->id}}" class="customer-primary-btn add-friend-btn" id = "Add">
                             <iconify-icon icon="akar-icons:circle-plus" class="add-friend-icon"></iconify-icon>
@@ -155,7 +156,10 @@
                     @endif
                     @endforeach
                     @endif
-
+                    <a href="{{route('block',$user->id)}}" class="customer-red-btn add-friend-btn">
+                        <iconify-icon icon="mdi:block-helper"  class=""></iconify-icon>
+                        <p>Block</p>
+                    </a>
                     </div>
                     <div class="social-media-profile-username-container">
                         <span class="social-media-profile-username">{{$user->name}}</span><br>
@@ -415,152 +419,152 @@
 <script>
     $(document).ready(function() {
 
-        $('#other_msg').hide();
-        $('#report_submit').attr("class",'btn btn-primary disabled')
-        console.log($("input[name='report_msg']:checked").val());
+        // $('#other_msg').hide();
+        // $('#report_submit').attr("class",'btn btn-primary disabled')
+        // console.log($("input[name='report_msg']:checked").val());
 
-        $('input[name="report_msg"]').on('click', function() {
-                if ($(this).val() == 'other') {
-                    $('#other_msg').show();
-                    $('#other_msg').keydown(function() {
-                        if(!$('#other_msg').val()){
-                            $('#report_submit').attr("class",'btn btn-primary disabled')
-                        }else{
-                            $('#report_submit').attr("class",'btn btn-primary')
-                        }
-                    })
+        // $('input[name="report_msg"]').on('click', function() {
+        //         if ($(this).val() == 'other') {
+        //             $('#other_msg').show();
+        //             $('#other_msg').keydown(function() {
+        //                 if(!$('#other_msg').val()){
+        //                     $('#report_submit').attr("class",'btn btn-primary disabled')
+        //                 }else{
+        //                     $('#report_submit').attr("class",'btn btn-primary')
+        //                 }
+        //             })
 
-                }else if ($(this).val() == 'nudity'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('');
-                    $('#report_submit').attr("class",'btn btn-primary')
+        //         }else if ($(this).val() == 'nudity'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('');
+        //             $('#report_submit').attr("class",'btn btn-primary')
 
-                }else if ($(this).val() == 'violence'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('')
-                    $('#report_submit').attr("class",'btn btn-primary')
-                }else if ($(this).val() == 'harassment'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('')
-                    $('#report_submit').attr("class",'btn btn-primary')
-                }else if ($(this).val() == 'suicide or self-injury'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('')
-                    $('#report_submit').attr("class",'btn btn-primary')
-                }else if ($(this).val() == 'false information'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('');
-                    $('#report_submit').attr("class",'btn btn-primary')
-                }else if ($(this).val() == 'spam'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('')
-                    $('#report_submit').attr("class",'btn btn-primary')
-                }else if ($(this).val() == 'hate speech'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('')
-                    $('#report_submit').attr("class",'btn btn-primary')
-                }else if ($(this).val() == 'terrorism'){
-                    $('#other_msg').hide();
-                    $('#other_msg').val('')
-                    $('#report_submit').attr("class",'btn btn-primary')
-                }
-        });
+        //         }else if ($(this).val() == 'violence'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('')
+        //             $('#report_submit').attr("class",'btn btn-primary')
+        //         }else if ($(this).val() == 'harassment'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('')
+        //             $('#report_submit').attr("class",'btn btn-primary')
+        //         }else if ($(this).val() == 'suicide or self-injury'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('')
+        //             $('#report_submit').attr("class",'btn btn-primary')
+        //         }else if ($(this).val() == 'false information'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('');
+        //             $('#report_submit').attr("class",'btn btn-primary')
+        //         }else if ($(this).val() == 'spam'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('')
+        //             $('#report_submit').attr("class",'btn btn-primary')
+        //         }else if ($(this).val() == 'hate speech'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('')
+        //             $('#report_submit').attr("class",'btn btn-primary')
+        //         }else if ($(this).val() == 'terrorism'){
+        //             $('#other_msg').hide();
+        //             $('#other_msg').val('')
+        //             $('#report_submit').attr("class",'btn btn-primary')
+        //         }
+        // });
 
-        $('.post_save').click(function(e){
-            $('.social-media-post-header-icon').next().toggle()
-            e.preventDefault();
-            var post_id=$(this).attr('id');
-            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
-            add_url = add_url.replace(':post_id', post_id);
-                    $.ajax({
-                        method: "GET",
-                        url: add_url,
-                        data:{
-                                post_id : post_id
-                            },
-                            success: function(data) {
-                                // window.location.reload();
-                                if(data.save){
-                                    Swal.fire({
-                                        text: data.save,
-                                        timerProgressBar: true,
-                                        timer: 5000,
-                                        icon: 'success',
-                                    }).then((result) => {
-                                        e.target.querySelector(".save").innerHTML = `Unsave`;
-                                    })
-                                }else{
-                                    Swal.fire({
-                                            text: data.unsave,
-                                            timerProgressBar: true,
-                                            timer: 5000,
-                                            icon: 'success',
-                                        }).then((result) => {
-                                            e.target.querySelector(".save").innerHTML = `Save`;
+        // $('.post_save').click(function(e){
+        //     $('.social-media-post-header-icon').next().toggle()
+        //     e.preventDefault();
+        //     var post_id=$(this).attr('id');
+        //     var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+        //     add_url = add_url.replace(':post_id', post_id);
+        //             $.ajax({
+        //                 method: "GET",
+        //                 url: add_url,
+        //                 data:{
+        //                         post_id : post_id
+        //                     },
+        //                     success: function(data) {
+        //                         // window.location.reload();
+        //                         if(data.save){
+        //                             Swal.fire({
+        //                                 text: data.save,
+        //                                 timerProgressBar: true,
+        //                                 timer: 5000,
+        //                                 icon: 'success',
+        //                             }).then((result) => {
+        //                                 e.target.querySelector(".save").innerHTML = `Unsave`;
+        //                             })
+        //                         }else{
+        //                             Swal.fire({
+        //                                     text: data.unsave,
+        //                                     timerProgressBar: true,
+        //                                     timer: 5000,
+        //                                     icon: 'success',
+        //                                 }).then((result) => {
+        //                                     e.target.querySelector(".save").innerHTML = `Save`;
 
-                                    })
-                                }
+        //                             })
+        //                         }
 
-                            }
-                    })
+        //                     }
+        //             })
 
 
-        })
+        // })
 
-        $(document).on('click', '#report', function(e){
-            var post_id=$(this).data('id')
-            $('#post_id').val(post_id)
-            $('input[name="report_msg"]').prop('checked', false);
-            $('#other_msg').hide();
-            $('#other_msg').val('');
-            $('#report_submit').attr("class",'btn btn-primary disabled')
-            $('#reportmodal').modal('show');
+        // $(document).on('click', '#report', function(e){
+        //     var post_id=$(this).data('id')
+        //     $('#post_id').val(post_id)
+        //     $('input[name="report_msg"]').prop('checked', false);
+        //     $('#other_msg').hide();
+        //     $('#other_msg').val('');
+        //     $('#report_submit').attr("class",'btn btn-primary disabled')
+        //     $('#reportmodal').modal('show');
 
-        })
+        // })
 
-        $(document).on('submit','#report_form',function(e){
-            e.preventDefault()
-            $('#reportmodal').modal('hide');
-            var report_msg
-            var post_id=$('#post_id').val();
-            $('#post_id').val('')
-            var user_id={{auth()->user()->id}}
+        // $(document).on('submit','#report_form',function(e){
+        //     e.preventDefault()
+        //     $('#reportmodal').modal('hide');
+        //     var report_msg
+        //     var post_id=$('#post_id').val();
+        //     $('#post_id').val('')
+        //     var user_id={{auth()->user()->id}}
 
-            if($('input[name="report_msg"]:checked').val()=='other'){
-                report_msg=$("#other_msg").val();
+        //     if($('input[name="report_msg"]:checked').val()=='other'){
+        //         report_msg=$("#other_msg").val();
 
-            } else{
-                 report_msg=$("input[name='report_msg']:checked").val();
-            }
+        //     } else{
+        //          report_msg=$("input[name='report_msg']:checked").val();
+        //     }
 
-            var add_url = "{{ route('socialmedia.report')}}";
-            $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                    $.ajax({
-                        method: "POST",
-                        url: add_url,
-                        data:{ post_id : post_id , user_id:user_id ,report_msg:report_msg},
-                        success:function(data){
-                            if(data.success){
-                                Swal.fire({
-                                        text: data.success,
-                                        timerProgressBar: true,
-                                        timer: 3000,
-                                        icon: 'success',
-                                    }).then((result) => {
-                                        $('input[name="report_msg"]').prop('checked', false);
-                                        $('#reportmodal').modal('hide');
-                                        $('#other_msg').hide();
-                                        $('#other_msg').val('');
-                                    })
-                            }
-                        }
-                    })
+        //     var add_url = "{{ route('socialmedia.report')}}";
+        //     $.ajaxSetup({
+        //                     headers: {
+        //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                     }
+        //                 });
+        //             $.ajax({
+        //                 method: "POST",
+        //                 url: add_url,
+        //                 data:{ post_id : post_id , user_id:user_id ,report_msg:report_msg},
+        //                 success:function(data){
+        //                     if(data.success){
+        //                         Swal.fire({
+        //                                 text: data.success,
+        //                                 timerProgressBar: true,
+        //                                 timer: 3000,
+        //                                 icon: 'success',
+        //                             }).then((result) => {
+        //                                 $('input[name="report_msg"]').prop('checked', false);
+        //                                 $('#reportmodal').modal('hide');
+        //                                 $('#other_msg').hide();
+        //                                 $('#other_msg').val('');
+        //                             })
+        //                     }
+        //                 }
+        //             })
 
-        })
+        // })
 
         $('.like').click(function(e){
             e.preventDefault();

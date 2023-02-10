@@ -183,8 +183,8 @@
 </head>
 
 <body class="customer-loggedin-bg">
-    <!-- <div class="customer-registeration-bgimg"> -->
 
+  
     <script>
         const theme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', theme);
@@ -196,7 +196,76 @@
 
     <script src="{{ asset('js/theme.js') }}"></script>
     <script src="{{ asset('js/aos.js') }}"></script>
+<!-- Report Modal -->
+<div class="modal fade " id="reportmodal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportLabel">{{__('msg.report')}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <h6 class="text-bold">Please select a problem</h6>
+                <form id="report_form" value="">
+                    <label class="form-label text-secondary" style="font-size:0.75em">Your report is anonymous,except if you're reporting an intellectual property infringement.</label>
+                    <input type="hidden" value="" id="post_id">
+                    <input type="hidden" value="" id="comment_id">
+                    <label class="report-option">
+                        <input type="radio" id="nudity" name="report_msg" value="nudity">
+                        <label for="nudity">Nudity</label>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" id="violence" name="report_msg" value="violence">
+                        <label for="violence">Violence</label>
+                    </label>
 
+                    <label class="report-option">
+                        <input type="radio" id="harassment" name="report_msg" value="harassment">
+                        <label for="harassment">Harassment</label>
+                    </label>
+
+                    <label class="report-option">
+                        <input type="radio" id="suicide" name="report_msg" value="suicide or self-injury">
+                        <label for="suicide">Suicide or self-injury</label>
+                    </label>
+
+                    <label class="report-option">
+                        <input type="radio" id="false" name="report_msg" value="false information">
+                        <label for="false">false information</label>
+                    </label>
+
+
+                    <label class="report-option">
+                        <input type="radio" id="spam" name="report_msg" value="spam">
+                        <label for="spam">Spam</label>
+                    </label>
+
+
+                    <label class="report-option">
+                        <input type="radio" id="Hate speech" name="report_msg" value="hate speech">
+                        <label for="Hate speech">Hate speech</label>
+                    </label>
+
+                    <label class="report-option">
+                        <input type="radio" id="terrorism" name="report_msg" value="terrorism">
+                        <label for="terrorism">Terrorism</label>
+                    </label>
+
+                    <label class="report-option">
+                        <input type="radio" id="other" name="report_msg" value="other">
+                        <label for="other">Other</label>
+                    </label>
+                    <textarea id="other_msg" name="other_report_msg"></textarea>
+
+                    <button type="submit" class="btn btn-primary disabled" id="report_submit">Submit</button>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+{{-- report modal end --}}
     {{-- For video call start --}}
     <div class="chat-backdrop"></div>
     <div id="incomingCallContainer">
@@ -206,6 +275,7 @@
     <div id="video-main-container">
 
     </div>
+
 
     {{-- For video call end --}}
 
@@ -497,7 +567,7 @@
         var channel = pusher.subscribe('friend_request.' + user_id);
         channel.bind('friendRequest', function(data) {
             console.log(data, "ted");
-            document.getElementById("testing").text = data
+            // document.getElementById("testing").text = data
             $.notify(data, "success", {
                 position: "left"
             });
@@ -610,36 +680,127 @@
             }
             $('.social-media-left-messages-rows-container').html(htmlView);
         }
-        // group_messages()
-        // function group_messages(){
-        //         // alert("send");
-        //         let htmlView = '';
-        //         var latest_messages=@json($chat_group);
-        //         console.log(latest_messages)
-        //         if (latest_messages.length <= 0) {
-        //             htmlView += `
-    //                 No Messages.
-    //                 `;
-        //         }
-        //         for (let i = 0; i < latest_messages.length; i++) {
-        //         var id =  latest_messages[i].id;
-
-        //         htmlView += `
-    //                             <a href=`+url+` class="social-media-left-gpmessages-row">
-    //                                     <img src="{{ asset('img/customer/imgs/group_default.png') }}" class="w-25">
-    //                                     <p>
-    //                                         ` + latest_messages[i].group_name + `<br>
-    //                                         <span>` + latest_messages[i].text + `</span>
-    //                                     </p>
-    //                                 </a>
-    //                     `
-
-        //     }
-        //     $('.social-media-left-gpmessages-rows-container').html(htmlView);
-        // }
-
-
         $(document).ready(function() {
+            //report start
+            $('#other_msg').hide();
+        $('#report_submit').attr("class",'btn btn-primary disabled')
+        console.log($("input[name='report_msg']:checked").val());
+
+        $('input[name="report_msg"]').on('click', function() {
+                if ($(this).val() == 'other') {
+                    $('#other_msg').show();
+                    $('#other_msg').keydown(function() {
+                        if(!$('#other_msg').val()){
+                            $('#report_submit').attr("class",'btn btn-primary disabled')
+                        }else{
+                            $('#report_submit').attr("class",'btn btn-primary')
+                        }
+                    })
+
+                }else if ($(this).val() == 'nudity'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('');
+                    $('#report_submit').attr("class",'btn btn-primary')
+
+                }else if ($(this).val() == 'violence'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'harassment'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'suicide or self-injury'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'false information'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('');
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'spam'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'hate speech'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }else if ($(this).val() == 'terrorism'){
+                    $('#other_msg').hide();
+                    $('#other_msg').val('')
+                    $('#report_submit').attr("class",'btn btn-primary')
+                }
+        });
+        $(document).on('click', '#report', function(e){
+            var post_id=$(this).data('id')
+            $('#post_id').val(post_id)
+            $('input[name="report_msg"]').prop('checked', false);
+            $('#other_msg').hide();
+            $('#other_msg').val('');
+            $('#report_submit').attr("class",'btn btn-primary disabled')
+            $('#reportmodal').modal('show');
+
+        })
+
+        $(document).on('click', '#comment_report', function(e){
+            var comment_id=$(this).data('id')
+            $('#comment_id').val(comment_id)
+            $('input[name="report_msg"]').prop('checked', false);
+            $('#other_msg').hide();
+            $('#other_msg').val('');
+            $('#report_submit').attr("class",'btn btn-primary disabled')
+            $('#reportmodal').modal('show');
+
+        })
+
+        $(document).on('submit','#report_form',function(e){
+            e.preventDefault()
+            $('#reportmodal').modal('hide');
+            var report_msg
+            var post_id=$('#post_id').val();
+            var comment_id=$('#comment_id').val();
+            $('#post_id').val('')
+            $('#comment_id').val('')
+            var user_id={{auth()->user()->id}}
+
+            if($('input[name="report_msg"]:checked').val()=='other'){
+                report_msg=$("#other_msg").val();
+
+            } else{
+                 report_msg=$("input[name='report_msg']:checked").val();
+            }
+
+            var add_url = "{{ route('socialmedia.report')}}";
+            $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    $.ajax({
+                        method: "POST",
+                        url: add_url,
+                        data:{ post_id : post_id ,comment_id : comment_id, user_id:user_id ,report_msg:report_msg},
+                        success:function(data){
+                            if(data.success){
+                                Swal.fire({
+                                        text: data.success,
+                                        timerProgressBar: true,
+                                        timer: 3000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        $('input[name="report_msg"]').prop('checked', false);
+                                        $('#reportmodal').modal('hide');
+                                        $('#other_msg').hide();
+                                        $('#other_msg').val('');
+                                    })
+                            }
+                        }
+                    })
+
+        })
+
+            //report end
 
             //image slider start
             console.log($(".image-slider"))

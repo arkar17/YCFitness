@@ -1960,9 +1960,8 @@
 
                                 if(save_posts[i].profile_image===null){
                                     htmlView +=`<img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
-
                                 }else{
-                                    htmlView +=`<img class="nav-profile-img" src="{{asset('storage/post/`+save_posts[i].profile_image+`')}}"/>`
+                                    htmlView +=`<img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+save_posts[i].profile_image+`"/>`
                                 }
                                 htmlView +=`<div class="customer-post-name">
                                                         <p>`+save_posts[i].name+`</p>

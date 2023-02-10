@@ -19,6 +19,7 @@ class CreateReportsTable extends Migration
             $table->string('action_message')->nullable();
             $table->integer('status')->default(0);
             $table->integer('post_id');
+            $table->integer('comment_id');
             $table->integer('user_id');
             $table->timestamps();
         });

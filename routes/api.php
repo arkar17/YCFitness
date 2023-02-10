@@ -136,6 +136,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
 
+    Route::get('user/blocklist', [SocialmediaController::class, 'user_list']);
+    Route::post('user/block', [SocialmediaController::class, 'blockUser']);
+    Route::post('user/unblock', [SocialmediaController::class, 'unblockUser']);
 
 
     Route::get('notification', [SocialmediaController::class, 'notification']);
@@ -215,6 +218,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('socialmedia/call_accept',[SocialmediaController::class,'accept_call']);
 
     Route::get('user/list', [SocialmediaController::class, 'user_list']);
+   
     //shop
     Route::get('shop/status', [ShopController::class, 'shop_status']);
 

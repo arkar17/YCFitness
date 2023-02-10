@@ -17,6 +17,7 @@ class CreateCommentsTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('post_id')->nullable();
+            $table->integer('report_status')->default(0);
             $table->integer('ban_word_id');
             $table->text('comment')->nullable();
             $table->string('mentioned_users')->nullable();

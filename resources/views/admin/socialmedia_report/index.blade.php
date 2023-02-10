@@ -36,6 +36,7 @@
                     <tr>
                         <th>Report ID</th>
                         <th>Post ID</th>
+                        <th>Comment ID</th>
                         <th>Description</th>
                         <th>Reported Date</th>
                         <th>Report Count</th>
@@ -59,6 +60,7 @@
                     <tr>
                         <th>Report ID</th>
                         <th>Post ID</th>
+                        <th>Comment ID</th>
                         <th>Action Message</th>
                         <th>Report Description</th>
                         <th>Reported Date</th>
@@ -127,6 +129,10 @@
                     {
                         data: 'post_id',
                         name: 'post_id'
+                    },
+                    {
+                        data: 'comment_id',
+                        name: 'comment_id'
                     },
                     {
                         data: 'description',

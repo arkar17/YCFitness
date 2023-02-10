@@ -11,6 +11,7 @@ use App\Models\Report;
 use App\Models\Comment;
 use App\Models\Profile;
 use App\Events\Chatting;
+use App\Models\BlockList;
 use App\Models\ChatGroup;
 use App\Models\Friendship;
 use App\Models\Notification;
@@ -56,6 +57,7 @@ class SocialMediaController extends Controller
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->whereIn('posts.user_id', $n)
                 ->where('posts.shop_status',0)
+                ->where('report_status','!=' ,1)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')
@@ -68,7 +70,7 @@ class SocialMediaController extends Controller
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where report_status = 0 GROUP BY post_id");
 
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -128,6 +130,7 @@ class SocialMediaController extends Controller
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->where('posts.user_id', $user->id)
                 ->where('posts.shop_status', 0)
+                ->where('report_status','!=' ,1)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')
@@ -142,7 +145,7 @@ class SocialMediaController extends Controller
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where report_status = 0 GROUP BY post_id");
 
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -986,7 +989,7 @@ class SocialMediaController extends Controller
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
 
-            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id and comment_id = 0");
 
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -1024,7 +1027,7 @@ class SocialMediaController extends Controller
                 }
 
                 foreach($roles as $r){
-                    if($r->model_id == $value->user_id){
+                    if($r->model_id == $post->user_id){
                         $post['roles'] = $r->name;
                         break;
                   }
@@ -1103,7 +1106,7 @@ class SocialMediaController extends Controller
                 }
                 if(!empty($roles)){
                     foreach($roles as $r){
-                        if($r->model_id == $value->user_id){
+                        if($r->model_id == $post->user_id){
                             $post['roles'] = $r->name;
                             break;
                        }
@@ -1131,6 +1134,7 @@ class SocialMediaController extends Controller
             ->where('user_saved_posts.user_id', auth()->user()->id)
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('posts.report_status','!=' ,1)
             ->orderBy('posts.created_at', 'DESC')
             ->get();
 
@@ -1139,7 +1143,7 @@ class SocialMediaController extends Controller
 
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where report_status = 0 GROUP BY post_id");
 
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
         left join roles on model_has_roles.role_id = roles.id");
@@ -1215,7 +1219,7 @@ class SocialMediaController extends Controller
 
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
 
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments  WHERE post_id = $id and report_status = 0");
         // dd($comment_post_count);
         // dd($liked_post);
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
@@ -2233,7 +2237,9 @@ class SocialMediaController extends Controller
         $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->where('comments.post_id', $id)->orderBy('comments.created_at', 'DESC')->get();
+            ->where('comments.post_id', $id)
+            ->where('report_status','!=' ,1)
+            ->orderBy('comments.created_at', 'DESC')->get();
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
         foreach($comments as $key=>$value){
@@ -2855,16 +2861,24 @@ class SocialMediaController extends Controller
 
     public function post_report(Request $request)
     {
-        //dd($request->all());
-        $user_id = auth()->user()->id;
+        $user_id = $request->user_id;
         $post_id = $request->post_id;
+        $comment_id = $request->comment_id;
         $admin_id = 1;
         $description = $request->report_msg;
-        $report = new Report();
-        $report->user_id = $user_id;
-        $report->post_id = $post_id;
-        $report->description = $description;
-        $report->save();
+        
+            $report = new Report();
+            $report->user_id = $user_id;
+            if($post_id != null && $comment_id == null){
+                $report->post_id = $post_id;
+            }
+            if($post_id == null && $comment_id != null){
+                $report->comment_id = $comment_id;
+            }
+            $report->description = $description;
+            $report->save();
+        
+        
 
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
@@ -2878,8 +2892,8 @@ class SocialMediaController extends Controller
             $options
         );
 
-        $data = 'Thanks for your report,we will check this post.';
-        $new_data = 'Post is Reported';
+        $data = 'Thanks for your report,we will check.';
+        $new_data = 'Reported';
 
         $user_rp = new Notification();
         $user_rp->description = $data;
@@ -2887,7 +2901,7 @@ class SocialMediaController extends Controller
 
         $user_rp->sender_id = $admin_id;
         $user_rp->receiver_id =  auth()->user()->id;
-        $user_rp->notification_status = $admin_id;
+        $user_rp->notification_status = 1;
         $user_rp->report_id = $report->id;
         $user_rp->save();
 
@@ -2895,6 +2909,7 @@ class SocialMediaController extends Controller
         $admin_rp->description = $new_data;
         $admin_rp->date = Carbon::Now()->toDateTimeString();
         $admin_rp->sender_id = auth()->user()->id;
+        $admin_rp->notification_status = 1;
         $admin_rp->receiver_id = $admin_id;
         $admin_rp->report_id = $report->id;
         $admin_rp->save();
@@ -3029,4 +3044,48 @@ class SocialMediaController extends Controller
         $data['userFromCall'] = $request->user_from_call;
         broadcast(new DeclineCallUser($data))->toOthers();
     }
+    public function blcok_list(){
+        $id = auth()->user()->id;
+        $user = User::select('id', 'name')->where('id', $id)->first();
+        $user_id = Auth::user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $blockList = User::select('users.id', 'users.name', 'profiles.profile_image')
+        ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+        ->where('users.id', '!=', $id)
+        ->whereIn('users.id', $b)
+        ->where('users.id', '!=', $id)
+        ->get();
+        return response()->json([
+            'data' => $blockList
+        ]);
+    }
+
+    public function blockUser(Request $request){
+        $block = new BlockList();
+        $block->sender_id =  Auth::user()->id;
+        $block->receiver_id = $request->id;
+        $block->date = Carbon::Now()->toDateTimeString();
+        $block->save();
+        return response()->json([
+            'message' => 'blocked'
+        ]);
+    }
+
+    public function unblockUser(Request $request){
+        $unblock_delete_receiver = BlockList::where('sender_id', auth()->user()->id)
+            ->where('receiver_id', $request->id);
+        $unblock_delete_receiver->delete();
+        $unblock_delete_sender = BlockList::where('sender_id', $request->id)
+            ->where('receiver_id', auth()->user()->id);
+        $unblock_delete_sender->delete();
+        return response()->json([
+            'message' => 'unblocked'
+        ]);
+    }
+
 }

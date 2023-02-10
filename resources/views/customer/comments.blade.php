@@ -104,7 +104,7 @@
                             </div>
                         </a>
                     @else
-                    <div class="post-action">
+                    <div class="post-action" id="report" data-id="{{$post->id}}">
                         <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                         <p>Report</p>
                     </div>
@@ -187,7 +187,7 @@
                 <div class="social-media-post-like-container">
                     @php
                         $total_likes=$post->user_reacted_posts->count();
-                        $total_comments=$post->comments->count();
+                        $total_comments=$post->comments->where('report_status',0)->count();
                         $user=auth()->user();
                         $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
                     @endphp
@@ -731,6 +731,11 @@
                                                             <p>Delete</p>
                                                         </div>
                                                         </a>
+
+                                                        <div class="comment-action" id="comment_report" data-id=`+res.comment[i].id+`>
+                                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                                                        <p>Report</p>
+                                                        </div>
                                                     </div>`
                                             }else if(auth_id==comment_user){
                                                 htmlView+=`
@@ -747,7 +752,16 @@
                                                         </div>
                                                         </a>
                                                     </div>`
-                                            }else{}
+                                            }else{
+                                                htmlView+=`
+                                                <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>
+                                                        <div class="comment-actions-container" >
+                                                        <div class="comment-action" id="comment_report" data-id=`+res.comment[i].id+`>
+                                                        <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
+                                                        <p>Report</p>
+                                                        </div>
+                                                        </div>`
+                                            }
                                         htmlView+=`
                                                 </div>
                                                     <p>`+res.comment[i].Replace+`</p>

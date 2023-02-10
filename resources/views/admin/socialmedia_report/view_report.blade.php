@@ -9,67 +9,41 @@
             <div class="social-media-post-container">
                 <div class="social-media-post-header">
                     <div class="social-media-post-name-container">
+                        @if($report->post_id != null)
                         <a href="{{route('socialmedia.profile',$report->post->user_id)}}" style="text-decoration:none">
                             <?php $profile=$report->post->user->profiles->first();
                                 $profile_id=$report->post->user->profile_id;
                                  $img=$report->post->user->profiles->where('id',$profile_id)->first();
                             ?>
+                        @elseif($report->comment_id != null)
+                        <a href="{{route('socialmedia.profile',$report->comment->user_id)}}" style="text-decoration:none">
+                            <?php $profile=$report->comment->user->profiles->first();
+                                $profile_id=$report->comment->user->profile_id;
+                                 $img=$report->comment->user->profiles->where('id',$profile_id)->first();
+                            ?>
+                        @endif
                             @if ($img==null)
                                 <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                             @else
-                                <img class="nav-profile-img" src="{{asset('storage/post/'.$img->profile_image)}}"/>
+                                <img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$img->profile_image}}"/>
                             @endif
                         </a>
                         <div class="social-media-post-name">
+                            @if($report->post_id != null)
                             <a href="{{route('socialmedia.profile',$report->post->user_id)}}" style="text-decoration:none">
                                 <p>{{$report->post->user->name}}</p>
                             </a>
                             <span>{{ \Carbon\Carbon::parse($report->post->created_at)->format('d M Y , g:i A')}}</span>
-
+                            @elseif ($report->comment_id != null)
+                            <a href="{{route('socialmedia.profile',$report->comment->user_id)}}" style="text-decoration:none">
+                                <p>{{$report->comment->user->name}}</p>
+                            </a>
+                            @endif
                             <div style="margin-left: 300px">
                                 <button class="btn btn-primary" id="accept" data-id="{{$report->id}}"><i class="fa fa-check" ></i>&nbsp;&nbsp;Accept</button>
                                 <button class="btn btn-secondary" id="decline" data-id="{{$report->id}}"><i class="fa fa-times"></i>&nbsp;&nbsp;Decline</button>
                             </div>
                         </div>
-                    </div>
-
-                    {{-- <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon> --}}
-
-                    <div class="post-actions-container">
-                        <a href="#" style="text-decoration:none" class="post_save" id="{{$report->post->id}}">
-                            <div class="post-action">
-                                <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                                @php
-                                    $already_save=auth()->user()->user_saved_posts->where('post_id',$report->post->id)->first();
-                                @endphp
-
-                                @if ($already_save)
-                                    <p class="save">Unsave</p>
-                                @else
-                                    <p class="save">Save</p>
-                                    @endif
-                            </div>
-                        </a>
-                        @if ($report->post->user->id == auth()->user()->id)
-
-                            <a id="edit_post" data-id="{{$report->post->id}}" data-bs-toggle="modal" >
-                                <div class="post-action">
-                                    <iconify-icon icon="material-symbols:edit" class="post-action-icon"></iconify-icon>
-                                    <p>Edit</p>
-                                </div>
-                            </a>
-                            <a id="delete_post" data-id="{{$report->post->id}}">
-                                <div class="post-action">
-                                <iconify-icon icon="material-symbols:delete-forever-outline-rounded" class="post-action-icon"></iconify-icon>
-                                <p>Delete</p>
-                                </div>
-                            </a>
-                        @else
-                        <div class="post-action" id="report" data-id="{{$report->post->id}}">
-                            <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
-                            <p>Report</p>
-                        </div>
-                        @endif
                     </div>
                 </div>
                 <div class="social-media-content-container">
@@ -79,6 +53,7 @@
                             &nbsp;&nbsp;{{$report->description}}
                         </div>
                       </div>
+                    @if($report->post_id != null)
                     @if ($report->post->media==null)
                     <p>{{$report->post->caption}}</p>
                     @else
@@ -181,6 +156,10 @@
                         </a>
                     </div>
                 </div>
+                @elseif ($report->comment_id != null )
+                <h6 class="h6">Reported Comment</h6>
+                <p>{{$report->comment->comment}}</p>
+                @endif
             </div>
         </div>
     </div>
