@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 13, 2023 at 01:57 PM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 8.0.13
+-- Generation Time: Feb 10, 2023 at 09:12 AM
+-- Server version: 10.4.27-MariaDB
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `fitness3`
+-- Database: `ycfitness`
 --
 
 -- --------------------------------------------------------
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `actions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `action` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action` text DEFAULT NULL,
   `report_id` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -43,12 +43,12 @@ CREATE TABLE `actions` (
 
 CREATE TABLE `banking_infos` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `payment_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payment_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bank_account_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bank_account_holder` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `account_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payment_type` varchar(255) NOT NULL,
+  `payment_name` varchar(255) DEFAULT NULL,
+  `bank_account_number` varchar(255) DEFAULT NULL,
+  `bank_account_holder` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `account_name` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -61,9 +61,24 @@ CREATE TABLE `banking_infos` (
 
 CREATE TABLE `ban_words` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `ban_word_english` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ban_word_myanmar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ban_word_myanglish` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ban_word_english` varchar(255) NOT NULL,
+  `ban_word_myanmar` varchar(255) NOT NULL,
+  `ban_word_myanglish` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `block_lists`
+--
+
+CREATE TABLE `block_lists` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `date` datetime NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -80,8 +95,8 @@ CREATE TABLE `chats` (
   `to_user_id` int(11) NOT NULL,
   `delete_status` int(11) NOT NULL DEFAULT 0,
   `deleted_by` int(11) NOT NULL DEFAULT 0,
-  `text` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `media` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `text` longtext DEFAULT NULL,
+  `media` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -94,7 +109,7 @@ CREATE TABLE `chats` (
 
 CREATE TABLE `chat_groups` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `group_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `group_name` varchar(255) NOT NULL,
   `group_owner_id` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -124,8 +139,8 @@ CREATE TABLE `chat_group_messages` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `group_id` int(11) NOT NULL,
   `sender_id` int(11) NOT NULL,
-  `text` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `media` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `text` longtext DEFAULT NULL,
+  `media` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -140,10 +155,11 @@ CREATE TABLE `comments` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) DEFAULT NULL,
+  `report_status` int(11) NOT NULL DEFAULT 0,
   `ban_word_id` int(11) NOT NULL,
-  `comment` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `mentioned_users` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment` text DEFAULT NULL,
+  `mentioned_users` varchar(255) DEFAULT NULL,
+  `image` varchar(255) NOT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -157,11 +173,11 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `failed_jobs` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -204,12 +220,12 @@ CREATE TABLE `friendships` (
 
 CREATE TABLE `meals` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
   `calories` double(8,2) NOT NULL DEFAULT 0.00,
   `protein` double(8,2) NOT NULL DEFAULT 0.00,
   `carbohydrates` double(8,2) NOT NULL DEFAULT 0.00,
   `fat` double(8,2) NOT NULL DEFAULT 0.00,
-  `meal_plan_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meal_plan_type` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -222,8 +238,8 @@ CREATE TABLE `meals` (
 
 CREATE TABLE `meal_plans` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `member_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `plan_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `member_type` varchar(255) NOT NULL,
+  `plan_name` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -236,11 +252,11 @@ CREATE TABLE `meal_plans` (
 
 CREATE TABLE `members` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `member_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `duration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `member_type` varchar(255) NOT NULL,
+  `duration` varchar(255) NOT NULL DEFAULT '0',
   `price` int(11) NOT NULL DEFAULT 0,
-  `pros` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cons` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pros` text DEFAULT NULL,
+  `cons` text DEFAULT NULL,
   `role_id` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -251,18 +267,18 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `member_type`, `duration`, `price`, `pros`, `cons`, `role_id`, `created_at`, `updated_at`) VALUES
-(1, 'Platinum', '1', 5000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(2, 'Gold', '1', 20000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(3, 'Diamond', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(4, 'Ruby', '1', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(5, 'Ruby Premium', '1', 200000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(6, 'Gym Member', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(7, 'Platinum', '3', 12000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(8, 'Gold', '3', 50000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(9, 'Diamond', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(10, 'Ruby', '3', 250000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(11, 'Ruby Premium', '3', 500000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(12, 'Gym Member', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2023-01-13 12:46:34', '2023-01-13 12:46:34');
+(1, 'Platinum', '1', 5000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(2, 'Gold', '1', 20000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(3, 'Diamond', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(4, 'Ruby', '1', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(5, 'Ruby Premium', '1', 200000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(6, 'Gym Member', '1', 40000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(7, 'Platinum', '3', 12000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 4, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(8, 'Gold', '3', 50000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 5, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(9, 'Diamond', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 6, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(10, 'Ruby', '3', 250000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 7, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(11, 'Ruby Premium', '3', 500000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 8, '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(12, 'Gym Member', '3', 100000, 'adipisicing elit, Dolore fugit hic,ullam cumque', 'sequi est, quod', 10, '2023-02-10 08:10:27', '2023-02-10 08:10:27');
 
 -- --------------------------------------------------------
 
@@ -276,7 +292,7 @@ CREATE TABLE `member_histories` (
   `member_id` bigint(20) UNSIGNED NOT NULL,
   `from_member_id` int(11) DEFAULT NULL,
   `to_member_id` int(11) DEFAULT NULL,
-  `member_type_level` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `member_type_level` varchar(255) NOT NULL,
   `date` date NOT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -292,8 +308,8 @@ CREATE TABLE `member_histories` (
 CREATE TABLE `messages` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `training_group_id` int(11) NOT NULL,
-  `text` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `media` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `text` longtext DEFAULT NULL,
+  `media` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -306,7 +322,7 @@ CREATE TABLE `messages` (
 
 CREATE TABLE `migrations` (
   `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -361,7 +377,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (44, '2022_12_20_101102_create_shop_posts_table', 1),
 (45, '2022_12_20_150038_create_user_saved_shopposts_table', 1),
 (46, '2022_12_21_091126_create_user_react_shopposts_table', 1),
-(47, '2022_12_27_094248_create_shop_ratings_table', 1);
+(47, '2022_12_27_094248_create_shop_ratings_table', 1),
+(48, '2023_02_10_104720_create_block_lists_table', 1);
 
 -- --------------------------------------------------------
 
@@ -371,7 +388,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 
 CREATE TABLE `model_has_permissions` (
   `permission_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -383,7 +400,7 @@ CREATE TABLE `model_has_permissions` (
 
 CREATE TABLE `model_has_roles` (
   `role_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -405,7 +422,7 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 
 CREATE TABLE `notifications` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) NOT NULL,
   `date` datetime NOT NULL,
   `sender_id` int(11) NOT NULL,
   `receiver_id` int(11) NOT NULL,
@@ -424,8 +441,8 @@ CREATE TABLE `notifications` (
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -438,14 +455,14 @@ CREATE TABLE `password_resets` (
 CREATE TABLE `payments` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
-  `payment_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bank_account_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bank_account_holder` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `account_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `payment_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payment_type` varchar(255) NOT NULL,
+  `bank_account_number` varchar(255) DEFAULT NULL,
+  `bank_account_holder` varchar(255) DEFAULT NULL,
+  `account_name` varchar(255) DEFAULT NULL,
+  `payment_name` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
   `amount` bigint(20) NOT NULL DEFAULT 0,
-  `photo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -458,8 +475,8 @@ CREATE TABLE `payments` (
 
 CREATE TABLE `permissions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `guard_name` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -472,11 +489,11 @@ CREATE TABLE `permissions` (
 
 CREATE TABLE `personal_access_tokens` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_type` varchar(255) NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `abilities` text DEFAULT NULL,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -537,8 +554,8 @@ CREATE TABLE `personal_work_out_infos` (
 CREATE TABLE `posts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
-  `caption` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `media` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `caption` mediumtext DEFAULT NULL,
+  `media` longtext DEFAULT NULL,
   `favourite_status` tinyint(1) NOT NULL,
   `viewers` int(11) NOT NULL DEFAULT 0,
   `report_status` int(11) NOT NULL DEFAULT 0,
@@ -557,8 +574,8 @@ CREATE TABLE `posts` (
 CREATE TABLE `profiles` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `profile_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cover_photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `profile_image` varchar(255) DEFAULT NULL,
+  `cover_photo` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -587,10 +604,11 @@ CREATE TABLE `reacts` (
 
 CREATE TABLE `reports` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `action_message` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `action_message` varchar(255) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT 0,
   `post_id` int(11) NOT NULL,
+  `comment_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -604,8 +622,8 @@ CREATE TABLE `reports` (
 
 CREATE TABLE `roles` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `guard_name` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -615,16 +633,16 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-(1, 'King', 'web', '2023-01-13 12:46:33', '2023-01-13 12:46:33'),
-(2, 'Queen', 'web', '2023-01-13 12:46:33', '2023-01-13 12:46:33'),
-(3, 'System_Admin', 'web', '2023-01-13 12:46:33', '2023-01-13 12:46:33'),
-(4, 'Platinum', 'web', '2023-01-13 12:46:33', '2023-01-13 12:46:33'),
-(5, 'Gold', 'web', '2023-01-13 12:46:33', '2023-01-13 12:46:33'),
-(6, 'Diamond', 'web', '2023-01-13 12:46:33', '2023-01-13 12:46:33'),
-(7, 'Ruby', 'web', '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(8, 'Ruby Premium', 'web', '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(9, 'Trainer', 'web', '2023-01-13 12:46:34', '2023-01-13 12:46:34'),
-(10, 'Gym Member', 'web', '2023-01-13 12:46:34', '2023-01-13 12:46:34');
+(1, 'King', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(2, 'Queen', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(3, 'System_Admin', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(4, 'Platinum', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(5, 'Gold', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(6, 'Diamond', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(7, 'Ruby', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(8, 'Ruby Premium', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(9, 'Trainer', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27'),
+(10, 'Gym Member', 'web', '2023-02-10 08:10:27', '2023-02-10 08:10:27');
 
 -- --------------------------------------------------------
 
@@ -646,7 +664,7 @@ CREATE TABLE `role_has_permissions` (
 CREATE TABLE `shopmember_histories` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
-  `shopmember_type_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `shopmember_type_id` varchar(255) NOT NULL,
   `date` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -664,7 +682,7 @@ CREATE TABLE `shop_comments` (
   `shop_post_id` int(11) NOT NULL,
   `shop_member_id` int(11) NOT NULL,
   `ban_word_id` int(11) NOT NULL,
-  `comment` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment` longtext NOT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -678,12 +696,12 @@ CREATE TABLE `shop_comments` (
 
 CREATE TABLE `shop_members` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `member_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `duration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `member_type` varchar(255) NOT NULL,
+  `duration` varchar(255) NOT NULL DEFAULT '0',
   `price` int(11) NOT NULL DEFAULT 0,
   `post_count` int(11) NOT NULL DEFAULT 0,
-  `pros` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cons` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pros` text DEFAULT NULL,
+  `cons` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -697,8 +715,8 @@ CREATE TABLE `shop_members` (
 CREATE TABLE `shop_posts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
-  `caption` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `media` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `caption` varchar(255) DEFAULT NULL,
+  `media` longtext DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -744,11 +762,11 @@ CREATE TABLE `shop_reacts` (
 
 CREATE TABLE `trainers` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `training_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `address` text NOT NULL,
+  `training_type` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -780,11 +798,11 @@ CREATE TABLE `training_centers` (
 CREATE TABLE `training_groups` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `trainer_id` int(11) NOT NULL,
-  `member_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `group_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `group_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `member_type_level` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `gender` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `member_type` varchar(255) NOT NULL,
+  `group_name` varchar(255) NOT NULL,
+  `group_type` varchar(255) NOT NULL,
+  `member_type_level` varchar(255) NOT NULL,
+  `gender` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -811,40 +829,40 @@ CREATE TABLE `training_users` (
 
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bio` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `member_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `bio` varchar(255) DEFAULT NULL,
+  `member_type` varchar(255) NOT NULL,
   `request_type` int(11) NOT NULL,
-  `membertype_level` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `membertype_level` varchar(255) NOT NULL,
   `shopmember_type_id` int(11) NOT NULL DEFAULT 0,
   `shop_request` int(11) NOT NULL DEFAULT 0,
   `shop_post_count` int(11) NOT NULL DEFAULT 0,
   `shopfrom_date` date DEFAULT NULL,
   `shopto_date` date DEFAULT NULL,
-  `member_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `member_code` varchar(255) DEFAULT NULL,
   `ingroup` tinyint(1) NOT NULL DEFAULT 0,
   `height` int(11) NOT NULL DEFAULT 0,
   `weight` double(8,2) NOT NULL DEFAULT 0.00,
   `ideal_weight` double(8,2) NOT NULL DEFAULT 0.00,
-  `bad_habits` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `most_attention_areas` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `average_night` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `physical_activity` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `diet_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `daily_life` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `energy_level` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `body_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `physical_limitation` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `age` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `goal` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `activities` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bad_habits` varchar(255) DEFAULT NULL,
+  `most_attention_areas` varchar(255) DEFAULT NULL,
+  `average_night` varchar(255) DEFAULT NULL,
+  `physical_activity` varchar(255) DEFAULT NULL,
+  `diet_type` varchar(255) DEFAULT NULL,
+  `daily_life` varchar(255) DEFAULT NULL,
+  `energy_level` varchar(255) DEFAULT NULL,
+  `body_type` varchar(255) DEFAULT NULL,
+  `physical_limitation` varchar(255) DEFAULT NULL,
+  `age` varchar(255) DEFAULT NULL,
+  `goal` varchar(255) DEFAULT NULL,
+  `activities` varchar(255) DEFAULT NULL,
   `bmi` double(8,2) NOT NULL DEFAULT 0.00,
   `bmr` double(8,2) NOT NULL DEFAULT 0.00,
   `bfp` double(8,2) NOT NULL DEFAULT 0.00,
-  `gender` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `gender` varchar(255) DEFAULT NULL,
   `from_date` date DEFAULT NULL,
   `to_date` date DEFAULT NULL,
   `active_status` tinyint(1) DEFAULT NULL,
@@ -852,14 +870,14 @@ CREATE TABLE `users` (
   `waist` double(8,2) NOT NULL DEFAULT 0.00,
   `hip` double(8,2) NOT NULL DEFAULT 0.00,
   `shoulders` double(8,2) NOT NULL DEFAULT 0.00,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `hydration` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `training_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `hydration` varchar(255) DEFAULT NULL,
+  `training_type` varchar(255) DEFAULT NULL,
   `profile_id` int(11) DEFAULT NULL,
   `cover_id` int(11) DEFAULT NULL,
   `chat_id` int(11) NOT NULL DEFAULT 0,
   `message_id` int(11) NOT NULL DEFAULT 0,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -869,10 +887,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `phone`, `address`, `email`, `bio`, `member_type`, `request_type`, `membertype_level`, `shopmember_type_id`, `shop_request`, `shop_post_count`, `shopfrom_date`, `shopto_date`, `member_code`, `ingroup`, `height`, `weight`, `ideal_weight`, `bad_habits`, `most_attention_areas`, `average_night`, `physical_activity`, `diet_type`, `daily_life`, `energy_level`, `body_type`, `physical_limitation`, `age`, `goal`, `activities`, `bmi`, `bmr`, `bfp`, `gender`, `from_date`, `to_date`, `active_status`, `neck`, `waist`, `hip`, `shoulders`, `password`, `hydration`, `training_type`, `profile_id`, `cover_id`, `chat_id`, `message_id`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'King', '09422216317', NULL, 'king@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$JeL.s3qkwgTvpPeJoq50cudJKIREEWcvss1jDYKc5CGSsOCVxu1yi', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-01-13 12:46:35', '2023-01-13 12:46:35'),
-(2, 'Queen', '09250320376', NULL, 'queen@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$zmCkkyte3Lu8rnzN3civuuQS9d30jWEpQ9fjY93KT4w8rf4JjR/cq', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-01-13 12:46:35', '2023-01-13 12:46:35'),
-(3, 'user', '0912345678', NULL, 'user@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$xipn1LnT3XuiIhnbDD/kauLUyd05aQ4gQKOmhOxaEFxSxGEtlSUqO', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-01-13 12:46:35', '2023-01-13 12:46:35'),
-(4, 'trainer', '09123456789', NULL, 'trainer@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$qM3aJtQflq2h17e6YBhaCuGxbQ0uy2GWA/OFVxk0AII80qEvtVWr6', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-01-13 12:46:36', '2023-01-13 12:46:36');
+(1, 'King', '09422216317', NULL, 'king@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$my4xD0k4pGw8JVEP1tBBhuYmmAOih.UbiOmDtPADDAUCQFqLtypqq', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-02-10 08:10:28', '2023-02-10 08:10:28'),
+(2, 'Queen', '09250320376', NULL, 'queen@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$F.nevK2YcwZoEPXXFZksqOIq7cjSgHjIQ.YWaX.K1mBQm5Z3U013C', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-02-10 08:10:28', '2023-02-10 08:10:28'),
+(3, 'user', '0912345678', NULL, 'user@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$7XcR5XpEa9pdfYZWBMIzV.9fkrPKAXpPmdxhnMfjHj3HmdsPY0C1C', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-02-10 08:10:28', '2023-02-10 08:10:28'),
+(4, 'trainer', '09123456789', NULL, 'trainer@gmail.com', NULL, '', 0, '', 0, 0, 0, NULL, NULL, NULL, 0, 0, 0.00, 0.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, '$2y$10$Rck6Cu3GFASaIBWxOIOLw.6ppor8rTi3ka48nN3BwWorRVTM2wAcu', NULL, NULL, NULL, NULL, 0, 0, NULL, '2023-02-10 08:10:28', '2023-02-10 08:10:28');
 
 -- --------------------------------------------------------
 
@@ -884,7 +902,7 @@ CREATE TABLE `user_react_posts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `reacted_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reacted_status` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -899,7 +917,7 @@ CREATE TABLE `user_react_shopposts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `reacted_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reacted_status` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -914,7 +932,7 @@ CREATE TABLE `user_saved_posts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `saved_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `saved_status` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -929,7 +947,7 @@ CREATE TABLE `user_saved_shopposts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `saved_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `saved_status` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -972,21 +990,21 @@ CREATE TABLE `weight_histories` (
 
 CREATE TABLE `workouts` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `workout_plan_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `member_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `workout_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `workout_plan_type` varchar(255) NOT NULL,
+  `member_type` varchar(255) NOT NULL,
+  `workout_name` varchar(255) NOT NULL,
   `time` int(11) NOT NULL,
-  `gender_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gender_type` varchar(255) NOT NULL,
   `calories` double(8,2) NOT NULL,
-  `workout_level` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `workout_periods` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `place` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `day` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `video` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `workout_level` varchar(255) NOT NULL,
+  `workout_periods` varchar(255) NOT NULL,
+  `place` varchar(255) NOT NULL,
+  `day` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `video` varchar(255) NOT NULL,
   `estimate_time` int(11) NOT NULL,
   `sets` int(11) NOT NULL,
-  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -999,7 +1017,7 @@ CREATE TABLE `workouts` (
 
 CREATE TABLE `workout_plans` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `plan_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `plan_type` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1024,6 +1042,12 @@ ALTER TABLE `banking_infos`
 -- Indexes for table `ban_words`
 --
 ALTER TABLE `ban_words`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `block_lists`
+--
+ALTER TABLE `block_lists`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1355,6 +1379,12 @@ ALTER TABLE `ban_words`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `block_lists`
+--
+ALTER TABLE `block_lists`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
@@ -1436,7 +1466,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `notifications`
