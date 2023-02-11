@@ -54,8 +54,16 @@ class SocialMediaController extends Controller
                 $f = (array)$friend;
                 array_push($n, $f['sender_id'], $f['receiver_id']);
             }
+            $id = auth()->user()->id;
+            $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+            $b = array();
+            foreach ($block_list as $block) {
+                $f = (array)$block;
+                array_push($b, $f['sender_id'], $f['receiver_id']);
+            }
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->whereIn('posts.user_id', $n)
+                ->whereNotIn('posts.user_id', $b)
                 ->where('posts.shop_status',0)
                 ->where('report_status','!=' ,1)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
@@ -208,10 +216,19 @@ class SocialMediaController extends Controller
     }
     public function search_users(Request $request)
     {
+        $id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
         $users = User::select('users.id', 'users.name', 'profiles.profile_image')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
-            ->orWhere('users.phone', 'LIKE', '%' . $request->keyword . '%')->get();
+            ->orWhere('users.phone', 'LIKE', '%' . $request->keyword . '%')
+            ->whereNotIn('id',$b)
+            ->get();
         $friends = DB::table('friendships')->get();
         return response()->json([
             'users' => $users,
@@ -504,6 +521,13 @@ class SocialMediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
+        $id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
 
         $friends = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
@@ -512,11 +536,13 @@ class SocialMediaController extends Controller
             })
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->where('friendships.friend_status', 2)
             ->where('friendships.receiver_id', $id)
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->paginate(3);
             foreach($friends as $key=>$value){
                 $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
@@ -560,6 +586,12 @@ class SocialMediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
         $friends = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
@@ -567,11 +599,13 @@ class SocialMediaController extends Controller
             })
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->where('friendships.friend_status', 2)
             ->where('friendships.receiver_id', $id)
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->get();
         return response()->json([
             'friends' => $friends
@@ -2234,11 +2268,26 @@ class SocialMediaController extends Controller
     public function comment_list(Request $request)
     {
         $id = $request->id;
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+       // dd($block_list);
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array = \array_filter($b, static function ($element) {
+            $user_id = auth()->user()->id;
+            return $element !== $user_id;
+            //                   ↑
+            // Array value which you want to delete
+        });
         $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('comments.post_id', $id)
-            ->where('report_status','!=' ,1)
+            ->where('comments.report_status','!=' ,1)
+            ->whereNotIn('comments.user_id',$array)
             ->orderBy('comments.created_at', 'DESC')->get();
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -2267,7 +2316,6 @@ class SocialMediaController extends Controller
     public function user_list()
     {
         $user = User::select('users.id', 'users.name')->get();
-
         return response()->json([
             'data' => $user
         ]);
@@ -2861,7 +2909,7 @@ class SocialMediaController extends Controller
 
     public function post_report(Request $request)
     {
-        $user_id = $request->user_id;
+        $user_id = auth()->user()->id;
         $post_id = $request->post_id;
         $comment_id = $request->comment_id;
         $admin_id = 1;
@@ -3046,9 +3094,7 @@ class SocialMediaController extends Controller
     }
     public function blcok_list(){
         $id = auth()->user()->id;
-        $user = User::select('id', 'name')->where('id', $id)->first();
-        $user_id = Auth::user()->id;
-        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;

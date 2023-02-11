@@ -666,8 +666,18 @@ class SocialmediaController extends Controller
 
     public function showUser(Request $request)
     {
+        $id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
         $users = User::where('name', 'LIKE', '%' . $request->keyword . '%')
-            ->orWhere('phone', 'LIKE', '%' . $request->keyword . '%')->get();
+            ->orWhere('phone', 'LIKE', '%' . $request->keyword . '%')
+            ->whereNotIn('id',$b)
+            ->get();
+        // dd($users);
         $friends = DB::table('friendships')
             ->get();
         return response()->json([
@@ -694,7 +704,6 @@ class SocialmediaController extends Controller
         ->where('users.id', '!=', $id)
         ->whereIn('users.id', $b)
         ->where('users.id', '!=', $id)
-        
         ->get();
         // dd($blockList);
         return view('customer.friendlist', compact('user'));
@@ -718,6 +727,13 @@ class SocialmediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
+        $id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
         if ($request->keyword != '') {
             $friends = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image')
                 ->leftjoin('friendships', function ($join) {
@@ -727,12 +743,14 @@ class SocialmediaController extends Controller
                 ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
                 ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
                 ->where('users.id', '!=', $id)
+                ->whereNotIn('users.id',$b)
                 ->where('friendships.friend_status', 2)
                 ->where('friendships.receiver_id', $id)
                 ->orWhere('friendships.sender_id', $id)
                 ->whereIn('users.id', $n)
                 ->where('users.id', '!=', $id)
                 ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
+                ->whereNotIn('users.id',$b)
                 ->get();
             // dd($friends);
             return response()->json([
@@ -746,11 +764,13 @@ class SocialmediaController extends Controller
             })
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->where('friendships.friend_status', 2)
             ->where('friendships.receiver_id', $id)
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->get();
 
         return response()->json([
@@ -923,6 +943,51 @@ class SocialmediaController extends Controller
         $block->save();
         Alert::success('Success', 'Blcoked!');
         return redirect()->route('home');
+    }
+
+    public function block_list(Request $request){
+        $id = auth()->user()->id;
+        $user_id = Auth::user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        if($request->keyword != ""){
+            $blockList = User::select('users.id', 'users.name', 'profiles.profile_image')
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('users.id', '!=', $id)
+            ->whereIn('users.id', $b)
+            ->where('users.id', '!=', $id)
+            ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
+            ->get();
+        }
+        else{
+            $blockList = User::select('users.id', 'users.name', 'profiles.profile_image')
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('users.id', '!=', $id)
+            ->whereIn('users.id', $b)
+            ->where('users.id', '!=', $id)
+            ->get();
+        }
+       
+
+        return response()->json([
+            'data' => $blockList,
+        ]);
+    }
+
+    public function unblockUser(Request $request){
+        $unblock_delete_receiver = BlockList::where('sender_id', auth()->user()->id)
+            ->where('receiver_id', $request->id);
+        $unblock_delete_receiver->delete();
+        $unblock_delete_sender = BlockList::where('sender_id', $request->id)
+            ->where('receiver_id', auth()->user()->id);
+        $unblock_delete_sender->delete();
+        return response()->json([
+            'message' => 'unblocked'
+        ]);
     }
 
     public function cancelRequest(Request $request)
@@ -1300,6 +1365,12 @@ class SocialmediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
         $user = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image as avatar')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
@@ -1307,11 +1378,13 @@ class SocialmediaController extends Controller
             })
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->where('friendships.friend_status', 2)
             ->where('friendships.receiver_id', $id)
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id',$b)
             ->get()->toArray();
         return response()->json([
             'data' =>  $user
@@ -1419,13 +1492,30 @@ class SocialmediaController extends Controller
             $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
         }
         $id = $request->id;
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+       // dd($block_list);
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array = \array_filter($b, static function ($element) {
+            $user_id = auth()->user()->id;
+            return $element !== $user_id;
+            //                   ↑
+            // Array value which you want to delete
+        });
+        // dd($array);
         $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->leftJoin('posts', 'posts.id', 'comments.post_id')
             ->where('post_id', $id)
-            ->where('report_status','!=' ,1)
+            ->where('comments.report_status','!=' ,1)
+            ->whereNotIn('comments.user_id',$array)
             ->orderBy('created_at', 'DESC')->get();
+
         foreach ($comments as $key => $comm1) {
             $date = $comm1['created_at'];
             $comments[$key]['date'] = $date->toDayDateTimeString();

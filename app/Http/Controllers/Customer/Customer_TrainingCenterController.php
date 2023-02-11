@@ -13,6 +13,7 @@ use App\Models\Comment;
 use App\Models\Profile;
 use App\Models\Workout;
 use App\Models\MealPlan;
+use App\Models\BlockList;
 use App\Models\WaterTracked;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
@@ -82,10 +83,19 @@ class Customer_TrainingCenterController extends Controller
                     ->with('user')
                     ->paginate(30);
 
+        $id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+            
         $user_friends=User::whereIn('id',$n)
                         ->where('id','!=',$user_id)
+                        ->whereNotIn('id',$b)
                         ->paginate(6);
-
+   
         $user_profile_cover=Profile::select('cover_photo')
                                 ->where('user_id',$user_id)
                                 ->where('profile_image',null)
@@ -165,20 +175,6 @@ class Customer_TrainingCenterController extends Controller
                 $time_sec = $time_sum;
             }
         }
-
-        // $save_posts=UserSavedPost::where('user_id',$user_id)->with('user')->get();
-
-        // $saved_posts = DB::table('user_saved_posts')
-        //                     ->select('users.name','profiles.profile_image','posts.*','posts.id as post_id','posts.created_at as post_date')
-        //                     ->leftJoin('posts','posts.id','user_saved_posts.post_id')
-        //                     ->where('user_saved_posts.user_id',auth()->user()->id)
-        //                     ->leftJoin('users','users.id','posts.user_id')
-        //                     ->leftJoin('profiles','users.profile_id','profiles.id')
-        //                     ->orderBy('posts.created_at','DESC')
-        //                     ->get();
-
-        //$already_liked=$user->user_reacted_posts->where('post_id',$save_post->post->id)->count();
-
         return view('customer.training_center.profile', compact('user','posts','user_friends','user_profile_cover','user_profile_image','year','workouts', 'workout_date', 'cal_sum', 'time_min', 'time_sec', 'weight_history', 'newDate'));
     }
 

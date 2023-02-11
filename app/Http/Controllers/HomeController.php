@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Member;
 use Carbon\CarbonPeriod;
+use App\Models\BlockList;
 use App\Models\BankingInfo;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
@@ -18,12 +19,12 @@ use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Contracts\Role;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
-use Spatie\Permission\Contracts\Role;
 
 class HomeController extends Controller
 {
@@ -118,27 +119,37 @@ class HomeController extends Controller
             } else {
                     $user = auth()->user();
                     $user_id = $user->id;
+                    $id = auth()->user()->id;
+                    $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+                    $b = array();
+                    foreach ($block_list as $block) {
+                        $f = (array)$block;
+                        array_push($b, $f['sender_id'], $f['receiver_id']);
+                    }            
                     $friends = DB::table('friendships')
                                     ->where('friend_status', 2)
                                     ->where(function ($query) use ($user_id) {
                                         $query->where('sender_id', $user_id)
                                             ->orWhere('receiver_id', $user_id);
                                     })
+                                    ->whereNotIn('sender_id',$b)
+                                    ->orWhereNotIn('receiver_id',$b)
                                     ->get(['sender_id', 'receiver_id'])->toArray();
-
+                                    //  dd($friends);
                 if (!empty($friends)) {
                     $n = array();
                     foreach ($friends as $friend) {
                         $f = (array)$friend;
                         array_push($n, $f['sender_id'], $f['receiver_id']);
                     }
-                    $posts = Post::whereIn('user_id', $n)
+                   
+                    $posts = Post::
+                        whereIn('user_id', $n)
                         ->where('report_status', 0)
                         ->where('shop_status',0)
                         ->orderBy('created_at', 'DESC')
                         ->with('user')
                         ->paginate(30);
-                         
                     $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                     left join roles on model_has_roles.role_id = roles.id");
                     foreach ($posts as $key=>$post){
@@ -153,6 +164,13 @@ class HomeController extends Controller
                     }
                 }
                 } else {
+                    $id = auth()->user()->id;
+                    $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+                    $b = array();
+                    foreach ($block_list as $block) {
+                        $f = (array)$block;
+                        array_push($b, $f['sender_id'], $f['receiver_id']);
+                    }
                     $n = array();
                     $posts = Post::where('user_id', $user->id)
                         ->where('report_status', 0)
@@ -160,7 +178,7 @@ class HomeController extends Controller
                         ->orderBy('created_at', 'DESC')
                         ->with('user')
                         ->paginate(30);
-                    
+                       
                     $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                     left join roles on model_has_roles.role_id = roles.id");
                     foreach ($posts as $key=>$post){
@@ -174,6 +192,7 @@ class HomeController extends Controller
                             }
                     }
                 }
+                
                 //dd($posts);
                     
                     // foreach($posts as $post){

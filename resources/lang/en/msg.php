@@ -231,6 +231,7 @@ return[
     'cancel request' =>'Cancel Request',
     'create' => 'Create',
     'all' => 'All',
+    'block' => 'blocking',
     'save and calculate BMI' => 'Save and Calculate BMI'
 ]
 ?>

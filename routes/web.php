@@ -188,6 +188,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/declineRequest/{id}', [SocialmediaController::class, 'declineRequest'])->name('declineRequest');
         Route::get('/confirmRequest/{id}', [SocialmediaController::class, 'confirmRequest'])->name('confirmRequest');
         Route::get('/block/{id}', [SocialmediaController::class, 'blockUser'])->name('block');
+        Route::post('/blockList', [SocialmediaController::class, 'block_list'])->name('blockList');
+        Route::get('/unblock/{id}', [SocialmediaController::class, 'unblockUser'])->name('unblock');
 
         Route::get('/notification_center', [SocialmediaController::class, 'notification_center'])->name('notification_center');
 

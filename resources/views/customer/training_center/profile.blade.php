@@ -326,8 +326,14 @@
                         <p class="text-secondary p-1">No Friend</p>
                     @endforelse
                 </div>
-
-                <p href="#" class="social-media-profile-photos-link">{{__('msg.photos')}}</p>
+                <div class="row">
+                    <div class="col-2">
+                        <p href="#" class="social-media-profile-photos-link">{{__('msg.photos')}}</p>
+                    </div>
+                    <div class="col-6">
+                        <p href="#" class="social-media-profile-block-link customer-profile-see-all-block-btn">{{__('msg.block')}}</p>
+                    </div>
+                </div>
             </div>
 
             <div class="customer-profile-posts-parent-container">
@@ -403,6 +409,20 @@
 
            <div class="social-media-fris-list-container">
 
+           </div>
+        </div>
+
+        <div class="customer-profile-social-media-block-container">
+            <p class="customer-profile-social-media-photoes-back">
+                <iconify-icon icon="material-symbols:arrow-back"></iconify-icon>
+                {{__("msg.go back")}}</p>
+            <div class="social-media-block-search" style = "">
+                <input type="text" placeholder="Search your friends">
+                <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
+           </div>
+
+           <div class="social-media-block-list-container">
+            {{-- blList --}}
            </div>
         </div>
 
@@ -3463,6 +3483,97 @@
                             }
                             $('.social-media-fris-list-container').html(htmlView);
                         }
+
+                        //blocking
+                        $('.social-media-block-search input').on('keyup', function(){
+                            blocking();
+                        });
+                        blocking();
+                        function blocking(){
+                            var blocking_url = "{{ route('blockList') }}";
+                            var keyword = $('.social-media-block-search input').val();
+                            $.post(blocking_url,
+                            {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                keyword:keyword
+                            },
+                            function(data){
+                                block(data);
+                                console.log(data,'blocking');
+                            });
+                        }
+                        // table row with ajax
+                        function block(res){
+                             let htmlView = '';
+                            if(res.data.length <= 0){
+                                console.log("no data");
+                                htmlView+= `
+                                No data found.
+                                `;
+                            }
+                           
+                            if({{auth()->user()->id}} === {{$user->id}}){
+                                for(let i = 0; i < res.data.length; i++){
+                                id = res.data[i].id;
+                                var url = "{{ route('socialmedia.profile', [':id']) }}";
+                                    url = url.replace(':id',id);
+                                if(res.data[i].profile_image === null){
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}">
+                                            <p>`+res.data[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href="?id=` + res.data[i].id+`" class="customer-red-btn"
+                                            id = "unblock">Unblock</a>
+
+                                        </div>
+                                    </div>                                    `
+                                }
+                                else{
+                                    htmlView += `
+                                    <div class="social-media-fris-fri-row">
+                                        <div class="social-media-fris-fri-img">
+                                                <img src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.data[i].profile_image}">
+                                            <p>`+res.data[i].name+`</p>
+                                        </div>
+
+
+                                        <div class="social-media-fris-fri-btns-container">
+                                            <a href="?id=` + res.data[i].id+`" class="customer-red-btn"
+                                            id = "unblock">Unblock</a>
+
+                                        </div>
+                                    </div>
+                                    `
+                                }
+                            }
+                            }
+                            $('.social-media-block-list-container').html(htmlView);
+                        }
+
+                        $(document).on('click', '#unblock', function(e){
+                            e.preventDefault();
+                            var url = new URL(this.href);
+                            var id = url.searchParams.get("id");
+                            var url = "{{ route('unblock', [':id']) }}";
+                            url = url.replace(':id', id);
+
+                            $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    datatype: "json",
+                                    success: function(data) {
+                                       // console.log(data)
+                                        blocking();
+                                    }
+                                })
+                            Swal.fire('Unblocked!', '', 'success')
+                        })
+                        //blockingend
                 $(document).on('click', '#unfriend', function(e){
                 e.preventDefault();
                 Swal.fire({
@@ -3584,6 +3695,13 @@
             $(".customer-profile-social-media-photoes-container").hide()
             $(".customer-profile-social-media-default-container").hide()
             $(".customer-profile-social-media-fris-container").show()
+        })
+        $(".customer-profile-social-media-block-container").hide()
+        $(".customer-profile-see-all-block-btn").click(function(){
+            $(".customer-profile-social-media-photoes-container").hide()
+            $(".customer-profile-social-media-default-container").hide()
+            $(".customer-profile-social-media-fris-container").hide()
+            $(".customer-profile-social-media-block-container").show()
         })
 
         $(".customer-profile-social-media-photoes-back").click(function(){

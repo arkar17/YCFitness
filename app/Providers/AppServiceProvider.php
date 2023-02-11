@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Profile;
+use App\Models\BlockList;
 use App\Models\ChatGroup;
 use App\Models\Friendship;
 use App\Models\ChatGroupMessage;
@@ -58,8 +59,17 @@ class AppServiceProvider extends ServiceProvider
         }else{
             $n= array();
         }
+        $id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+
         $left_friends=User::whereIn('id',$n)
                         ->where('id','!=',$user_id)
+                        ->whereNotIn('id',$b)
                         ->paginate(6);
 
 
@@ -115,8 +125,16 @@ class AppServiceProvider extends ServiceProvider
         }else{
             $n= array();
         }
+        $id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
         $left_friends=User::whereIn('id',$n)
                         ->where('id','!=',$user_id)
+                        ->whereNotIn('id',$b)
                         ->take(3)
                         ->get();
 

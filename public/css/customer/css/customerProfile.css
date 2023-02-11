@@ -1003,6 +1003,19 @@ border-radius: 50%;
     border: none;
 }
 
+.social-media-profile-block-link{
+    padding: 10px;
+    background-color: var(--customer-primary-soft-color);
+    border-radius: 5px;
+    display: block;
+    width: fit-content;
+    text-decoration: none;
+    color: var(--customer-text-color);
+    margin: 20px 0;
+    cursor: pointer;
+    border: none;
+}
+
 .social-media-photos-tabs-container{
     display: flex;
     align-items: center;
@@ -1235,8 +1248,36 @@ border-radius: 50%;
     right: 10px;
     font-size: 20px;
 }
+.social-media-block-search{
+    height: 35px;
+    width: 300px;
+    position: relative;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.social-media-block-search input{
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 14px;
+    /* border: none; */
+}
+
+.social-media-block-search .search-icon{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    font-size: 20px;
+}
 
 .social-media-fris-list-container{
+    height: 740px;
+    overflow-y: scroll;
+}
+
+.social-media-block-list-container{
     height: 740px;
     overflow-y: scroll;
 }
