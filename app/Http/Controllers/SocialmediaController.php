@@ -1313,6 +1313,29 @@ class SocialmediaController extends Controller
 
     public function post_comment($id)
     {
+
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+    
+        $array = \array_filter($b, static function ($element) {
+            $user_id = auth()->user()->id;
+            return $element !== $user_id;
+            //                   ↑
+            // Array value which you want to delete
+        });
+    
+        $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('post_id',$id)
+            ->where('report_status',0)
+            ->where('deleted_at',null)
+            ->whereNotIn('user_id',$array)
+            ->first();
         $post = Post::select('users.name', 'profiles.profile_image', 'posts.*')
             ->where('posts.id', $id)
             ->leftJoin('users', 'users.id', 'posts.user_id')
@@ -1341,7 +1364,14 @@ class SocialmediaController extends Controller
                                 $post['roles'] = null;
                             }
                         }
-                        
+
+                        if($comment_post_count->post_id == $post->id){
+                            $post['comment_count'] = $comment_post_count->comment_count;
+                        }
+                      
+
+
+        // dd($comment_post_count);
  
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }

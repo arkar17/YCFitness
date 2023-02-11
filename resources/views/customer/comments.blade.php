@@ -187,7 +187,7 @@
                 <div class="social-media-post-like-container">
                     @php
                         $total_likes=$post->user_reacted_posts->count();
-                        $total_comments=$post->comments->where('report_status',0)->count();
+                        // $total_comments=$post->comments->where('report_status',0)->count();
                         $user=auth()->user();
                         $already_liked=$user->user_reacted_posts->where('post_id',$post->id)->count();
                     @endphp
@@ -215,8 +215,8 @@
                 </div>
                 <div class="social-media-post-comment-container">
                     <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                    <p><span>{{$total_comments}}</span>
-                        @if ($total_comments>1)
+                    <p><span>{{$post->comment_count}}</span>
+                        @if ($post->comment_count>1)
                         Comments
                         @else
                         Comment

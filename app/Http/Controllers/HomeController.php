@@ -13,6 +13,7 @@ use App\Models\Member;
 use Carbon\CarbonPeriod;
 use App\Models\BlockList;
 use App\Models\BankingInfo;
+use App\Models\Comment;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\Models\MemberHistory;
@@ -152,16 +153,42 @@ class HomeController extends Controller
                         ->paginate(30);
                     $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                     left join roles on model_has_roles.role_id = roles.id");
-                    foreach ($posts as $key=>$post){
-                        foreach($roles as $r){
-                            if($r->model_id == $post->user_id){
-                                $posts[$key]['roles'] = $r->name;
-                                break;
-                        }
-                        else{                   
-                            $posts[$key]['roles'] = null;
-                        }
-                    }
+                                  $array = \array_filter($b, static function ($element) {
+                                    $user_id = auth()->user()->id;
+                                    return $element !== $user_id;
+                                    //                   ↑
+                                    // Array value which you want to delete
+                                });
+            
+                                $total_count =  DB::table('comments')
+                                    ->select('post_id', DB::raw('count(*) as total'))
+                                    ->where('report_status',0)
+                                    ->where('deleted_at',null)
+                                    ->whereNotIn('user_id',$array)
+                                    ->groupBy('post_id')
+                                    ->get();
+                                foreach ($posts as $key=>$post){
+                                    $posts[$key]['roles'] = null;
+                                    $posts[$key]['total_comments'] = 0;
+                                    foreach($roles as $r){
+                                        if($r->model_id == $post->user_id){
+                                            $posts[$key]['roles'] = $r->name;
+                                            break;
+                                        }
+                                        else{
+                                            $posts[$key]['roles'] = null;
+                                        }
+                                        foreach($total_count as $k=>$v){
+                                            if($v->post_id == $post->id){
+                                                $posts[$key]['total_comments'] = $v->total;
+                                                break;
+                                            }
+                                            else{
+                                                $posts[$key]['total_comments'] = 0;
+                                            }
+                                        }
+                                       
+                                }
                 }
                 } else {
                     $id = auth()->user()->id;
@@ -181,7 +208,24 @@ class HomeController extends Controller
                        
                     $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                     left join roles on model_has_roles.role_id = roles.id");
+
+                    $array = \array_filter($b, static function ($element) {
+                        $user_id = auth()->user()->id;
+                        return $element !== $user_id;
+                        //                   ↑
+                        // Array value which you want to delete
+                    });
+
+                    $total_count =  DB::table('comments')
+                        ->select('post_id', DB::raw('count(*) as total'))
+                        ->where('report_status',0)
+                        ->where('deleted_at',null)
+                        ->whereNotIn('user_id',$array)
+                        ->groupBy('post_id')
+                        ->get();
                     foreach ($posts as $key=>$post){
+                        $posts[$key]['roles'] = null;
+                        $posts[$key]['total_comments'] = 0;
                         foreach($roles as $r){
                             if($r->model_id == $post->user_id){
                                 $posts[$key]['roles'] = $r->name;
@@ -190,36 +234,19 @@ class HomeController extends Controller
                             else{
                                 $posts[$key]['roles'] = null;
                             }
+                            foreach($total_count as $k=>$v){
+                                if($v->post_id == $post->id){
+                                    $posts[$key]['total_comments'] = $v->total;
+                                    break;
+                                }
+                                else{
+                                    $posts[$key]['total_comments'] = 0;
+                                }
+                            }
+                           
                     }
                 }
-                
-                //dd($posts);
-                    
-                    // foreach($posts as $post){
-                    //     $final = [];
-                    //     $images=json_decode($post->media);
-                    //         // foreach($final as $key => $value){
-                    //         //     $final['image'] = "image";
-                    //             // foreach ($images as $key => $value) {
-
-
-                    //              for($i=0;$i<count($images);$i++){
-
-                    //                // Storage::disk('public')->url($file->path);
-                    //                 //dd(File::size(public_path('storage/post/'.$img)));
-                    //                 $img_size=File::size(public_path('storage/post/'.$images[$i]));
-                    //                 $obj=[];
-                    //                 $obj['size']=$img_size;
-                    //                 $obj['name']=$images[$i];
-                    //                 }
-
-                    //         }
-                    //         dd($obj);
-
-                        // }
-
                 }
-                //  dd($posts);
                         $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                         return view('customer.socialmedia', compact('member_plans','posts'));
             }
