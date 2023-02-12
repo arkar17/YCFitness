@@ -944,6 +944,22 @@ class SocialmediaController extends Controller
     }
 
     public function blockUser(Request $request){
+        $friend_ship_delete_receiver = Friendship::where('sender_id', auth()->user()->id)
+            ->where('receiver_id', $request->id)
+            ->where('friend_status', 2);
+        $friend_ship_delete_receiver->delete();
+        $friend_ship_delete_sender = Friendship::where('sender_id', $request->id)
+            ->where('receiver_id', auth()->user()->id)
+            ->where('friend_status', 2);
+        $friend_ship_delete_sender->delete();
+        $noti_delete_receiver = Notification::where('sender_id', $request->id)
+            ->where('receiver_id', auth()->user()->id)
+            ->where('post_id', null);
+        $noti_delete_receiver->delete();
+        $noti_delete_sender = Notification::where('sender_id', auth()->user()->id)
+            ->where('receiver_id', $request->id)
+            ->where('post_id', null);
+        $noti_delete_sender->delete();
         $block = new BlockList();
         $block->sender_id =  Auth::user()->id;
         $block->receiver_id = $request->id;

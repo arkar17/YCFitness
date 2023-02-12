@@ -136,7 +136,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
 
-    Route::get('user/blocklist', [SocialmediaController::class, 'blcok_list']);
+    Route::get('user/blocklist', [SocialmediaController::class, 'block_list']);
     Route::post('user/block', [SocialmediaController::class, 'blockUser']);
     Route::post('user/unblock', [SocialmediaController::class, 'unblockUser']);
 
