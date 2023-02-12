@@ -291,16 +291,44 @@ class Customer_TrainingCenterController extends Controller
 
             $total_likes=UserReactPost::where('post_id',$value->post_id)
                             ->get()->count();
-            $total_comments=Comment::where('post_id',$value->post_id)
-                            ->get()->count();
+            // $total_comments=Comment::where('post_id',$value->post_id)
+            //                 ->get()->count();
+                            $user_id = auth()->user()->id;
+                            $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+                            $b = array();
+                            foreach ($block_list as $block) {
+                                $f = (array)$block;
+                                array_push($b, $f['sender_id'], $f['receiver_id']);
+                            }
+                        
+                            $array = \array_filter($b, static function ($element) {
+                                $user_id = auth()->user()->id;
+                                return $element !== $user_id;
+                                //                   ↑
+                                // Array value which you want to delete
+                            });
+                        
+                            $comment_post_count =  DB::table('comments')
+                                ->select('post_id', DB::raw('count(*) as total_comments'))
+                                ->where('report_status',0)
+                                ->where('deleted_at',null)
+                                ->whereNotIn('user_id',$array)
+                                ->get();
 
             $posts[$key]->total_likes=$total_likes;
-            $posts[$key]->total_comments=$total_comments;
+            foreach($comment_post_count as $comment_count){
+                if($value->post_id == $comment_count->post_id ){
+                    $posts[$key]->total_comments=$comment_count->total_comments;
+                }
+                else{
+                    $posts[$key]->total_comments=0;
+                }
+               
+            }
             $posts[$key]->date= $date;
             $posts[$key]->isLike=$isLike;
             $posts[$key]->already_saved=$already_saved;
             }
-
         return response()->json([
             'posts' => $posts
             ]);
@@ -355,11 +383,11 @@ class Customer_TrainingCenterController extends Controller
             foreach($roles as $r){
                                     
                 if($r->model_id == $value->user_id){
-                    $posts[$key]['roles'] = $r->name;
+                    $posts[$key]->roles = $r->name;
                     break;
                 }
                 else{
-                        $posts[$key]['roles'] = null;
+                        $posts[$key]->roles = null;
                     }
                 }        
 

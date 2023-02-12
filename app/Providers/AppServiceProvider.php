@@ -164,6 +164,13 @@ class AppServiceProvider extends ServiceProvider
     view()->composer('*',function($message){
         if (Auth::check()) {
             $user_id=auth()->user()->id;
+                    $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+                $b = array();
+                foreach ($block_list as $block) {
+                    $f = (array)$block;
+                    array_push($b, $f['sender_id'], $f['receiver_id']);
+                }
+                $array =  join(",",$b,); 
 
             $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
             from
@@ -186,6 +193,7 @@ class AppServiceProvider extends ServiceProvider
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
+                    where users.id not in ($array)
                     order by chats.created_at desc");
 // dd($messages);
 

@@ -480,6 +480,14 @@ class SocialMediaController extends Controller
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
 
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+
         $friends = User::select('users.id', 'users.name', 'friendships.date', 'profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
@@ -491,6 +499,7 @@ class SocialMediaController extends Controller
             ->where('friendships.receiver_id', $id)
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
+            ->whereNotIn('users.id', $b)
             ->where('users.id', '!=', $id)
             ->take(6)->get();
 
@@ -1191,7 +1200,13 @@ class SocialMediaController extends Controller
             ->where('user_react_posts.user_id', auth()->user()->id)->get();
 
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
-
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
         $array = \array_filter($b, static function ($element) {
             $user_id = auth()->user()->id;
             return $element !== $user_id;
@@ -1997,6 +2012,13 @@ class SocialMediaController extends Controller
     public function see_all_message()
     {
         $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array =  join(",",$b,); 
 
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
@@ -2019,6 +2041,7 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
+                where users.id not in ($array)
                 order by chats.created_at desc");
         // dd($messages);
 

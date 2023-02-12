@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Member;
 use App\Models\Comment;
 use App\Models\ShopPost;
+use App\Models\BlockList;
 use App\Models\ChatGroup;
 use App\Models\ShopReact;
 use App\Models\ShopMember;
@@ -27,13 +28,21 @@ class ShopController extends Controller
 {
     public function index()
     {
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        // dd($b);
         $shops=User::where('shopmember_type_id','!=',0)
+                    ->whereNotIn('id',$b)
                     ->where('shop_request',2)
                     ->orWhere('shop_request',3)
                     ->with('posts')
                     ->first();
-                    
-                    $post = Post::find(17);
+        $post = Post::find(17);
                    
                     // dd($imageData);
         return view('customer.shop.shop',compact('shops'));
@@ -41,8 +50,22 @@ class ShopController extends Controller
 
     public function shop_list(Request $request)
     {
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array = \array_filter($b, static function ($element) {
+            $user_id = auth()->user()->id;
+            return $element !== $user_id;
+            //                   ↑
+            // Array value which you want to delete
+        });
         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->whereNotIn('users.id',$array)
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
         ->get();
@@ -131,11 +154,39 @@ class ShopController extends Controller
 
             $total_likes=UserReactPost::where('post_id',$value->post_id)
                             ->get()->count();
-            $total_comments=Comment::where('post_id',$value->post_id)
-                            ->get()->count();
+            $user_id = auth()->user()->id;
+            $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+            $b = array();
+            foreach ($block_list as $block) {
+                $f = (array)$block;
+                array_push($b, $f['sender_id'], $f['receiver_id']);
+            }
+            $array = \array_filter($b, static function ($element) {
+                $user_id = auth()->user()->id;
+                return $element !== $user_id;
+                //                   ↑
+                // Array value which you want to delete
+            });
 
+            $comment_post_count =  DB::table('comments')
+                ->select('post_id', DB::raw('count(*) as total'))
+                ->where('report_status',0)
+                ->where('deleted_at',null)
+                ->whereNotIn('user_id',$array)
+                ->groupBy('post_id')
+                ->get();
+            
             $posts[$key]->total_likes=$total_likes;
-            $posts[$key]->total_comments=$total_comments;
+            // $posts[$key]->total_comments=$total_comments;
+            foreach($comment_post_count as $comment){
+                if($comment->post_id == $value->id){
+                    $posts[$key]->comment_count= $comment->total;
+                }
+                else{
+                    $posts[$key]->comment_count = 0;
+                }
+            }
+           
             $posts[$key]->date= $date;
             $posts[$key]->isLike=$isLike;
             $posts[$key]->already_saved=$already_saved;

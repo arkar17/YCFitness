@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\ShopPost;
+use App\Models\BlockList;
+use App\Models\ShopReact;
 use App\Models\ShopMember;
+use App\Models\ShopRating;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
@@ -14,8 +17,6 @@ use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserReactedShoppost;
 use App\Http\Controllers\Controller;
-use App\Models\ShopRating;
-use App\Models\ShopReact;
 use Illuminate\Support\Facades\Storage;
 
 class ShopController extends Controller
@@ -37,11 +38,25 @@ class ShopController extends Controller
 
     public function shop_list()
     {
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array = \array_filter($b, static function ($element) {
+            $user_id = auth()->user()->id;
+            return $element !== $user_id;
+            //                   ↑
+            // Array value which you want to delete
+        });
 
         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
+        ->whereNotIn('users.id',$array)
         ->get();
 
         $rating = DB::table('shop_ratings')
@@ -284,8 +299,28 @@ class ShopController extends Controller
         $liked_post = UserReactPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_react_posts.post_id')
             ->where('user_react_posts.user_id', $auth)->get();
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array = \array_filter($b, static function ($element) {
+            $user_id = auth()->user()->id;
+            return $element !== $user_id;
+            //                   ↑
+            // Array value which you want to delete
+        });
 
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+        // $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+        $comment_post_count =  DB::table('comments')
+        ->select('post_id', DB::raw('count(*) as comment_count'))
+        ->where('report_status',0)
+        ->where('deleted_at',null)
+        ->whereNotIn('user_id',$array)
+        ->groupBy('post_id')
+        ->get();
         
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");

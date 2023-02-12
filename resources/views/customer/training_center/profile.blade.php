@@ -2242,7 +2242,6 @@
                     url:url,
                     dataType: "json",
                     success: function (data) {
-
                     console.log(data.posts,'all posts')
                     var save_posts=data.posts;
 

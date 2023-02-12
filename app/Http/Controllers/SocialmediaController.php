@@ -77,6 +77,13 @@ class SocialmediaController extends Controller
     public function latest_messages()
     {
         $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array =  join(",",$b,); 
 
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
             from
@@ -99,6 +106,7 @@ class SocialmediaController extends Controller
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
+                    where users.id not in ($array) 
                     order by chats.created_at desc");
 // dd($messages);
 
@@ -1104,6 +1112,14 @@ class SocialmediaController extends Controller
     public function see_all_message()
     {
         $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+        $array =  join(",",$b,);  
+        // dd($array , $b);
         $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
             from
                 chats
@@ -1128,9 +1144,9 @@ class SocialmediaController extends Controller
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
             where deleted_by !=  $user_id  and delete_status != 2
-           order by chats.created_at desc");
-
-
+            and users.id Not In ($array)
+            order by chats.created_at desc");
+        // dd($messages);
         //friends list
         $user = User::where('id', $user_id)->first();
         $friendships = DB::table('friendships')
@@ -1344,7 +1360,9 @@ class SocialmediaController extends Controller
         $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->where('post_id', $id)->orderBy('created_at', 'DESC')->get();
+            ->where('comments.post_id', $id)->where('comments.report_status',0)
+            ->whereNotIn('comments.user_id',$array)
+            ->orderBy('created_at', 'DESC')->get();
         $post_likes = UserReactPost::where('post_id', $post->id)
             ->with('user')
             ->get();
