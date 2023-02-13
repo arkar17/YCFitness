@@ -86,15 +86,25 @@ class SocialMediaController extends Controller
                 //                   ↑
                 // Array value which you want to delete
             });
-
-            $comment_post_count =  DB::table('comments')
+            if($array){
+                $comment_post_count =  DB::table('comments')
                 ->select('post_id', DB::raw('count(*) as comment_count'))
                 ->where('report_status',0)
                 ->where('deleted_at',null)
                 ->whereNotIn('user_id',$array)
                 ->groupBy('post_id')
                 ->get();
+            }
+            else{
+                $comment_post_count =  DB::table('comments')
+                ->select('post_id', DB::raw('count(*) as comment_count'))
+                ->where('report_status',0)
+                ->where('deleted_at',null)
+                ->groupBy('post_id')
+                ->get();
 
+            }
+           
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
             //dd($comment_post_count);
@@ -1213,14 +1223,25 @@ class SocialMediaController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-
-        $comment_post_count =  DB::table('comments')
+        if($array){
+            $comment_post_count =  DB::table('comments')
             ->select('post_id', DB::raw('count(*) as comment_count'))
             ->where('report_status',0)
             ->where('deleted_at',null)
             ->whereNotIn('user_id',$array)
             ->groupBy('post_id')
             ->get();
+        }
+        else{
+            
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('report_status',0)
+            ->where('deleted_at',null)
+            ->groupBy('post_id')
+            ->get();
+        }
+       
 
 
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
@@ -1310,14 +1331,24 @@ class SocialMediaController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-
-        $comment_post_count =  DB::table('comments')
+        if($array){
+            $comment_post_count =  DB::table('comments')
             ->select('post_id', DB::raw('count(*) as comment_count'))
             ->where('post_id',$id)
             ->where('report_status',0)
             ->where('deleted_at',null)
             ->whereNotIn('user_id',$array)
             ->first();
+        }
+        else{
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('post_id',$id)
+            ->where('report_status',0)
+            ->where('deleted_at',null)
+            ->first();
+        }
+      
 
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -2019,8 +2050,33 @@ class SocialMediaController extends Controller
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
         $array =  join(",",$b,); 
-
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        if($array){
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+            from
+                chats
+              join
+                (select user, max(created_at) m
+                    from
+                       (
+                         (select id, to_user_id user, created_at
+                           from chats
+                           where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
+                       union
+                         (select id, from_user_id user, created_at
+                           from chats
+                           where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
+                        ) t1
+                   group by user) t2
+                    on ((from_user_id= $user_id and to_user_id=user) or
+                        (from_user_id=user and to_user_id= $user_id)) and
+                        (created_at = m)
+                    left join users on users.id = user
+                    left join profiles on users.profile_id = profiles.id
+                    where users.id not in ($array)
+                    order by chats.created_at desc");
+        }
+        else{
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
           join
@@ -2041,8 +2097,9 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-                where users.id not in ($array)
                 order by chats.created_at desc");
+        }
+        
         // dd($messages);
 
 
@@ -2353,13 +2410,24 @@ class SocialMediaController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-        $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
+        if($array){
+            $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('comments.post_id', $id)
             ->where('comments.report_status','!=' ,1)
             ->whereNotIn('comments.user_id',$array)
             ->orderBy('comments.created_at', 'DESC')->get();
+        }
+        else{
+            $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
+            ->leftJoin('users', 'users.id', 'comments.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('comments.post_id', $id)
+            ->where('comments.report_status','!=' ,1)
+            ->orderBy('comments.created_at', 'DESC')->get();
+        }
+        
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
         foreach($comments as $key=>$value){

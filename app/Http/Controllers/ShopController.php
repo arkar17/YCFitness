@@ -63,12 +63,22 @@ class ShopController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-        $shop_list = User::select('users.id','users.name','profiles.profile_image')
+        if($array){
+            $shop_list = User::select('users.id','users.name','profiles.profile_image')
+            ->leftJoin('profiles','users.profile_id','profiles.id')
+            ->whereNotIn('users.id',$array)
+            ->where('shop_request',2)
+            ->orWhere('shop_request',3)
+            ->get();
+        }
+        else{
+            $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
-        ->whereNotIn('users.id',$array)
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
         ->get();
+        }
+        
 
         $rating = DB::table('shop_ratings')
         ->select('shop_id', DB::raw('count(*) as rating'))
@@ -167,14 +177,25 @@ class ShopController extends Controller
                 //                   ↑
                 // Array value which you want to delete
             });
-
-            $comment_post_count =  DB::table('comments')
+            if($array){
+                $comment_post_count =  DB::table('comments')
                 ->select('post_id', DB::raw('count(*) as total'))
                 ->where('report_status',0)
                 ->where('deleted_at',null)
                 ->whereNotIn('user_id',$array)
                 ->groupBy('post_id')
                 ->get();
+            }
+            else{
+                $comment_post_count =  DB::table('comments')
+                ->select('post_id', DB::raw('count(*) as total'))
+                ->where('report_status',0)
+                ->where('deleted_at',null)
+                ->groupBy('post_id')
+                ->get();
+            }
+
+           
             
             $posts[$key]->total_likes=$total_likes;
             // $posts[$key]->total_comments=$total_comments;

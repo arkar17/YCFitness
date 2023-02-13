@@ -84,8 +84,8 @@ class SocialmediaController extends Controller
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
         $array =  join(",",$b,); 
-
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
+        if($array){
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
             from
                 chats
             join
@@ -108,6 +108,32 @@ class SocialmediaController extends Controller
                     left join profiles on users.profile_id = profiles.id
                     where users.id not in ($array) 
                     order by chats.created_at desc");
+        }
+        else{
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
+            from
+                chats
+            join
+                (select user, max(created_at) m
+                    from
+                    (
+                        (select id, to_user_id user, created_at
+                        from chats
+                        where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
+                    union
+                        (select id, from_user_id user, created_at
+                        from chats
+                        where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
+                        ) t1
+                group by user) t2
+                    on ((from_user_id= $user_id and to_user_id=user) or
+                        (from_user_id=user and to_user_id= $user_id)) and
+                        (created_at = m)
+                    left join users on users.id = user
+                    left join profiles on users.profile_id = profiles.id
+                    order by chats.created_at desc");
+        }
+       
 // dd($messages);
 
 
@@ -1136,7 +1162,8 @@ class SocialmediaController extends Controller
         }
         $array =  join(",",$b,);  
         // dd($array , $b);
-        $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
+        if($array){
+            $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
             from
                 chats
               join
@@ -1162,6 +1189,35 @@ class SocialmediaController extends Controller
             where deleted_by !=  $user_id  and delete_status != 2
             and users.id Not In ($array)
             order by chats.created_at desc");
+        }
+        else{
+            $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
+            from
+                chats
+              join
+                (select user, max(created_at) m
+                    from
+                       (
+                         (select id, to_user_id user, created_at
+                           from chats
+                           where from_user_id= $user_id
+                           and delete_status <> 2 and deleted_by != $user_id )
+                       union
+                         (select id, from_user_id user, created_at
+                           from chats
+                           where to_user_id= $user_id
+                           and delete_status <> 2 and deleted_by != $user_id)
+                        ) t1
+                   group by user) t2
+             on ((from_user_id= $user_id and to_user_id=user) or
+                 (from_user_id=user and to_user_id= $user_id)) and
+                 (created_at = m)
+            left join users on users.id = user
+            left join profiles on users.profile_id = profiles.id
+            where deleted_by !=  $user_id  and delete_status != 2
+            order by chats.created_at desc");
+        }
+        
         // dd($messages);
         //friends list
         $user = User::where('id', $user_id)->first();
@@ -1360,14 +1416,24 @@ class SocialmediaController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-    
-        $comment_post_count =  DB::table('comments')
+        if($array){
+            $comment_post_count =  DB::table('comments')
             ->select('post_id', DB::raw('count(*) as comment_count'))
             ->where('post_id',$id)
             ->where('report_status',0)
             ->where('deleted_at',null)
             ->whereNotIn('user_id',$array)
             ->first();
+        }
+        else{
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('post_id',$id)
+            ->where('report_status',0)
+            ->where('deleted_at',null)
+            ->first();
+        }
+       
         $post = Post::select('users.name', 'profiles.profile_image', 'posts.*')
             ->where('posts.id', $id)
             ->leftJoin('users', 'users.id', 'posts.user_id')
@@ -1571,7 +1637,8 @@ class SocialmediaController extends Controller
             // Array value which you want to delete
         });
         // dd($array);
-        $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
+        if($array){
+            $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->leftJoin('posts', 'posts.id', 'comments.post_id')
@@ -1580,6 +1647,19 @@ class SocialmediaController extends Controller
             ->whereNotIn('comments.user_id',$array)
             ->orderBy('created_at', 'DESC')->get();
 
+
+        }
+        else{
+            $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
+            ->leftJoin('users', 'users.id', 'comments.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->leftJoin('posts', 'posts.id', 'comments.post_id')
+            ->where('post_id', $id)
+            ->where('comments.report_status','!=' ,1)
+            ->orderBy('created_at', 'DESC')->get();
+
+        }
+        
         foreach ($comments as $key => $comm1) {
             $date = $comm1['created_at'];
             $comments[$key]['date'] = $date->toDayDateTimeString();

@@ -51,13 +51,22 @@ class ShopController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-
-        $shop_list = User::select('users.id','users.name','profiles.profile_image')
+        if($array){
+            $shop_list = User::select('users.id','users.name','profiles.profile_image')
+            ->leftJoin('profiles','users.profile_id','profiles.id')
+            ->where('shop_request',2)
+            ->orWhere('shop_request',3)
+            ->whereNotIn('users.id',$array)
+            ->get();
+        }
+        else{
+            $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
-        ->whereNotIn('users.id',$array)
         ->get();
+        }
+        
 
         $rating = DB::table('shop_ratings')
         ->select('shop_id', DB::raw('count(*) as rating'))
@@ -314,13 +323,24 @@ class ShopController extends Controller
         });
 
         // $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
-        $comment_post_count =  DB::table('comments')
-        ->select('post_id', DB::raw('count(*) as comment_count'))
-        ->where('report_status',0)
-        ->where('deleted_at',null)
-        ->whereNotIn('user_id',$array)
-        ->groupBy('post_id')
-        ->get();
+        if($array){
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('report_status',0)
+            ->where('deleted_at',null)
+            ->whereNotIn('user_id',$array)
+            ->groupBy('post_id')
+            ->get();
+        }
+        else{
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('report_status',0)
+            ->where('deleted_at',null)
+            ->groupBy('post_id')
+            ->get();
+        }
+       
         
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");

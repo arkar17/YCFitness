@@ -66,13 +66,17 @@ class AppServiceProvider extends ServiceProvider
             $f = (array)$block;
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
-
-        $left_friends=User::whereIn('id',$n)
+        if($b){
+            $left_friends=User::whereIn('id',$n)
+            ->where('id','!=',$user_id)
+            ->whereNotIn('id',$b)
+            ->paginate(6);
+        }
+        else{
+            $left_friends=User::whereIn('id',$n)
                         ->where('id','!=',$user_id)
-                        ->whereNotIn('id',$b)
                         ->paginate(6);
-
-
+        }
         $groups = DB::table('chat_group_members')
                                 ->select('group_id')
                                 ->groupBy('group_id')
@@ -164,38 +168,66 @@ class AppServiceProvider extends ServiceProvider
     view()->composer('*',function($message){
         if (Auth::check()) {
             $user_id=auth()->user()->id;
-                    $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+                $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)
+                ->get(['sender_id', 'receiver_id'])
+                ->toArray();
                 $b = array();
                 foreach ($block_list as $block) {
                     $f = (array)$block;
                     array_push($b, $f['sender_id'], $f['receiver_id']);
                 }
-                $array =  join(",",$b,); 
-
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
-            from
-                chats
-            join
-                (select user, max(created_at) m
-                    from
-                    (
-                        (select id, to_user_id user, created_at
-                        from chats
-                        where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-                    union
-                        (select id, from_user_id user, created_at
-                        from chats
-                        where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-                        ) t1
-                group by user) t2
-                    on ((from_user_id= $user_id and to_user_id=user) or
-                        (from_user_id=user and to_user_id= $user_id)) and
-                        (created_at = m)
-                    left join users on users.id = user
-                    left join profiles on users.profile_id = profiles.id
-                    where users.id not in ($array)
-                    order by chats.created_at desc");
-// dd($messages);
+                $array =  join(",",$b); 
+                // dd($array);
+            if($array){
+                $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
+                from
+                    chats
+                join
+                    (select user, max(created_at) m
+                        from
+                        (
+                            (select id, to_user_id user, created_at
+                            from chats
+                            where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
+                        union
+                            (select id, from_user_id user, created_at
+                            from chats
+                            where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
+                            ) t1
+                    group by user) t2
+                        on ((from_user_id= $user_id and to_user_id=user) or
+                            (from_user_id=user and to_user_id= $user_id)) and
+                            (created_at = m)
+                        left join users on users.id = user
+                        left join profiles on users.profile_id = profiles.id
+                        where users.id not in ($array)
+                        order by chats.created_at desc");
+            }
+            else{
+                $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
+                from
+                    chats
+                join
+                    (select user, max(created_at) m
+                        from
+                        (
+                            (select id, to_user_id user, created_at
+                            from chats
+                            where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
+                        union
+                            (select id, from_user_id user, created_at
+                            from chats
+                            where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
+                            ) t1
+                    group by user) t2
+                        on ((from_user_id= $user_id and to_user_id=user) or
+                            (from_user_id=user and to_user_id= $user_id)) and
+                            (created_at = m)
+                        left join users on users.id = user
+                        left join profiles on users.profile_id = profiles.id
+                        order by chats.created_at desc");
+            }
+           
 
 
             $groups = DB::table('chat_group_members')
