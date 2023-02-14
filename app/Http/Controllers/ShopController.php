@@ -43,7 +43,6 @@ class ShopController extends Controller
                     ->with('posts')
                     ->first();
         $post = Post::find(17);
-                   
                     // dd($imageData);
         return view('customer.shop.shop',compact('shops'));
     }

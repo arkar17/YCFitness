@@ -1380,9 +1380,9 @@ class SocialMediaController extends Controller
             }
 
             if (!empty($comment_post_count)) {
-                foreach ($comment_post_count as $comment_count) {
-                    $post['comment_count'] = $comment_count->comment_count;
-                }
+                // foreach ($comment_post_count as $comment_count) {
+                    $post['comment_count'] = $comment_post_count->comment_count;
+                // }
             } else {
                 $post['comment_count'] = 0;
             }
