@@ -6,8 +6,10 @@
 
 <section class="index-hero-section ">
     <div class="customer-main-content-container index-hero-text">
-        <h1>Lorem ipsum dolor sit amet consectetur <span>adipiscing elit Ut et.</span></h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien.</p>
+        <h1 style="font-size:85px">YC <span>Fitness</span></h1>
+        <p style="height: 80px">
+        
+        </p> 
         <div class="index-hero-btns-container">
             @guest
             <a href="{{route('login')}}" class="customer-primary-btn">{{__('msg.log in')}}</a>
@@ -39,11 +41,13 @@
             </div>
 
             <div class="index-about-us-text-container">
-                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.</p>
-                <a href="#" class="customer-secondary-btn">
+                <p>
+                    {{__('msg.about_us_p')  }}
+                </p>
+                {{-- <a href="#" class="customer-secondary-btn">
                     Read More
                     <iconify-icon icon="akar-icons:arrow-right" class="readmore-icon"></iconify-icon>
-                </a>
+                </a> --}}
             </div>
         </div>
     </div>
@@ -93,39 +97,41 @@
             </div>
         </div>
         <div class="index-trainer-container">
-            <div class="index-trainer-img-container left-img">
-                <img src="{{ asset('image/trainer1.jpg')}}">
+            <div class="index-trainer-img-container left-img" class="w-100">
+                <img src="{{ asset('trainer/zmk.jpg')}}" >
             </div>
 
             <div class="index-trainer-text-container">
-                <h1>Trainer Name</h1>
+                <h1>{{__('msg.zmk')}}</h1>
                 <p>
                     <iconify-icon icon="ci:double-quotes-r" flip="horizontal" class="index-trainer-icon"></iconify-icon>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.</p>
+                    {{__('msg.zmk_about')}}
+                </p>
             </div>
         </div>
         <div class="index-trainer-container">
             <div class="index-trainer-img-container right-img">
-                <img src="{{ asset('image/trainer2.jpg')}}">
+                <img src="{{ asset('trainer/ppp.jpg')}}">
             </div>
 
             <div class="index-trainer-text-container">
-                <h1>Trainer Name</h1>
+                <h1>{{__('msg.ppp')}}</h1>
                 <p>
                     <iconify-icon icon="ci:double-quotes-r" flip="horizontal" class="index-trainer-icon"></iconify-icon>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.</p>
+                    
+                    {{__('msg.ppp_about')}}</p>
             </div>
         </div>
         <div class="index-trainer-container">
             <div class="index-trainer-img-container left-img">
-                <img src="{{ asset('image/trainer3.jpg')}}">
+                <img src="{{ asset('trainer/tn.jpg')}}">
             </div>
 
             <div class="index-trainer-text-container">
-                <h1>Trainer Name</h1>
+                <h1>{{__('msg.tn')}}</h1>
                 <p>
                     <iconify-icon icon="ci:double-quotes-r" flip="horizontal" class="index-trainer-icon"></iconify-icon>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.</p>
+                    {{__('msg.tn_about')}}</p>
             </div>
         </div>
     </div>
@@ -141,18 +147,8 @@
                 <div class="customer-milestone-stone">
                     <div class="customer-milestone-text-container">
                         <div class="customer-milestone-text">
-                            <p>2017</p>
-                            <span>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.</span>
-                        </div>
-                        <div class="customer-milestone-text-line"></div>
-                    </div>
-                </div>
-                <div class="customer-milestone-path"></div>
-                <div class="customer-milestone-stone">
-                    <div class="customer-milestone-text-container">
-                        <div class="customer-milestone-text">
                             <p>2018</p>
-                            <span>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.</span>
+                            <span>We have started our YC Gym at Dawei, Myanmar.</span>
                         </div>
                         <div class="customer-milestone-text-line"></div>
                     </div>
@@ -162,7 +158,7 @@
                     <div class="customer-milestone-text-container">
                         <div class="customer-milestone-text">
                             <p>2019</p>
-                            <span>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.</span>
+                            <span>We have started our YC Fitness Online Courses.</span>
                         </div>
                         <div class="customer-milestone-text-line"></div>
                     </div>
@@ -172,7 +168,17 @@
                     <div class="customer-milestone-text-container">
                         <div class="customer-milestone-text">
                             <p>2020</p>
-                            <span>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.</span>
+                            <span>Our YC Gym have reached 900 Gym Members.</span>
+                        </div>
+                        <div class="customer-milestone-text-line"></div>
+                    </div>
+                </div>
+                <div class="customer-milestone-path"></div>
+                <div class="customer-milestone-stone">
+                    <div class="customer-milestone-text-container">
+                        <div class="customer-milestone-text">
+                            <p>2021</p>
+                            <span>Our YC Fitness Online Courses have reached over 10000 Members.</span>
                         </div>
                         <div class="customer-milestone-text-line"></div>
                     </div>
@@ -191,8 +197,10 @@
                 <img src="{{ asset('image/appad.png')}}">
             </div>
             <div class="index-appad-text-container">
-                <h1>Lorem ipsum dolor sit amet consectetur adipiscing elit.</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus..</p>
+                <h1>YC Fitness</h1>
+                <p>
+                    You can download apps by visiting the app store or marketplace for your device. Depending on the type of device you have, there are different app stores available. 
+                </p>
                 <div class="index-appad-btns-container">
                     <a href="#" class="index-appad-btn">
                         <iconify-icon icon="cib:google-play" class="index-appad-icon"></iconify-icon>

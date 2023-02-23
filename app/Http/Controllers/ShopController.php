@@ -22,6 +22,9 @@ use App\Models\UserSavedPost;
 use App\Models\ChatGroupMessage;
 use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Client\Response;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ShopController extends Controller
@@ -42,8 +45,9 @@ class ShopController extends Controller
                     ->orWhere('shop_request',3)
                     ->with('posts')
                     ->first();
-        $post = Post::find(17);
-                    // dd($imageData);
+        // $post = Post::find(17);
+       
+        //  dd($fileSize);
         return view('customer.shop.shop',compact('shops'));
     }
 

@@ -15,6 +15,7 @@ use App\Models\Comment;
 use App\Models\Profile;
 use App\Events\Chatting;
 use App\Models\ShopPost;
+use App\Models\BlockList;
 use App\Models\ChatGroup;
 use App\Models\ShopReact;
 use App\Models\Friendship;
@@ -24,13 +25,13 @@ use App\Models\NotiFriends;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Events\MessageDelete;
-use App\Models\BlockList;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -635,11 +636,13 @@ class SocialmediaController extends Controller
             foreach($images as $key=>$value){
                      for($i=0;$i<count($images);$i++){
 
-                        $img_size=File::size(public_path('public/post/'.$value));
+                        $url='https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/'.$value;
+                        $response = Http::get($url);
+                        $fileSize = strlen($response->body());
+                        
+                        // $img_size=File::size(public_path('public/post/'.$value));
 
-                        // $obj['size']=$img_size;
-                        // $obj['name']=$images[$i];
-                        $imageData->$key['size']=$img_size;
+                        $imageData->$key['size']=$fileSize;
                         $imageData->$key['name']=$value;
                         }
 

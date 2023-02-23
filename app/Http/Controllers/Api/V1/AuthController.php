@@ -443,8 +443,11 @@ class AuthController extends Controller
 
     public function logout()
     {
+        
         $user = auth()->user();
         $user->currentAccessToken()->delete();
+        session()->flush();
+        Auth::logout();
         return response()->json([
             "message" => "User successfully logout!"
         ]);

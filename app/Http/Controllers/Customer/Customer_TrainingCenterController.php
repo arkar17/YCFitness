@@ -545,7 +545,7 @@ class Customer_TrainingCenterController extends Controller
 
         // $random_category =  Workout::get()->random()->category;
 
-        $random_category = Cache::remember('random_category', 60*24, function () {
+        $random_category = Cache::remember('random_category', 60*24, function (){
             return Workout::get()->random()->category;
         });
 
@@ -571,7 +571,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('day', $current_day)
             ->where('category',  $random_category)
             ->get();
-            dd($tc_home_workoutplans);
+           // dd($tc_home_workoutplans);
 
             // array_rand()
 

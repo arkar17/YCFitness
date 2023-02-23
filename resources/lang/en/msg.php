@@ -232,6 +232,13 @@ return[
     'create' => 'Create',
     'all' => 'All',
     'block' => 'blocking',
-    'save and calculate BMI' => 'Save and Calculate BMI'
-]
+    'save and calculate BMI' => 'Save and Calculate BMI',
+    'about_us_p' => 'YC fitness is located in Dawei, Tanintharyi. Since its establishment in 2018, it has been trained by 5 trainers. There are over 900 gym members and over 10,000 online members have been trained.',
+    'zmk' => 'Zin Myo Ko',
+    'ppp' => 'Pyae Phyo Paing',
+    'ppp_about'=> 'I first joined, I faced a lot of difficulties because I did not dare to train clients. Encouraged by the success of my teachers, I studied gym knowledge and tried to train myself. I have not succeeded yet, but I am still trying to become a successful trainer like the teachers at the same time. Show motivational videos to clients who have to train themselves. Say motivational words and train. Seeing their bodies change makes me very satisfied and happy.',
+    'zmk_about' => 'I had a hard time being thin, so I started going to the gym. I started to become a trainer in 2018 with the desire to make myself beautiful as well as others. When I started working as a trainer, I faced some difficulties when teaching exercises, but I was strong and did not give up because I wanted others to be beautiful. I am trying to be the best trainer by using happiness as my main motivation. I feel very satisfied when I see the clients change after I train them.',
+    'tn'=>'Tin Naing',
+    'tn_about'=>'I started going to the gym madly because I saw other people\'s beautiful bodies. In 2019, the desire to help others change their bodies, I became a trainer because I wanted to help change my body. As a new trainer, I did not have much experience, so I had some difficulties in training others. I am trying to become a successful trainer by carefully following the teacher\'s teaching with the mind that I must be successful just as my teachers are successful. The members who came to the gym were taught the same method as the teachers. He also always said the motivational phrase that anything is possible if you try. Seeing the people who changed their bodies are happy, our trainers are also very happy.'
+    ]    
 ?>
