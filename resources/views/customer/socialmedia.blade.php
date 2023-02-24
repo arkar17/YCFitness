@@ -62,7 +62,7 @@
                                 @endif
                         </div>
                     </a>
-                    @if ($post->user->id == auth()->user()->id)
+                    @if ($post->user_id == auth()->user()->id)
 
                         <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
                             <div class="post-action">
