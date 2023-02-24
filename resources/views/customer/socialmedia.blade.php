@@ -13,8 +13,15 @@
                 <div class="social-media-post-name-container">
                     <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
                         <?php $profile=$post->user->profiles->first();
-                            $profile_id=$post->user->profile_id;
+                              if($profile != null){
+                                // dd($profile);
+                                $profile_id=$post->user->profile_id;
                                 $img=$post->user->profiles->where('id',$profile_id)->first();
+                              }
+                              else{
+                                $img = null;
+                              }
+                              
                         ?>
                         @if ($img==null)
                             <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
