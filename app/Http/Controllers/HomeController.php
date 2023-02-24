@@ -144,13 +144,22 @@ class HomeController extends Controller
                         array_push($n, $f['sender_id'], $f['receiver_id']);
                     }
                    
-                    $posts = Post::
-                        whereIn('user_id', $n)
-                        ->where('report_status', 0)
-                        ->where('shop_status',0)
-                        ->orderBy('created_at', 'DESC')
-                        ->with('user')
-                        ->paginate(30);
+                    // $posts = Post::
+                    //     whereIn('user_id', $n)
+                    //     ->where('report_status', 0)
+                    //     ->where('shop_status',0)
+                    //     ->orderBy('created_at', 'DESC')
+                    //     ->with('user')
+                    //     ->paginate(30);
+                    $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+                    ->whereIn('posts.user_id', $n)
+                    ->whereNotIn('posts.user_id', $b)
+                    ->where('posts.shop_status',0)
+                    ->where('report_status','!=' ,1)
+                    ->leftJoin('users', 'users.id', 'posts.user_id')
+                    ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                    ->orderBy('posts.created_at', 'DESC')
+                    ->paginate(30);
                     $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                     left join roles on model_has_roles.role_id = roles.id");
                                   $array = \array_filter($b, static function ($element) {
@@ -199,12 +208,19 @@ class HomeController extends Controller
                         array_push($b, $f['sender_id'], $f['receiver_id']);
                     }
                     $n = array();
-                    $posts = Post::where('user_id', $user->id)
-                        ->where('report_status', 0)
-                        ->where('shop_status',0)
-                        ->orderBy('created_at', 'DESC')
-                        ->with('user')
-                        ->paginate(30);
+                    // $posts = Post::where('user_id', $user->id)
+                    //     ->where('report_status', 0)
+                    //     ->where('shop_status',0)
+                    //     ->orderBy('created_at', 'DESC')
+                    //     ->with('user')
+                    //     ->paginate(30);
+                    $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+                    ->where('posts.shop_status',0)
+                    ->where('report_status','!=' ,1)
+                    ->leftJoin('users', 'users.id', 'posts.user_id')
+                    ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                    ->orderBy('posts.created_at', 'DESC')
+                    ->paginate(30);
                        
                     $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                     left join roles on model_has_roles.role_id = roles.id");
@@ -247,6 +263,7 @@ class HomeController extends Controller
                     }
                 }
                 }
+                //  dd($posts);
                         $member_plans = Member::where('member_type', '!=', 'Free')->where('member_type', '!=', 'Gym Member')->get();
                         return view('customer.socialmedia', compact('member_plans','posts'));
             }

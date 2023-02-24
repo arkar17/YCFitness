@@ -8,11 +8,11 @@
         </div>
 
         <ul id="move">
-            <li><img src="../imgs/trainer1.jpg"></li>
+            <li> <img src="{{ asset('trainer/1.jpg')}}"></li>
 
-            <li><img src="../imgs/trainer2.jpg"></li>
+            <li> <img src="{{ asset('trainer/2.jpg')}}"></li>
 
-            <li><img src="../imgs/trainer3.jpg"></li>
+            <li> <img src="{{ asset('trainer/3.jpg')}}"></li>
         </ul>
         <div id="back">
             <
@@ -37,21 +37,21 @@
     <div class="training-center-testimonials-wrapper">
         <div class="training-center-testimonials-container">
             <div class="training-center-testimonial">
-                <img src="../imgs/trainer1.jpg">
-                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+                <img src="{{ asset('trainer/zmk.jpg')}}">
+                <p> {{__('msg.zmk_about')}}</p>
             </div>
             <div class="training-center-testimonial">
-                <img src="../imgs/trainer1.jpg">
-                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+                 <img src="{{ asset('trainer/ppp.jpg')}}">
+                <p> {{__('msg.ppp_about')}}</p>
             </div>
             <div class="training-center-testimonial">
-                <img src="../imgs/trainer1.jpg">
-                <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
+                 <img src="{{ asset('trainer/tn.jpg')}}">
+                <p> {{__('msg.tn_about')}}</p>
             </div>
-            <div class="training-center-testimonial">
-                <img src="../imgs/trainer1.jpg">
+            {{-- <div class="training-center-testimonial">
+                 <img src="{{ asset('trainer/zmk.jpg')}}">
                 <p>Sapien tempor dolor sed gravida augue commodo integer amet viverra.</p>
-            </div>
+            </div> --}}
         </div>
     </div>
 

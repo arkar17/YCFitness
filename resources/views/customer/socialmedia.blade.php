@@ -7,32 +7,22 @@
 
 <div class="social-media-right-container">
     <div class="social-media-posts-parent-container">
-        @foreach ($posts as $post)
+    
+        @foreach ($posts as $post)  
         <div class="social-media-post-container">
             <div class="social-media-post-header">
                 <div class="social-media-post-name-container">
                     <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                        <?php $profile=$post->user->profiles->first();
-                              if($profile != null){
-                                // dd($profile);
-                                $profile_id=$post->user->profile_id;
-                                $img=$post->user->profiles->where('id',$profile_id)->first();
-                              }
-                              else{
-                                $img = null;
-                              }
-                              
-                        ?>
-                        @if ($img==null)
+                        @if ($post->profile_image ==null)
                             <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
                             <img class="nav-profile-img" 
-                            src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $img->profile_image}}"/>
+                            src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $post->profile_image}}"/>
                         @endif
                     </a>
                     <div class="social-media-post-name">
                         <a href="{{route('socialmedia.profile',$post->user_id)}}" style="text-decoration:none">
-                            <p>{{$post->user->name}} 
+                            <p>{{$post->name}} 
                                 {{-- <span style = "color:#4444FF;font-weight:bold"> [G]</span> --}}
                                 @if($post->roles == 'Gold')
                                     <span style = "color:#D1B000;font-weight:bold"> [G]</span>
