@@ -215,4 +215,19 @@ class TrainingCenterController extends Controller
        return redirect()->back()->with('success','Kick Member Successfully');
 
     }
+
+    public function delete_gp(Request $request){
+        $group_users = TrainingUser::where('training_group_id',$request->group_id)->get();
+        foreach($group_users as $gu){
+            User::where('id',$gu->user_id)->update(["ingroup" => 0]);
+        }
+        $group_user_delete = TrainingUser::where('training_group_id',$request->group_id);
+        $group_user_delete->delete();
+        $group_delete = TrainingGroup::where('id',$request->group_id);
+        $group_delete->delete();
+        $group_message_delete = Message::where('training_group_id',$request->group_id);
+        $group_message_delete->delete();
+        Alert::success('Success', 'Group Deleted!');
+        return redirect()->route('traininggroup.create')->with('success','Group Deleted!');
+    }
 }

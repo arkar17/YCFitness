@@ -10,6 +10,7 @@ use App\Models\Report;
 use App\Models\Comment;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\UserReactPost;
 use PhpParser\Node\Expr\New_;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
@@ -103,18 +104,71 @@ class ReportController extends Controller
         $noti =  DB::table('notifications')->where('report_id',$id)->update(['notification_status' => 2]);
 
         $report=Report::findOrFail($id);
-        $report_post=DB::table('reports')
-                                ->where('post_id',$report->post_id)
-                                ->leftjoin('posts','posts.id','reports.post_id')
-                                ->where('posts.report_status',0)
-                                ->get();
-        return view('admin.socialmedia_report.view_report',compact('report'));
+        if($report->post_id != null){
+            $report_post=DB::table('reports')
+            ->select('reports.*','reports.id as report_id','profiles.profile_image','users.name','posts.*')
+            ->where('post_id',$report->post_id)
+            ->leftjoin('posts','posts.id','reports.post_id')
+            ->where('posts.report_status',0)
+            ->leftJoin('users', 'users.id', 'posts.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->first();
+
+            $liked_post = UserReactPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_react_posts.post_id')->get();
+
+            $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('report_status',0)
+            ->where('deleted_at',null)
+            ->groupBy('post_id')
+            ->get();
+            if($report_post){
+            foreach ($report_post as $key => $value) {
+            $report_post->like_count = 0;
+            $report_post->comment_count= 0;
+            foreach ($liked_post_count as $like_count) {
+            if ($like_count->post_id === $report_post->id) {
+                $report_post->like_count = $like_count->like_count;
+                break;
+            } else {
+                $report_post->like_count = 0;
+            }
+            }
+            foreach ($comment_post_count as $comment_count) {
+            if ($comment_count->post_id === $report_post->id) {
+                $report_post->comment_count = $comment_count->comment_count;
+                break;
+            } else {
+                $report_post->comment_count = 0;
+            }
+            }
+            }
+            }
+           
+        }
+        else{
+            $report_post=DB::table('reports')
+            ->select('reports.*','reports.id as report_id','reports.id as report_id','profiles.profile_image','users.name','comments.*')
+            ->where('comments.id',$report->comment_id)
+            ->leftjoin('comments','comments.id','reports.comment_id')
+            ->leftJoin('users', 'users.id', 'comments.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->first();
+            foreach ($report_post as $key => $value) {
+                $report_post->post_id = null;
+            }
+        }
+    //    dd($report_post);
+        return view('admin.socialmedia_report.view_report',compact('report_post'));
     }
 
     public function accept_report($report_id)
     {
         $report=Report::findOrFail($report_id);
-        if($report->post_id != null){
+        //dd($report);
+        if($report->post_id != null or $report->post_id != 0){
+            dd("post");
             $post=Post::findOrFail($report->post_id);
             $post_id=$post->id;
             $post_owner=$post->user_id;
@@ -128,10 +182,11 @@ class ReportController extends Controller
         $post->report_status=1;
         $post->update();
         }
-       elseif($report->comment_id != null){
+       elseif($report->comment_id != null or $report->comment != 0){
+        // dd("comment");
          $comment=Comment::findOrFail($report->comment_id);
          $comment_id=$comment->id;
-         $comment_owner=$comment->user_id;
+         $post_owner=$comment->user_id;
          $admin_id=  auth()->user()->id;
             $rp_posts=Report::where('comment_id',$comment_id)->get();
             foreach($rp_posts as $rp_post){
@@ -154,7 +209,6 @@ class ReportController extends Controller
             );
 
                 $data = 'Removed';
-
                 $description='Against Our Community And Guidelines';
                 $post_rp = new Notification();
                 $post_rp->description = $description;

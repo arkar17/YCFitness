@@ -167,6 +167,10 @@
                         name: 'post_id'
                     },
                     {
+                        data: 'comment_id',
+                        name: 'comment_id'
+                    },
+                    {
                         data: 'action_message',
                         name: 'action_message'
                     },

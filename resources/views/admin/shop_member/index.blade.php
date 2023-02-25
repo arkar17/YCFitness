@@ -133,8 +133,6 @@
             $(document).on('click', '.delete-btn', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');
-                alert(id);
-
                 swal({
                         text: "Are you sure you want to delete?",
                         buttons: true,

@@ -47,9 +47,9 @@
                                     </iconify-icon>
                                     <p>Add Member</p>
                                 </button>
-                                <form action="{{ route('group.delete') }}" style="margin-bottom: 0">
+                                <form action="{{ route('delete_gp') }}" style="margin-bottom: 0" method="GET">
                                     <input type="text" name="group_id" value="{{ $selected_group->id }}" hidden>
-                                    <button class="trainer-view-members-delete-btn customer-red-btn">
+                                    <button class="trainer-view-members-delete-btn customer-red-btn delete-btn" data-id="{{ $selected_group->id }}" >
                                         Delete Group
                                     </button>
                                 </form>
@@ -88,9 +88,9 @@
                                     <input type="text" class="form-control" placeholder="Search member" id="search">
 
                                 </form>
-                                <form action="{{ route('group.delete') }}">
+                                <form action="{{ route('delete_gp') }}" method="GET">
                                     <input type="text" name="group_id" value="{{ $selected_group->id }}" hidden>
-                                    <button class="trainer-view-members-delete-btn customer-red-btn">
+                                    <button class="trainer-view-members-delete-btn customer-red-btn delete-btn" data-id="{{ $selected_group->id }}" >
                                         Delete Group
                                     </button>
                                 </form>
@@ -216,7 +216,6 @@
                 success: function(data) {
                     if (data.status == 200) {
                         alert('Add Member Successfully');
-
                         // $('.add-member-row').load(location.href);
                     } else {
                         alert('Cannot Add Member');
@@ -227,5 +226,23 @@
             })
 
         });
-    });
-</script>
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            @if (Session::has('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ Session::get('success') }}'
+                })
+            @endif
+        });
+    </script>

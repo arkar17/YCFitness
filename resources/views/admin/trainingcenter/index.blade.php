@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@include('sweetalert::alert')
 @section('styles')
     <style>
         .swal2-popup {

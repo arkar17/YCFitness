@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Member;
+use App\Models\Message;
+use App\Models\TrainingUser;
 use Illuminate\Http\Request;
 use App\Models\TrainingGroup;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
-use App\Models\Member;
-use App\Models\TrainingUser;
 
 class TrainingGroupController extends Controller
 {
@@ -139,8 +141,18 @@ class TrainingGroupController extends Controller
      */
     public function destroy($id)
     {
-        $trainingGroup = TrainingGroup::findOrFail($id);
-        $trainingGroup->delete();
+        // $trainingGroup = TrainingGroup::findOrFail($id);
+        // $trainingGroup->delete();
+        $group_users = TrainingUser::where('training_group_id',$id)->get();
+        foreach($group_users as $gu){
+            User::where('id',$gu->user_id)->update(["ingroup" => 0]);
+        }
+        $group_user_delete = TrainingUser::where('training_group_id',$id);
+        $group_user_delete->delete();
+        $group_delete = TrainingGroup::where('id',$id);
+        $group_delete->delete();
+        $group_message_delete = Message::where('training_group_id',$id);
+        $group_message_delete->delete();
         return 'success';
     }
 }

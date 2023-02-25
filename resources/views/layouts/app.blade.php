@@ -199,28 +199,11 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item">
+                    <li class="sidebar-item"  @yield('training-group-active')>
                         <a class="sidebar-link" href="{{ route('traininggroup.create') }}">
-
                             <i class="fa-solid fa-people-group"></i> <span class="align-middle">Training Group</span>
                         </a>
                     </li>
-
-
-                    {{-- <li class="sidebar-item @yield('member-active')">
-
-                        <a class="sidebar-link" href="{{ route('member.index') }}">
-
-                            <i class="fa-solid fa-user-group  align-middle"></i> <span
-
-                                class="align-middle">Member Type</span>
-
-                        </a>
-
-                    </li> --}}
-
-
-
                     <li class="sidebar-item ">
 
                         <a class="sidebar-link" href="#collapseExample" data-mdb-toggle="collapse"

@@ -9,64 +9,51 @@
             <div class="social-media-post-container">
                 <div class="social-media-post-header">
                     <div class="social-media-post-name-container">
-                        @if($report->post_id != null)
-                        <a href="{{route('socialmedia.profile',$report->post->user_id)}}" style="text-decoration:none">
-                            <?php $profile=$report->post->user->profiles->first();
-                                $profile_id=$report->post->user->profile_id;
-                                 $img=$report->post->user->profiles->where('id',$profile_id)->first();
-                            ?>
-                        @elseif($report->comment_id != null)
-                        <a href="{{route('socialmedia.profile',$report->comment->user_id)}}" style="text-decoration:none">
-                            <?php $profile=$report->comment->user->profiles->first();
-                                $profile_id=$report->comment->user->profile_id;
-                                 $img=$report->comment->user->profiles->where('id',$profile_id)->first();
-                            ?>
+                       
+                        @if($report_post->post_id != null)
+                        <a href="{{route('socialmedia.profile',$report_post->user_id)}}" style="text-decoration:none">
+                        @elseif($report_post->comment_id != null)
+                        <a href="{{route('socialmedia.profile',$report_post->user_id)}}" style="text-decoration:none">
                         @endif
-                            @if ($img==null)
+                            @if ($report_post->profile_image==null)
                                 <img class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                             @else
-                                <img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$img->profile_image}}"/>
+                                <img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$report_post->profile_image}}"/>
                             @endif
                         </a>
                         <div class="social-media-post-name">
-                            @if($report->post_id != null)
-                            <a href="{{route('socialmedia.profile',$report->post->user_id)}}" style="text-decoration:none">
-                                <p>{{$report->post->user->name}}</p>
+                            <a href="{{route('socialmedia.profile',$report_post->user_id)}}" style="text-decoration:none">
+                                <p>{{$report_post->name}}</p>
                             </a>
-                            <span>{{ \Carbon\Carbon::parse($report->post->created_at)->format('d M Y , g:i A')}}</span>
-                            @elseif ($report->comment_id != null)
-                            <a href="{{route('socialmedia.profile',$report->comment->user_id)}}" style="text-decoration:none">
-                                <p>{{$report->comment->user->name}}</p>
-                            </a>
-                            @endif
+                            <span>{{ \Carbon\Carbon::parse($report_post->created_at)->format('d M Y , g:i A')}}</span>
                             <div style="margin-left: 300px">
-                                <button class="btn btn-primary" id="accept" data-id="{{$report->id}}"><i class="fa fa-check" ></i>&nbsp;&nbsp;Accept</button>
-                                <button class="btn btn-secondary" id="decline" data-id="{{$report->id}}"><i class="fa fa-times"></i>&nbsp;&nbsp;Decline</button>
+                                <button class="btn btn-primary" id="accept" data-id="{{$report_post->report_id}}"><i class="fa fa-check" ></i>&nbsp;&nbsp;Accept</button>
+                                <button class="btn btn-secondary" id="decline" data-id="{{$report_post->report_id}}"><i class="fa fa-times"></i>&nbsp;&nbsp;Decline</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="social-media-content-container">
-                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                      <div class="alert alert-danger d-flex align-items-center" role="alert">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                         <div>
-                            &nbsp;&nbsp;{{$report->description}}
+                            &nbsp;&nbsp;{{$report_post->description}} 
                         </div>
                       </div>
-                    @if($report->post_id != null)
-                    @if ($report->post->media==null)
-                    <p>{{$report->post->caption}}</p>
+                    @if($report_post->post_id != null)
+                    @if ($report_post->media==null)
+                    <p>{{$report_post->caption}}</p>
                     @else
-                    <p>{{$report->post->caption}}</p>
+                    <p>{{$report_post->caption}}</p>
                     <div class="social-media-media-container">
-                        <?php foreach (json_decode($report->post->media)as $m){?>
+                        <?php foreach (json_decode($report_post->media)as $m){?>
                         <div class="social-media-media">
                             @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                 <video controls>
-                                    <source src="{{asset('storage/post/'.$m) }}">
+                                    <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m }}">
                                 </video>
                             @else
-                                <img src="{{asset('storage/post/'.$m) }}">
+                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m }}">
                             @endif
                         </div>
                         <?php }?>
@@ -78,16 +65,16 @@
                         <div id="image-slider" class="image-slider">
                             <ul class="ul-image-slider">
 
-                                <?php foreach (json_decode($report->post->media)as $m){?>
+                                <?php foreach (json_decode($report_post->media)as $m){?>
                                     @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                     <li>
                                         <video controls>
-                                            <source src="{{asset('storage/post/'.$m) }}">
+                                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m }}">
                                         </video>
                                     </li>
                                     @else
                                         <li>
-                                            <img src="{{asset('storage/post/'.$m) }}" alt="" />
+                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $m }}" alt="" />
                                         </li>
                                     @endif
 
@@ -99,7 +86,7 @@
                         <div id="thumbnail" class="img-slider-thumbnails">
                             <ul>
                                 {{-- <li class="active"><img src="https://40.media.tumblr.com/tumblr_m92vwz7XLZ1qf4jqio1_540.jpg" alt="" /></li> --}}
-                                <?php foreach (json_decode($report->post->media)as $m){?>
+                                <?php foreach (json_decode($report_post->media)as $m){?>
                                     @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
                                     <li>
                                         <video>
@@ -124,41 +111,24 @@
 
                 <div class="social-media-post-footer-container">
                     <div class="social-media-post-like-container">
-                        @php
-                            $total_likes=$report->post->user_reacted_posts->count();
-                            $total_comments=$report->post->comments->count();
-                            $user=auth()->user();
-                            $already_liked=$user->user_reacted_posts->where('post_id',$report->post->id)->count();
-                        @endphp
-
-                        <a class="like" href="#" id="{{$report->post->id}}">
-
-                        @if($already_liked==0)
-                        <iconify-icon icon="mdi:cards-heart-outline" class="like-icon">
-                        </iconify-icon>
-                        @else
-                        <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon already-liked">
-                        </iconify-icon>
-                        @endif
-
-                        </a>
+                       
                         <p>
                             <span class="total_likes">
-                            {{$total_likes}}
+                            {{$report_post->like_count}}
                             </span>
-                            <a href="{{route('social_media_likes',$report->post->id)}}">Likes</a>
+                            <a href="{{route('social_media_likes',$report_post->post_id)}}">Likes</a>
                         </p>
                     </div>
                     <div class="social-media-post-comment-container">
-                        <a href = "{{route('post.comment',$report->post->id)}}">
+                        <a href = "{{route('post.comment',$report_post->post_id)}}">
                         <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
-                        <p><span>{{$total_comments}}</span> Comments</p>
+                        <p><span>{{$report_post->comment_count}}</span> Comments</p>
                         </a>
                     </div>
                 </div>
-                @elseif ($report->comment_id != null )
+                @elseif ($report_post->comment_id != null )
                 <h6 class="h6">Reported Comment</h6>
-                <p>{{$report->comment->comment}}</p>
+                <p>{{$report_post->comment}}</p>
                 @endif
             </div>
         </div>

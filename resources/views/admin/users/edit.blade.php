@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="float-end mt-4">
-                    <a href="{{ route('trainer.index') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route('user.index') }}" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary">Update</button>
                 </div>
             </form>
