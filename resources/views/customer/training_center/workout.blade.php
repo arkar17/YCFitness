@@ -142,7 +142,7 @@
             calories=@json($tc_workouts)[a].calories;
             t_sum+=videoDuration;
             cal_sum+=calories;
-            videoSource[a] = '../../../storage/upload/'+videoSource[a].video;
+            videoSource[a] = 'https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/upload/'+videoSource[a].video;
             workout_id.push(@json($tc_workouts)[a].id);
 
         }

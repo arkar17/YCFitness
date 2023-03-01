@@ -544,15 +544,21 @@ class Customer_TrainingCenterController extends Controller
         $current_day = Carbon::now()->format('l');
 
         // $random_category =  Workout::get()->random()->category;
-
-        $random_category = Cache::remember('random_category', 60*24, function (){
-            return Workout::get()->random()->category;
-        });
-
+        $workout = Workout::count();
+        // dd($workout);
+        if($workout > 0){
+            $random_category = Cache::remember('random_category', 60*24, function (){
+                return Workout::get()->random()->category;
+            });
+        }
+        else{
+            $random_category = null;
+        }      
+        // dd($random_category, "dddd");
 
         //Storage::disk('local')->put('aa', $random_category);
-
-        $tc_gym_workoutplans = DB::table('workouts')
+        if($random_category){
+            $tc_gym_workoutplans = DB::table('workouts')
             ->where('workout_plan_type', $workout_plan)
             ->where('place', 'gym')
             ->where('member_type', $user->member_type)
@@ -571,13 +577,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('day', $current_day)
             ->where('category',  $random_category)
             ->get();
-           // dd($tc_home_workoutplans);
-
-            // array_rand()
-
-            // for($i=1;$i<=$tc_home_workoutplans->count();$i++){
-
-            // }
+           
 
             $time_sum = 0;
 
@@ -600,6 +600,17 @@ class Customer_TrainingCenterController extends Controller
                 $time_sum_home+=$home->estimate_time;
             }
             //dd($tc_home_workoutplans);
+        }
+        else{
+            $tc_gym_workoutplans = array();
+            $tc_home_workoutplans = array();
+            $time_sum = 0;
+            $c_sum = 0;
+            $time_sum_home = 0;
+            $c_sum_home = 0;
+        }
+            
+
 
         return view('customer.training_center.workout_plan', compact('tc_gym_workoutplans', 'tc_home_workoutplans', 'time_sum', 'c_sum', 'time_sum_home', 'c_sum_home',));
     }

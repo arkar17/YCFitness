@@ -61,7 +61,7 @@
                     <div class="customer-workout-plan-workout-container">
                         <div class="customer-workout-plan-video-container">
                             <video>
-                                <source src="{{asset('/storage/upload/'.$workout->video)}}" type="video/mp4">
+                                <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/upload/{{$workout->video}}" type="video/mp4">
                             </video>
                         </div>
 
@@ -142,7 +142,7 @@
                 <div class="customer-workout-plan-workout-container">
                     <div class="customer-workout-plan-video-container">
                         <video>
-                            <source src="{{asset('/storage/upload/'.$workout->video)}}" type="video/mp4">
+                            <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/upload/{{$workout->video}}" type="video/mp4">
                         </video>
 
 
