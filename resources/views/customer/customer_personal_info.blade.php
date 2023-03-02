@@ -38,15 +38,24 @@
         <div class="training-center-testimonials-container">
             <div class="training-center-testimonial">
                 <img src="{{ asset('trainer/zmk.jpg')}}">
-                <p> {{__('msg.zmk_about')}}</p>
+                <h6 class="text-center my-2 font-weight-bold">{{__('msg.zmk')}}</h6>
+                <p style="text-indent:2em"> {{__('msg.zmk_about1')}}</p>
+                <p style="text-indent:2em"> {{__('msg.zmk_about2')}}</p>
+                <p style="text-indent:2em"> {{__('msg.zmk_about3')}}</p>
             </div>
             <div class="training-center-testimonial">
                  <img src="{{ asset('trainer/ppp.jpg')}}">
-                <p> {{__('msg.ppp_about')}}</p>
+                <h6 class="text-center my-2 font-weight-bold">{{__('msg.ppp')}}</h6>
+                <p style="text-indent:2em"> {{__('msg.zmk_about1')}}</p>
+                <p style="text-indent:2em"> {{__('msg.zmk_about2')}}</p>
+                <p style="text-indent:2em"> {{__('msg.zmk_about3')}}</p>
             </div>
             <div class="training-center-testimonial">
                  <img src="{{ asset('trainer/tn.jpg')}}">
-                <p> {{__('msg.tn_about')}}</p>
+                 <h6 class="text-center my-2 font-weight-bold">{{__('msg.tn')}}</h6>
+                 <p style="text-indent:2em"> {{__('msg.tn_about1')}}</p>
+                 <p style="text-indent:2em"> {{__('msg.tn_about2')}}</p>
+                 <p style="text-indent:2em"> {{__('msg.tn_about3')}}</p>
             </div>
             {{-- <div class="training-center-testimonial">
                  <img src="{{ asset('trainer/zmk.jpg')}}">
