@@ -1094,7 +1094,7 @@ ul#move li:nth-child(5) {
 .training-center-testimonials-wrapper{
 
     width: 100%;
-    overflow-x: auto;
+    /* overflow-x: auto; */
     /* white-space: nowrap; */
 }
 
@@ -1110,7 +1110,7 @@ ul#move li:nth-child(5) {
 }
 
 .training-center-testimonial{
-    width: 350px;
+    width: 100px;
     border-radius: 10px;
     height: 350px;
     box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.25);
