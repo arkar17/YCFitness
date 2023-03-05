@@ -102,6 +102,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('/socialmedia/message/seeall', [SocialmediaController::class, 'see_all_message'])->name('message.seeall');
         Route::get('/socialmedia/message/chat/{id}', [SocialmediaController::class, 'chat_message'])->name('message.chat');
+        Route::get('/socialmedia/message/chat_admin', [SocialmediaController::class, 'chat_message_admin'])->name('message.chat.admin');
 
         Route::get('/socialmedia/message/deletechat', [SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
         Route::get('/socialmedia/message/viewmedia/{id}', [SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
@@ -224,7 +225,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
     Route::middleware(['role:Trainer'])->group(function () {
-        Route::get('/trainer', [TrainerManagementConntroller::class, 'index'])->name('trainer');
+        Route::get('/trainers', [TrainerManagementConntroller::class, 'index'])->name('trainers');
+        // Route::get('/test', [TrainerManagementConntroller::class, 'index'])->name('test');
+        // Route::get('/test')
         Route::post('/trainer/group/create', [TrainerGroupController::class, 'store'])->name('trainer.group.create');
         Route::post('trainer/view_member/search/{id}', [TrainerManagementConntroller::class, 'showMember'])->name('trainer/member/search');
         Route::get('/trainer/view_member/{id}', [TrainerManagementConntroller::class, 'view_member'])->name('trainer/view_member');

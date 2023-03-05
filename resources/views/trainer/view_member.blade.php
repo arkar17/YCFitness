@@ -7,7 +7,7 @@
                 <p>Groups</p>
                 <div class="trainer-group-chats-container">
                     @forelse ($groups as $group)
-                        <a href ="{{route('trainer')}}" class="tainer-group-chat-name-container" id="group-chat" value="{{ $group->id }}"
+                        <a href ="{{route('trainers')}}" class="tainer-group-chat-name-container" id="group-chat" value="{{ $group->id }}"
                             data-id="{{ $group->id }}"
                             style=" background-color: transparent;background-repeat: no-repeat;border: none;cursor: pointer;overflow: hidden;outline: none;">
                             <img src="{{ asset('image/default.jpg') }}" />

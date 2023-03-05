@@ -117,7 +117,12 @@ class HomeController extends Controller
             } elseif (Auth::user()->hasRole('Queen')) {
                 $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
                 return view('admin.home', compact('member_plans','free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
-            } else {
+            } 
+             elseif (Auth::user()->hasRole('Admin')) {
+                $member_plans = Member::where('member_type', '!=', 'Gym Member')->get();
+                return view('admin.home', compact('member_plans','free_user', 'platinum_user', 'gold_user', 'diamond_user', 'ruby_user', 'rubyp_user','mon','monNum','aa','months_filter','monthCount_filter'));
+            }
+            else {
                     $user = auth()->user();
                     $user_id = $user->id;
                     $id = auth()->user()->id;
@@ -144,13 +149,6 @@ class HomeController extends Controller
                         array_push($n, $f['sender_id'], $f['receiver_id']);
                     }
                    
-                    // $posts = Post::
-                    //     whereIn('user_id', $n)
-                    //     ->where('report_status', 0)
-                    //     ->where('shop_status',0)
-                    //     ->orderBy('created_at', 'DESC')
-                    //     ->with('user')
-                    //     ->paginate(30);
                     $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                     ->whereIn('posts.user_id', $n)
                     ->whereNotIn('posts.user_id', $b)

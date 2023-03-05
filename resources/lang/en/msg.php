@@ -249,5 +249,6 @@ return[
     'tn_about1' => 'I started going to the gym madly because I saw other people/s beautiful bodies. In 2019, the desire to help others change their bodies, I became a trainer because I wanted to help change my body. As a new trainer, I did not have much experience, so I had some difficulties in training others. ',
     'tn_about2' => 'I am trying to become a successful trainer by carefully following the teacher/s teaching with the mind that I must be successful just as my teachers are successful. The members who came to the gym were taught the same method as the teachers.',
     'tn_about3' => 'He also always said the motivational phrase that anything is possible if you try. Seeing the people who changed their bodies are happy, our trainers are also very happy.',
+    'chatwithadmin' => 'Contact Us'
     ]    
 ?>

@@ -28,12 +28,24 @@
 </div>
 
 <section class="training-center-testimonials-section">
-    <div class="section-header">
-        <p>{{__('msg.our testimonials')}}</p>
-        <div class="section-header-underline">
-
-        </div>
+    <div class="" style="float: right">
+        {{-- <button type="submit" class="customer-primary-btn create-group-submit-btn">{{__('msg.chatwithadmin')}}</button> --}}
+        <a href="{{route('message.chat.admin')}}" class="customer-primary-btn add-friend-btn">
+            <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon"></iconify-icon>
+            <p>{{__('msg.chatwithadmin')}}</p>
+        </a>
     </div>
+    <div class="section-header">
+        <div>
+            <p>{{__('msg.our testimonials')}}</p>
+            <div class="section-header-underline">
+    
+            </div>
+        </div>
+        
+        
+    </div>
+    
     <div class="training-center-testimonials-wrapper">
         <div class="training-center-testimonials-container">
             <div class="training-center-testimonial">
@@ -46,9 +58,9 @@
             <div class="training-center-testimonial">
                  <img src="{{ asset('trainer/ppp.jpg')}}">
                 <h6 class="text-center my-2 font-weight-bold">{{__('msg.ppp')}}</h6>
-                <p style="text-indent:2em"> {{__('msg.zmk_about1')}}</p>
-                <p style="text-indent:2em"> {{__('msg.zmk_about2')}}</p>
-                <p style="text-indent:2em"> {{__('msg.zmk_about3')}}</p>
+                <p style="text-indent:2em"> {{__('msg.ppp_about1')}}</p>
+                <p style="text-indent:2em"> {{__('msg.ppp_about2')}}</p>
+                <p style="text-indent:2em"> {{__('msg.ppp_about3')}}</p>
             </div>
             <div class="training-center-testimonial">
                  <img src="{{ asset('trainer/tn.jpg')}}">

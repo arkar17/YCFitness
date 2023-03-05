@@ -40,6 +40,14 @@ class UserSeeder extends Seeder
         $user->assignRole('System_Admin');
 
         $user =User::create([
+            'name'=>'admin',
+            'email' =>'admin@gmail.com',
+            'phone'=>'09123456788',
+            'password' => Hash::make('12345678'),
+           ]);
+        $user->assignRole('Admin');
+
+        $user =User::create([
             'name'=>'trainer',
             'email' =>'trainer@gmail.com',
             'phone'=>'09123456789',

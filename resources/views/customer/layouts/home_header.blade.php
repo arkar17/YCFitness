@@ -40,9 +40,9 @@
             <a href="{{route('groups')}}">Training Center</a>
             @endhasanyrole
             @hasanyrole('Trainer')
-            <a href="{{route('trainer')}}">Training Center</a>
+            <a href="{{route('trainers')}}">Training Center</a>
             @endhasanyrole
-            @hasanyrole('System_Admin')
+            @hasanyrole('System_Admin|King|Queen')
             <a href="{{route('home')}}">Dashboard</a>
             @endhasanyrole
             @auth

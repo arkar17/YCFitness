@@ -108,7 +108,93 @@
 
                     </li>
 
+                    @hasanyrole('Admin')
+                    <li class="sidebar-item @yield('dashboard-active')">
 
+                        <a class="sidebar-link" href="{{ route('home') }}">
+
+                            <i class="fa-solid fa-layer-group align-middle "></i>
+
+                            <span class="align-middle">Dashboard</span>
+
+                        </a>
+
+                    </li>
+
+                    <li class="sidebar-item @yield('request-active')">
+
+                        <a class="sidebar-link" href="{{ route('request.index') }}">
+
+                            <i class="fa-solid fa-user-group align-middle"></i> <span
+                                class="align-middle">Request</span>
+                            @if ($memberRequest_count < 1)
+                                <span></span>
+                            @else
+                                <span class="badge badge-light">{{ $memberRequest_count }}</span>
+                            @endif
+                        </a>
+
+                    </li>
+
+                    <li class="sidebar-item @yield('shop_request-active')">
+
+                        <a class="sidebar-link" href="{{ route('admin.shop_request') }}">
+
+                            <i class="fa-solid fa-shop"></i> <span
+
+                                class="align-middle">Shop Request</span>
+                                @if ($shopRequest_count < 1)
+                                <span></span>
+                               @else
+                               <span class="badge badge-light">{{ $shopRequest_count }}</span>
+                               @endif
+
+                        </a>
+
+                    </li>
+
+                    
+                    <li class="sidebar-item @yield('user-active') ">
+
+                        <a class="sidebar-link" href="{{ route('user.index') }}">
+
+                            <i class="fa-solid fa-users align-middle "></i> <span class="align-middle">Users</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item ">
+
+                        <a class="sidebar-link" href="#collapseExample" data-mdb-toggle="collapse"
+                            aria-expanded="false" aria-controls="collapseExample">
+
+                            <i class="fa-solid fa-m"></i>
+
+                            <span class="align-middle">Member</span>
+
+                        </a>
+
+                    <li class="collapse mt-3" id="collapseExample">
+
+                        <a class="sidebar-link text-white" href="{{ route('member.user_member') }}">
+
+                            <i class="fa-solid fa-user-group  align-middle"></i>
+
+                            <span class="align-middle">Members</span>
+
+                        </a>
+
+                        <a class="sidebar-link text-white" href="{{ route('member.index') }}">
+
+                            <i class="fa-solid fa-plus"></i>
+
+                            <span class="align-middle">Create Member Type</span>
+
+                        </a>
+
+                    </li>
+                    </li>
+                    @endhasanyrole
+                    @hasanyrole('System_Admin|King|Queen')
 
                     <li class="sidebar-item @yield('dashboard-active')">
 
@@ -146,6 +232,11 @@
                             <i class="fa-solid fa-shop"></i> <span
 
                                 class="align-middle">Shop Request</span>
+                                @if ($shopRequest_count < 1)
+                                <span></span>
+                               @else
+                               <span class="badge badge-light">{{ $shopRequest_count }}</span>
+                               @endif
 
                         </a>
 
@@ -337,7 +428,7 @@
                         </a>
 
                     </li>
-
+                    @endhasanyrole
                 </ul>
 
             </div>

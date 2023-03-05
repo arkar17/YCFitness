@@ -948,15 +948,26 @@ class SocialmediaController extends Controller
             ->update(['friend_status' => 2, 'date' =>  Carbon::Now()->toDateTimeString()]);
 
         $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'cluster' => 'eu',
             'encrypted' => true
         );
+        // dd($options);
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
             $options
         );
+        // $pusher = new Pusher(
+        //     env('PUSHER_APP_KEY'),
+        //     env('PUSHER_APP_SECRET'),
+        //     env('PUSHER_APP_ID'),
+        //     [
+        //         'cluster' => env('PUSHER_APP_CLUSTER'),
+        //         'encrypted' => true
+        //     ]
+        // );
+       // dd($pusher);
 
         $data = $user->name . ' accepted your friend request!';
 
@@ -1347,6 +1358,73 @@ class SocialmediaController extends Controller
     }
 
 
+    public function chat_message_admin()
+    {
+        $id = 4;
+        $auth_user = auth()->user();
+
+        $messages = Chat::where(function ($que) use ($id) {
+            $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+        })->where(function ($query) use ($auth_user) {
+            $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+        })->get();
+
+
+        foreach ($messages as $mess) {
+
+            if ($mess->delete_status == 1 && $mess->deleted_by == $auth_user->id) {
+                $messages = Chat::where('delete_status', 0)->orWhere(function ($q) use ($auth_user) {
+                    $q->where('delete_status', 1)->where('deleted_by', '!=', $auth_user->id);
+                })->where(function ($que) use ($id) {
+                    $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+                })->where(function ($query) use ($auth_user) {
+                    $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+                })->get();
+            }
+            if ($mess->delete_status == 2) {
+                $messages = Chat::where('delete_status', 0)->orWhere(function ($q) use ($auth_user) {
+                    $q->where('delete_status', 1)->where('deleted_by', '!=', $auth_user->id);
+                })->where(function ($que) use ($id) {
+                    $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+                })->where(function ($query) use ($auth_user) {
+                    $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+                })->get();
+            }
+        }
+
+
+        $auth_user_name = auth()->user()->name;
+        $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
+
+        $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
+
+        $auth = Auth()->user()->id;
+        $user = User::where('id', $auth)->first();
+
+        $friendships = DB::table('friendships')
+            ->where('friend_status', 2)
+            ->where(function ($query) use ($id) {
+                $query->where('sender_id', $id)
+                    ->orWhere('receiver_id', $id);
+            })
+            ->join('users as sender', 'sender.id', 'friendships.sender_id')
+            ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+            ->get(['sender_id', 'receiver_id'])->toArray();
+        //dd($friends);
+        $n = array();
+        foreach ($friendships as $friend) {
+            $f = (array)$friend;
+            array_push($n, $f['sender_id'], $f['receiver_id']);
+        }
+        $friends = User::select('users.name', 'users.id')
+            ->whereIn('id', $n)
+            ->where('id', '!=', $user->id)
+            ->get();
+
+        return view('customer.chat_with_admin', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
+    }
+
+
     public function viewmedia_message($id)
     {
         $auth_user = auth()->user();
@@ -1383,6 +1461,9 @@ class SocialmediaController extends Controller
         $receiver_user = User::findOrFail($id);
         return view('customer.chat_view_media', compact('id', 'messages', 'auth_user_name', 'receiver_user'));
     }
+
+
+    
 
     public function hide_message(Request $request)
     {

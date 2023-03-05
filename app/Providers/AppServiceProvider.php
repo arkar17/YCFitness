@@ -292,7 +292,16 @@ class AppServiceProvider extends ServiceProvider
             $count->with('memberRequest_count', $memberRequest_count);
         }
     });
-
+    view()->composer('*',function($count){
+        if (Auth::check()) {
+            $shopRequest =  DB::table('users')
+                                ->where('users.shop_request',1)
+                                ->orWhere('users.shop_request',3)
+                                ->get();
+            $shopRequest_count=$shopRequest->count();
+            $count->with('shopRequest_count', $shopRequest_count);
+        }
+    });
     
 
     }

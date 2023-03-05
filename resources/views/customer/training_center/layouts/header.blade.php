@@ -46,7 +46,7 @@
             @endhasanyrole
 
             @hasanyrole('Trainer')
-            <a href="{{route('trainer')}}">{{__('msg.training center')}}</a>
+            <a href="{{route('trainers')}}">{{__('msg.training center')}}</a>
             @endhasanyrole
             @auth
             <div class="customer-dropdown-container">
