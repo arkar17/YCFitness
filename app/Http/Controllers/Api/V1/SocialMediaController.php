@@ -1655,6 +1655,42 @@ class SocialMediaController extends Controller
         $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
     }
 
+    public function chatting_admin(Request $request, User $user)
+    {
+    //    dd($request);
+     $id = User::whereHas('roles', function ($query) {
+        $query->where('name', '=', 'admin');
+    })->first();
+    $to_user_id = $id->id;
+        if ($request->text == null && $request->fileSend == null) {
+        } else {
+            $message = new Chat();
+            $sendFile = $request->all();
+            if ($request->totalFiles != 0) {
+                $files = $sendFile['fileSend'];
+                if ($sendFile['fileSend']) {
+                    foreach ($files as $file) {
+                        $extension = $file->extension();
+                        $name = rand() . "." . $extension;
+                        $file->storeAs('/public/customer_message_media/', $name);
+                        $imgData[] = $name;
+                        $message->media = json_encode($imgData);
+                        $message->text = null;
+                    }
+                }
+            } else {
+                $message->text = $request->text;
+                $message->media = null;
+            }
+
+            $message->from_user_id = auth()->user()->id;
+            $message->to_user_id = $to_user_id;
+            $message->save();
+           // dd($request->sender);
+            broadcast(new Chatting($message, $request->sender));
+        }
+    }
+
     public function group_chatting(Request $request, $id)
     {
         if ($request->text == null && $request->fileSend == null) {
@@ -1984,9 +2020,76 @@ class SocialMediaController extends Controller
 
 }
 
+public function chat_admin(Request $request)
+{
+    $message = new Chat();
+    $input = $request->all();
+    $id = User::whereHas('roles', function ($query) {
+        $query->where('name', '=', 'admin');
+    })->first();
+    $to_user_id = $id->id;
+    if ($input['images']) {
+
+        $images = $input['images'];
+        $filenames = $input['filenames'];
+        foreach ($images as $index => $file) {
+            $tmp = base64_decode($file);
+            $file_name = $filenames[$index];
+            Storage::put(
+                'public/customer_message_media/' . $file_name,
+                $tmp,'public'
+            );
+            $imgData[] = $file_name;
+            $message->media = json_encode($imgData);
+        }
+    } else {
+            $message->media = null;
+    }
+    $message->from_user_id = auth()->user()->id;
+    $message->to_user_id = $to_user_id;
+    $message->text = $request->text == null ?  null : $request->text;
+    $message->save();
+    $message_id = $message->id;
+    $message = Chat::select('chats.*','profiles.profile_image')
+                ->leftJoin('users','users.id','chats.from_user_id')
+                ->leftJoin('profiles','users.profile_id','profiles.id')
+                ->where('chats.id',$message_id)
+                ->first();
+    broadcast(new Chatting($message, $request->sender));
+    return response()->json([
+        'success' =>  $message
+    ]);
+}
+
     public function chat_messages(Request $request)
     {
+       
         $id = $request->id;
+        $auth_user = auth()->user();
+     
+            $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
+            and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
+            $receiver_user = User::select('users.id', 'users.name', 'profiles.profile_image')
+                ->where('users.id', $id)
+                ->leftjoin('profiles', 'profiles.id', 'users.profile_id')->first();
+            foreach ($messages as $key => $value) {
+                $messages[$key]->profile_image = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
+            }
+    
+
+        return response()->json([
+            'messages' => $messages
+        ]);
+    }
+
+
+    public function chat_messages_admin()
+    {
+        $to_user_id = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $id = $to_user_id->id;
+       
         $auth_user = auth()->user();
         if ($request->is_group == 0) {
             $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
@@ -2024,6 +2127,29 @@ class SocialMediaController extends Controller
     {
         $auth_user = auth()->user();
         $id = $request->id;
+        if ($request->is_group == 0) {
+            $messages = Chat::select('id', 'media')->where(function ($query) use ($auth_user) {
+                $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+            })->where(function ($que) use ($id) {
+                $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+            })->where('media', '!=', null)->get();
+        } else {
+            $messages = ChatGroupMessage::select('id', 'media')->where('chat_group_messages.group_id', $id)
+                ->where('chat_group_messages.media', '!=', null)
+                ->get();
+        }
+        return response()->json([
+            'messages' => $messages
+        ]);
+    }
+
+    public function view_media_message_admin()
+    {
+        $auth_user = auth()->user();
+        $to_user_id = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $id = $to_user_id->id;
         if ($request->is_group == 0) {
             $messages = Chat::select('id', 'media')->where(function ($query) use ($auth_user) {
                 $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
@@ -3045,6 +3171,9 @@ class SocialMediaController extends Controller
             'success' => 'Deleted Success'
         ]);
     }
+
+
+
 
     public function post_report(Request $request)
     {

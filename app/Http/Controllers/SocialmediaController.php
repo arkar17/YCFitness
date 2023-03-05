@@ -1360,7 +1360,11 @@ class SocialmediaController extends Controller
 
     public function chat_message_admin()
     {
-        $id = 4;
+        $id = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->pluck('id');
+        // dd($admin);
+        // $id = 4;
         $auth_user = auth()->user();
 
         $messages = Chat::where(function ($que) use ($id) {
@@ -1368,6 +1372,8 @@ class SocialmediaController extends Controller
         })->where(function ($query) use ($auth_user) {
             $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
         })->get();
+        
+        //dd($messages);
 
 
         foreach ($messages as $mess) {

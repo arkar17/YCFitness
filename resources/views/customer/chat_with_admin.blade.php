@@ -1,4 +1,4 @@
-@extends('customer.training_center.layouts.app')
+@extends('customer.layouts.app_home')
 @section('styles')
     <style>
         .chat-backdrop {
@@ -593,13 +593,13 @@
             }
 
             if (messageInput != null) {
-                axios.post('/api/message/chat/' + recieveUserId, {
+                axios.post('/api/message/chat_admin/' , {
                     text: messageInput.value,
                     sender: auth_user_name
                 }).then();
                 messageInput.value = "";
             } else {
-                axios.post('/api/message/chat/' + recieveUserId, formData).then();
+                axios.post('/api/message/chat_admin/' , formData).then();
                 clearAddPost()
 
             }
