@@ -1266,10 +1266,7 @@ class SocialmediaController extends Controller
         })->where(function ($query) use ($auth_user) {
             $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
         })->get();
-
-
         foreach ($messages as $mess) {
-
             if ($mess->delete_status == 1 && $mess->deleted_by == $auth_user->id) {
                 $messages = Chat::where('delete_status', 0)->orWhere(function ($q) use ($auth_user) {
                     $q->where('delete_status', 1)->where('deleted_by', '!=', $auth_user->id);

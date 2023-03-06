@@ -1,4 +1,4 @@
-@extends('customer.layouts.app_home')
+@extends('customer.layouts.chat_admin')
 @section('styles')
     <style>
         .chat-backdrop {
