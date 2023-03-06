@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -533,6 +533,49 @@
 
             <main class="content">
 
+                <div class="social-media-left-container-trigger">
+                    {{__('msg.friends')}}
+                    <iconify-icon icon="bi:arrow-right" class="arrow-icon"></iconify-icon>
+                </div>
+        
+                <div class="social-media-overlay"></div>
+        
+                <div class="social-media-parent-container">
+                    <div class="social-media-left-container">
+                        <div class="social-media-left-search-cancel-container">
+                          
+                        </div>
+                        <div class="social-media-left-infos-container">
+                            <div class="social-media-left-friends-container">
+                               
+                                <div class="social-media-left-friends-rows-container">
+        
+                              
+                                </div>
+        
+                            </div>
+        
+        
+                            <div class="social-media-left-messages-container">
+                                <div class="social-media-left-container-header">
+                                    <p id="messages">{{__('msg.messages')}}</p>
+                                    <a href="{{ route('message.seeall') }}">{{__('msg.see all')}}<iconify-icon icon="bi:arrow-right"
+                                            class="arrow-icon"></iconify-icon></a>
+                                </div>
+        
+                                <div class="social-media-left-messages-rows-container">
+                                   
+        
+                                </div>
+                            </div>
+
+                        </div>
+        
+                        <div class="social-media-left-searched-items-container">
+        
+                        </div>
+        
+                    </div>
                 <div class="container-fluid p-0">
 
                     @yield('content')

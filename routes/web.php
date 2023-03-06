@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\RequestAcceptDeclineController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
+use App\Http\Controllers\Admin\ChatWithAdminController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/locale/change', [HomeController::class, 'lang'])->name('langChange');
@@ -244,7 +245,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Route::prefix('admin')->group(function () {
 
-        Route::middleware(['role:System_Admin|King|Queen'])->group(function () {
+        Route::middleware(['role:System_Admin|King|Queen|Admin'])->group(function () {
             // Route::middleware('auth')->group(function () {
 
             //Route::get('/', [AdminController::class, 'index'])->name('admin-home');
@@ -370,11 +371,15 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('request/shop/datatable/ssd', [ShopRequestController::class, 'ssd']);
 
 
-            Route::get('chat_with_admin', [ChatWithAdminController::class, 'user_list'])->name('chat_with_admin');
+            
 
 
         });
     }); //admin prefix
+
+    Route::middleware(['role:Admin'])->group(function () {
+        Route::get('chat_with_admin', [ChatWithAdminController::class, 'user_list'])->name('admin.chat_with_admin');
+    });
 
     Route::middleware(['role:Free'])->group(function () {
         Route::get('/free', [TrainerManagementConntroller::class, 'free'])->name('free');
