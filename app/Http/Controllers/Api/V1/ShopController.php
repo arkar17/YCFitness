@@ -427,7 +427,7 @@ class ShopController extends Controller
         })->first();
         $to_user_id = $id->id;
         return response()->json([
-            'receiver_id' => $to_user_id;
+            'receiver_id' => $to_user_id
         ]);
     }
 }
