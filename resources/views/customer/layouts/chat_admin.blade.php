@@ -295,8 +295,7 @@
                         @csrf
                         @method('POST') --}}
                     <div class="addpost-caption">
-                        <p>{{ __('msg.post caption') }}</p>
-                        <textarea placeholder="Caption goes here..." name="caption" id="addPostCaption" class="addpost-caption-input"></textarea>
+                        
                     </div>
 
                     <div class="addpost-photovideo">
@@ -386,11 +385,11 @@
             <a class="back-btn" href="javascript:history.back()">
                 <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
             </a>
-            <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal"
+            {{-- <button class="social-media-addpost-btn customer-primary-btn" data-bs-toggle="modal"
                 data-bs-target="#addPostModal">
                 <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                 <p>{{ __('msg.add post') }}</p>
-            </button>
+            </button> --}}
         </div>
 
         <div class="social-media-left-container-trigger">

@@ -420,4 +420,14 @@ class ShopController extends Controller
             'success' => 'rated'
         ]);
     }
+
+    public function admin_id(){
+        $id = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $to_user_id = $id->id;
+        return response()->json([
+            'receiver_id' => $to_user_id;
+        ]);
+    }
 }

@@ -138,7 +138,7 @@
 @section('content')
 <div class="customer-main-content-container" style="width:60%">
 
-    <div class="social-media-header-btns-container margin-top"></div>
+    <div class="social-media-header-btns-container"></div>
     <div class="chat-backdrop"></div>
 
     <div class="social-media-right-container">
@@ -159,14 +159,14 @@
             </div>
 
             <div class="chat-header-call-icons-container">
-                <a class="audiocallIcn" onclick="placeCallAudio('{{ $receiver_user->id }}','{{ $receiver_user->name }}')"
+                {{-- <a class="audiocallIcn" onclick="placeCallAudio('{{ $receiver_user->id }}','{{ $receiver_user->name }}')"
                     data-id="{{ $receiver_user->id }}">
                     <iconify-icon icon="ant-design:phone-outlined" class="chat-header-phone-icon"></iconify-icon>
                 </a>
                 <a class="videocallIcn" onclick="placeCall('{{ $receiver_user->id }}','{{ $receiver_user->name }}')"
                     data-id="{{ $receiver_user->id }}">
                     <iconify-icon icon="eva:video-outline" class="chat-header-video-icon"></iconify-icon>
-                </a>
+                </a> --}}
                 <a href="{{ route('message.viewmedia', $receiver_user->id) }}" class="group-chat-view-midea-link">
                     <p>{{__('msg.view media')}}</p>
                     <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
