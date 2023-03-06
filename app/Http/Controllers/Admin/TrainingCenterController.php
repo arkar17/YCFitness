@@ -74,6 +74,13 @@ class TrainingCenterController extends Controller
         return view('admin.trainingcenter.chat_message', compact('chat_messages','groups','group_data'));
     }
 
+    public function chat_message_admin($id){
+        $group_data=TrainingGroup::where('id',$id)->first();
+        $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
+        $chat_messages = Message::where('training_group_id', $id)->get();
+        return view('admin.trainingcenter.chat_message', compact('chat_messages','groups','group_data'));
+    }
+
     public function view_media($id){
         $groups=TrainingGroup::where('trainer_id',auth()->user()->id)->get();
         $group_data=TrainingGroup::where('id',$id)->first();

@@ -368,6 +368,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('shop/request/accept/{id}', [ShopRequestController::class, 'request_accept'])->name('admin.shop_request.accept');
             Route::get('shop/request/decline/{id}', [ShopRequestController::class, 'request_decline'])->name('admin.shop_request.decline');
             Route::get('request/shop/datatable/ssd', [ShopRequestController::class, 'ssd']);
+
+
+            Route::get('chat_with_admin', [ChatWithAdminController::class, 'user_list'])->('chat_with_admin');
+
+
         });
     }); //admin prefix
 
