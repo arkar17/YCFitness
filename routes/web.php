@@ -370,7 +370,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('request/shop/datatable/ssd', [ShopRequestController::class, 'ssd']);
 
 
-            Route::get('chat_with_admin', [ChatWithAdminController::class, 'user_list'])->('chat_with_admin');
+            Route::get('chat_with_admin', [ChatWithAdminController::class, 'user_list'])->name('chat_with_admin');
 
 
         });
