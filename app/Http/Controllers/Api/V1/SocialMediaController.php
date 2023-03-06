@@ -2063,32 +2063,8 @@ public function chat_admin(Request $request)
 
     public function chat_messages(Request $request)
     {
-       
         $id = $request->id;
-        $auth_user = auth()->user();
-     
-            $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
-            and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
-            $receiver_user = User::select('users.id', 'users.name', 'profiles.profile_image')
-                ->where('users.id', $id)
-                ->leftjoin('profiles', 'profiles.id', 'users.profile_id')->first();
-            foreach ($messages as $key => $value) {
-                $messages[$key]->profile_image = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
-            }
-    
-
-        return response()->json([
-            'messages' => $messages
-        ]);
-    }
-
-
-    public function chat_messages_admin()
-    {
-        $to_user_id = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'admin');
-        })->first();
-        $id = $to_user_id->id;
+       
        
         $auth_user = auth()->user();
         if ($request->is_group == 0) {
@@ -2117,7 +2093,31 @@ public function chat_admin(Request $request)
                 $messages[$key]['to_user_id'] = 0;
             }
         }
+      
+    
 
+        return response()->json([
+            'messages' => $messages
+        ]);
+    }
+
+
+    public function chat_messages_admin()
+    {
+        $to_user_id = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $id = $to_user_id->id;
+        $auth_user = auth()->user();
+     
+            $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
+            and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
+            $receiver_user = User::select('users.id', 'users.name', 'profiles.profile_image')
+                ->where('users.id', $id)
+                ->leftjoin('profiles', 'profiles.id', 'users.profile_id')->first();
+            foreach ($messages as $key => $value) {
+                $messages[$key]->profile_image = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
+            }
         return response()->json([
             'messages' => $messages
         ]);
