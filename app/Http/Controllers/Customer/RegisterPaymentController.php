@@ -47,7 +47,7 @@ class RegisterPaymentController extends Controller
     // }
     public function ewallet_store(Request $request)
     {
-        // dd($request->member_type);
+        // dd($request);
         $this->validate($request,[
             'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
             'payment_name' => 'required',
@@ -93,7 +93,7 @@ class RegisterPaymentController extends Controller
         if ($payment) {
             Alert::success('Success', 'Payment Successfull!');
             if($type==2){
-                return redirect()->route('social_media');
+                return redirect()->route('home');
             }else{
                 return redirect()->route('shop');
             }
@@ -153,7 +153,7 @@ class RegisterPaymentController extends Controller
         if ($payment) {
             Alert::success('Success', 'Payment Successfull!');
             if($type==2){
-                return redirect()->route('social_media');
+                return redirect()->route('home');
             }else{
                 return redirect()->route('shop');
             }

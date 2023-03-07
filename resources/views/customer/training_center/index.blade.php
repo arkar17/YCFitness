@@ -1,7 +1,13 @@
 @extends('customer.training_center.layouts.app')
 
 @section('content')
-<a href="{{route('training_center.member_plan')}}" class="customer-primary-btn margin-top customer-change-member-plan-link">{{__('msg.change member plan')}}</a>
+
+    
+        <a href="{{route('training_center.member_plan')}}" class="customer-primary-btn margin-top customer-change-member-plan-link">{{__('msg.change member plan')}}</a>
+    
+      
+
+
 <div class="customer-training-center-header-container">
     <h1>{{Str::ucfirst($workout_plan)}}</h1>
     {{-- <p>Thursday Sep 22, 2022</p> --}}
@@ -42,4 +48,11 @@
         <iconify-icon icon="dashicons:arrow-right-alt2" class="customer-training-plan-icon"></iconify-icon>
     </a>
 </div>
+<div class="" style="width:10%;float:right;">
+    <a href="{{route('message.chat.admin')}}" class="customer-primary-btn add-friend-btn">
+        <iconify-icon icon="mdi:message-reply-outline" class="add-friend-icon" style="display: inline-block"></iconify-icon>
+        <p>{{__('msg.chatwithadmin')}}</p>
+    </a>
+</div>
+
 @endsection

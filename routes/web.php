@@ -53,7 +53,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::post('customer/customerCreate', [CustomerRegisterController::class, 'CustomerData'])->name('customerCreate');
 
     // NCK
-    Route::post('/customer_payment_active_staus/{id}', [RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
+    Route::get('/customer_payment_active_staus/{id}', [RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
 
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
@@ -104,6 +104,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/socialmedia/message/seeall', [SocialmediaController::class, 'see_all_message'])->name('message.seeall');
         Route::get('/socialmedia/message/chat/{id}', [SocialmediaController::class, 'chat_message'])->name('message.chat');
         Route::get('/socialmedia/message/chat_admin', [SocialmediaController::class, 'chat_message_admin'])->name('message.chat.admin');
+        
 
         Route::get('/socialmedia/message/deletechat', [SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
         Route::get('/socialmedia/message/viewmedia/{id}', [SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
@@ -379,6 +380,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     Route::middleware(['role:Admin'])->group(function () {
         Route::get('chat_with_admin', [ChatWithAdminController::class, 'user_list'])->name('admin.chat_with_admin');
+        Route::get('chat_with_admin/{id}', [ChatWithAdminController::class, 'user_list_one'])->name('admin.chat_with_admin_messages');
+        Route::get('chat_with_viewmedia/{id}', [ChatWithAdminController::class, 'viewmedia_message'])->name('admin.chat.viewmedia');
+
     });
 
     Route::middleware(['role:Free'])->group(function () {

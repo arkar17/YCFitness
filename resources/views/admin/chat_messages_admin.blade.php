@@ -142,14 +142,208 @@
     <div class="social-media-right-container">
 
 
-     
+        <div class="group-chat-header">
+            <div class="group-chat-header-name-container">
+                @if ($receiver_user->user_profile == null)
+                    <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                @else
+                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$receiver_user->user_profile->profile_image}}" />
+                @endif
+
+                <div class="group-chat-header-name-text-container">
+                    <p>{{ $receiver_user->name }}</p>
+                    <small class="active-now" style="color:#3CDD57;"></small>
+                </div>
+            </div>
+
+            <div class="chat-header-call-icons-container">
+                <a href="{{ route('admin.chat.viewmedia', $receiver_user->id) }}" class="group-chat-view-midea-link">
+                    <p>{{__('msg.view media')}}</p>
+                    <iconify-icon icon="akar-icons:arrow-right" class="group-chat-view-midea-link-icon"></iconify-icon>
+                </a>
+            </div>
 
 
-       
+        </div>
+        <input type="hidden" value="{{ $id }}" id="recieveUser">
+        <input type="hidden" value="{{ $receiver_user->name }}" id="receiverUserName">
 
         <div class="group-chat-messages-container">
-            Please Select One Chat!
+
+            @forelse ($messages as $send_message)
+                @if (auth()->user()->id == $send_message->from_user_id)
+                    <div class="group-chat-sender-container" data-messageId="{{ $send_message->id }}">
+                        <div class="message-actions-parent-container">
+                            <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+
+                            </iconify-icon>
+                            <div class="message-actions-box">
+                                <p onclick="message_hide(event,{{ $send_message->id }})">
+                                    <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+                                    {{__('msg.delete')}}
+                                </p>
+                                <p onclick="message_delete(event,{{ $send_message->id }})">
+                                    <iconify-icon icon="material-symbols:cancel-schedule-send-rounded"
+                                        class="message-action-icon"></iconify-icon>
+                                    {{__('msg.unsend')}}
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="group-chat-sender-text-container" style = "margin-top:20px;">
+                            @if ($send_message->media == null)
+                                <p>{{ $send_message->text }}</p>
+                            @else
+                                <div class="group-chat-imgs-vids-container">
+                                    @foreach (json_decode($send_message->media) as $key => $media)
+                                        @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'jpg' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'jpeg')
+                                            {{-- modal --}}
+                                            <div class="modal fade"
+                                                id="exampleModalToggle{{ $send_message->id }}{{ $key }}"
+                                                aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{$media}}"
+                                                                alt="test" class="w-100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- end modal --}}
+
+
+                                            <a data-bs-toggle="modal"
+                                                href="#exampleModalToggle{{ $send_message->id }}{{ $key }}"
+                                                role="button">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
+                                            </a>
+                                        @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'webm')
+                                            <video width="100%" height="100%" controls>
+                                                <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media}}"
+                                                    type="video/mp4">
+                                            </video>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                        @if ($sender_user->user_profile == null)
+                            <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $sender_user->user_profile->profile_image }} " />
+                        @endif
+                    </div>
+                @elseif(auth()->user()->id != $send_message->from_user_id)
+                    <div class="group-chat-receiver-container" data-messageId="{{ $send_message->id }}" style="margin-top:20px;">
+                        @if ($receiver_user->user_profile == null)
+                            <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $receiver_user->user_profile->profile_image }}" />
+                        @endif
+                        <div class="group-chat-receiver-text-container">
+                            {{-- <span>{{ $send_message->name }}</span> --}}
+
+                            @if ($send_message->media == null)
+                                <p>{{ $send_message->text }}</p>
+                            @else
+                                <div class="group-chat-imgs-vids-container">
+                                    @foreach (json_decode($send_message->media) as $key => $media)
+                                        @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'jpg' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'jpeg')
+                                            {{-- modal --}}
+                                            <div class="modal fade"
+                                                id="exampleModalToggle{{ $send_message->id }}{{ $key }}"
+                                                aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}"
+                                                                alt="test" class="w-100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- end modal --}}
+
+
+                                            <a data-bs-toggle="modal"
+                                                href="#exampleModalToggle{{ $send_message->id }}{{ $key }}"
+                                                role="button">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
+                                            </a>
+                                        @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
+                                            pathinfo($media, PATHINFO_EXTENSION) == 'webm')
+                                            <video width="100%" height="100%" controls>
+                                                <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}"
+                                                    type="video/mp4">
+                                            </video>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+
+                    </div>
+                @endif
+            @empty
+            @endforelse
+
         </div>
+
+
+        <div id="incomingCallContainer">
+
+        </div>
+
+        <div id="video-main-container">
+
+        </div>
+
+        <form class="group-chat-send-form-container" id="message_form" enctype="multipart/form-data">
+            <div class="group-chat-send-form-message-parent-container">
+                <div class="group-chat-send-form-img-emoji-container">
+                    <label class="group-chat-send-form-img-contaier">
+                        <iconify-icon icon="bi:images" class="group-chat-send-form-img-icon">
+
+                        </iconify-icon>
+                        <input type="file" id="groupChatImg_message" name="fileSend[]" multiple="multiple">
+                    </label>
+                    <button type="button" id="emoji-button" class="emoji-trigger">
+                        <iconify-icon icon="bi:emoji-smile" class="group-chat-send-form-emoji-icon"></iconify-icon>
+                    </button>
+
+                </div>
+
+                <textarea id="mytextarea" class="group-chat-send-form-input message_input" placeholder="Message..." required></textarea>
+                <div class="group-chat-img-preview-container-wrapper">
+
+                    <div class="group-chat-img-preview-container"></div>
+
+                </div>
+
+            </div>
+
+            <button type="button" class="group-chat-send-form-submit-btn">
+                <iconify-icon icon="akar-icons:send" class="group-chat-send-form-submit-btn-icon"></iconify-icon>
+            </button>
+        </form>
 
     </div>
 

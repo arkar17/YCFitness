@@ -559,13 +559,11 @@
                             <div class="social-media-left-messages-container">
                                 <div class="social-media-left-container-header">
                                     <p id="messages">{{__('msg.messages')}}</p>
-                                    <a href="{{ route('message.seeall') }}">{{__('msg.see all')}}<iconify-icon icon="bi:arrow-right"
-                                            class="arrow-icon"></iconify-icon></a>
+                                    <hr>
                                 </div>
         
                                 <div class="social-media-left-messages-rows-container">
-                                   
-        
+                                 
                                 </div>
                             </div>
 
@@ -686,7 +684,123 @@
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 
     @stack('scripts')
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.social-media-allchats-actions-toggle', function() {
+                $(".social-media-allchats-actions-box").not($(this).next(
+                    ".social-media-allchats-actions-box")).hide()
+                $(this).next('.social-media-allchats-actions-box').toggle()
+            })
+            $(document).on('click', '.converstion_delete', function(e) {
+                var from_id = $(this).data('id');
+                var to_id = $(this).attr('id');
 
+                Swal.fire({
+                    text: "Delete Conversation?",
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    showCancelButton: true,
+                    timerProgressBar: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+
+                }).then((result) =>{
+                    if (result.isConfirmed) {
+                        var add_url = "{{ route('message.all.delete')}}";
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data: {
+                            from_id: from_id,
+                            to_id: to_id
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                text: data.success,
+                                timerProgressBar: true,
+                                timer: 5000,
+                                icon: 'success',
+                            })
+                            messages()
+                        }
+                    })
+                }
+            })
+
+            })
+
+
+            var user_id = {{ auth()->user()->id }};
+            var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+                cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+                encrypted: true
+            });
+
+            var channel = pusher.subscribe('all_message.' + user_id);
+            channel.bind('all', function(data) {
+                console.log(data, "ted");
+                messages()
+            });
+
+            messages()
+            //
+            function messages() {
+                var latest_messages = "{{ route('socialmedia.latest_messages') }}";
+                $.get(latest_messages, {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    function(data) {
+                        table_post_row(data);
+                    });
+            }
+            // table row with ajax
+            function table_post_row(res) {
+            let htmlView = '';
+            var latest_messages = @json($latest_messages);
+            console.log(latest_messages, 'latest msg')
+            if (latest_messages.length <= 0) {
+                htmlView += `
+                        No Messages.
+                        `;
+            }
+            for (let i = 0; i < latest_messages.length; i++) {
+                var id = latest_messages[i].id;
+                var url = "{{ route('admin.chat_with_admin_messages', ':id') }}";
+                url = url.replace(':id', id);
+                text = latest_messages[i].text == null ? "" : latest_messages[i].text;
+               
+
+                    if (latest_messages[i].profile_image === null) {
+                        htmlView += `
+                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none">
+                                            <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    } else {
+                        htmlView += `
+                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none"> 
+                                            <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+latest_messages[i].profile_image+`"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                }
+            };
+
+                $('.social-media-left-messages-rows-container').html(htmlView);
+            }
+        })
+    </script>
     <script>
         $('.nav-icon').click(function() {
             $('.notis-box-container').toggle()
