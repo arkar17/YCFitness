@@ -239,5 +239,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('account_del', [CustomerProfileController::class, 'acc_del']);
 
 });
-
+Route::post('chat_admin',[SocialMediaController::class,'chat_admin']); 
 Route::get('test', [AuthController::class, 'test']);
