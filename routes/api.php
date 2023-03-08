@@ -168,7 +168,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('group/message/chat/{id}',[SocialMediaController::class,'group_chatting']);
 
     Route::post('chat',[SocialMediaController::class,'chat']); 
-   
 
     Route::post('chat/messages',[SocialMediaController::class,'chat_messages']);
     Route::get('chat/messages_admin',[SocialMediaController::class,'chat_messages_admin']);
@@ -239,6 +238,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('account_del', [CustomerProfileController::class, 'acc_del']);
 
 });
-Route::post('chat_admin',[SocialMediaController::class,'chat_admin']); 
+Route::post('chat_admin',[SocialMediaController::class,'chat_admin']);
+
 
 Route::get('test', [AuthController::class, 'test']);
