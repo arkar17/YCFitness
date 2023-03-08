@@ -548,10 +548,6 @@
             }
         }
 
-
-
-
-
         //image and video select end
 
 
