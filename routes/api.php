@@ -151,7 +151,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('one_post',[SocialmediaController::class, 'one_post']);
 
-
+  
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
@@ -168,7 +168,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('group/message/chat/{id}',[SocialMediaController::class,'group_chatting']);
 
     Route::post('chat',[SocialMediaController::class,'chat']); 
-    Route::post('chat_admin',[SocialMediaController::class,'chat_admin']); 
+   
 
     Route::post('chat/messages',[SocialMediaController::class,'chat_messages']);
     Route::get('chat/messages_admin',[SocialMediaController::class,'chat_messages_admin']);
@@ -240,4 +240,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 });
 Route::post('chat_admin',[SocialMediaController::class,'chat_admin']); 
+
 Route::get('test', [AuthController::class, 'test']);
