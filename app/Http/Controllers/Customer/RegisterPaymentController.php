@@ -10,6 +10,7 @@ use App\Models\Member;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterPaymentController extends Controller
 {
@@ -48,13 +49,26 @@ class RegisterPaymentController extends Controller
     public function ewallet_store(Request $request)
     {
         // dd($request);
-        $this->validate($request,[
+        // $this->validate($request,[
+        //     'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
+        //     'payment_name' => 'required',
+        //     'phone'=> 'required|min:9|max:11',
+        //     'amount'=> 'required',
+        //     'image' => 'required',
+        // ]);
+
+        $validator = Validator::make($request->all(), [
             'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
             'payment_name' => 'required',
             'phone'=> 'required|min:9|max:11',
             'amount'=> 'required',
             'image' => 'required',
         ]);
+        if ($validator->fails()) {
+            Alert::success('error', 'Please fill data carefully!');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $user = auth()->user();
 
         $user = User::findOrFail($user->id);
@@ -108,12 +122,23 @@ class RegisterPaymentController extends Controller
 
     public function bank_payment_store(Request $request)
     {
-            $this->validate($request,[
-            'bank_account_number'=> 'required|min:10',
-            'bank_account_holder' => 'required|regex:/^[\pL\s\-]+$/u',
+        //     $this->validate($request,[
+        //     'bank_account_number'=> 'required|min:10',
+        //     'bank_account_holder' => 'required|regex:/^[\pL\s\-]+$/u',
+        //     'amount'=> 'required',
+        //     'image' => 'required',
+        // ]);
+        $validator = Validator::make($request->all(), [
+            'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
+            'payment_name' => 'required',
+            'phone'=> 'required|min:9|max:11',
             'amount'=> 'required',
             'image' => 'required',
         ]);
+        if ($validator->fails()) {
+            Alert::success('error', 'Please fill data carefully!');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         //dd($request->all());
         $user = auth()->user();
 

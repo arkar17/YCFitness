@@ -85,6 +85,10 @@ class SocialmediaController extends Controller
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
         $array =  join(",",$b,); 
+        $id_admin = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $admin_id = $id_admin->id;
         if($array){
             $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
             from
@@ -108,6 +112,7 @@ class SocialmediaController extends Controller
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
                     where users.id not in ($array) 
+                    and users.id != $admin_id
                     order by chats.created_at desc");
         }
         else{
@@ -132,6 +137,7 @@ class SocialmediaController extends Controller
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
+                    and users.id != $admin_id
                     order by chats.created_at desc");
         }
        
@@ -1174,7 +1180,12 @@ class SocialmediaController extends Controller
             $f = (array)$block;
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
-        $array =  join(",",$b,);  
+        $array =  join(",",$b,); 
+
+        $id_admin = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $admin_id = $id_admin->id;
         // dd($array , $b);
         if($array){
             $messages = DB::select("SELECT users.id,users.name,profiles.profile_image,chats.text,chats.created_at,chats.from_user_id as from_id,chats.to_user_id as to_id
@@ -1202,6 +1213,7 @@ class SocialmediaController extends Controller
             left join profiles on users.profile_id = profiles.id
             where deleted_by !=  $user_id  and delete_status != 2
             and users.id Not In ($array)
+            and users.id != $admin_id
             order by chats.created_at desc");
         }
         else{
@@ -1229,6 +1241,7 @@ class SocialmediaController extends Controller
             left join users on users.id = user
             left join profiles on users.profile_id = profiles.id
             where deleted_by !=  $user_id  and delete_status != 2
+            and users.id != $admin_id
             order by chats.created_at desc");
         }
         
@@ -1254,6 +1267,7 @@ class SocialmediaController extends Controller
         $friends = DB::table('users')->select('users.name', 'users.id')->whereIn('users.id', $n)
             ->where('users.id', '!=', $user->id)
             ->get();
+            // dd($messages);
         return view('customer.message_seeall', compact('messages', 'friends'));
     }
 
@@ -1397,9 +1411,12 @@ class SocialmediaController extends Controller
 
 
         $auth_user_name = auth()->user()->name;
-        $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
-
-        $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
+        $receiver_user = User::select('users.*','profiles.id as profileid','profiles.profile_image')->where('users.id', $id)
+        ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+        ->first();
+        $sender_user = User::select('users.*','profiles.id as profileid','profiles.profile_image')->where('users.id', $auth_user->id)
+        ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+        ->first();
 
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
@@ -1423,7 +1440,7 @@ class SocialmediaController extends Controller
             ->whereIn('id', $n)
             ->where('id', '!=', $user->id)
             ->get();
-
+           
         return view('customer.chat_with_admin', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
     }
 

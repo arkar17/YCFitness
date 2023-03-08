@@ -177,6 +177,10 @@ class AppServiceProvider extends ServiceProvider
                     array_push($b, $f['sender_id'], $f['receiver_id']);
                 }
                 $array =  join(",",$b); 
+                $id_admin = User::whereHas('roles', function ($query) {
+                    $query->where('name', '=', 'admin');
+                })->first();
+                $admin_id = $id_admin->id;
                 // dd($array);
             if($array){
                 $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
@@ -201,6 +205,7 @@ class AppServiceProvider extends ServiceProvider
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
                         where users.id not in ($array)
+                        and users.id != $admin_id
                         order by chats.created_at desc");
             }
             else{
@@ -225,6 +230,7 @@ class AppServiceProvider extends ServiceProvider
                             (created_at = m)
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
+                        and users.id != $admin_id
                         order by chats.created_at desc");
             }
            

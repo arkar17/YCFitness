@@ -146,10 +146,10 @@
 
         <div class="group-chat-header">
             <div class="group-chat-header-name-container">
-                @if ($receiver_user->user_profile == null)
+                @if ($receiver_user->profile_image == null)
                     <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                 @else
-                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$receiver_user->user_profile->profile_image}}" />
+                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$receiver_user->profile_image}}" />
                 @endif
 
                 <div class="group-chat-header-name-text-container">
@@ -248,18 +248,18 @@
                                 </div>
                             @endif
                         </div>
-                        @if ($sender_user->user_profile == null)
+                        @if ($sender_user->profile_image == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $sender_user->user_profile->profile_image }} " />
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $sender_user->profile_image }} " />
                         @endif
                     </div>
                 @elseif(auth()->user()->id != $send_message->from_user_id)
                     <div class="group-chat-receiver-container" data-messageId="{{ $send_message->id }}">
-                        @if ($receiver_user->user_profile == null)
+                        @if ($receiver_user->profile_image == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $receiver_user->user_profile->profile_image }}" />
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{ $receiver_user->profile_image }}" />
                         @endif
                         <div class="group-chat-receiver-text-container">
                             {{-- <span>{{ $send_message->name }}</span> --}}
@@ -408,25 +408,25 @@
 
 
             ///start
-            var check_receiver_img = @json($receiver_user->user_profile) == null;
-            var check_sender_img = @json($sender_user->user_profile) == null;
+            var check_receiver_img = @json($receiver_user->profile_image) == null;
+            var check_sender_img = @json($sender_user->profile_image) == null;
 
             // console.log(check_sender_img == null)
 
             if (check_receiver_img) {
 
-                receive_user_img = @json($receiver_user->user_profile);
+                receive_user_img = @json($receiver_user->profile_image);
             } else {
                 // console.log("receiver img not null")
-                receive_user_img = @json($receiver_user->user_profile?->profile_image);
+                receive_user_img = @json($receiver_user?->profile_image);
             }
             if (check_sender_img) {
                 // console.log("sender img  null")
-                sender_user_img = @json($sender_user->user_profile);
+                sender_user_img = @json($sender_user->profile_image);
 
             } else {
                 // console.log("sender img not null")
-                sender_user_img = @json($sender_user->user_profile?->profile_image);
+                sender_user_img = @json($sender_user?->profile_image);
             }
 
 
@@ -1083,28 +1083,5 @@
             })
 
         // message delete and hide end
-    </script>
-
-
-    <script>
-        $(".chat-backdrop").hide();
-        var voice_receive_user_img = @json($receiver_user->user_profile);
-        var profile
-        console.log("ferer", voice_receive_user_img);
-
-
-        let receiver_user_name = @json($receiver_user->name);
-
-
-        let incoming_call = document.getElementById('incoming_call')
-        let incomingCallContainer = document.querySelector('#incomingCallContainer')
-
-        if (voice_receive_user_img == null) {
-            profile = `img/customer/imgs/user_default.jpg`
-        } else {
-            var image = @json($receiver_user->user_profile?->profile_image);
-            profile = `storage/post/${image}`
-        }
-
     </script>
 @endpush

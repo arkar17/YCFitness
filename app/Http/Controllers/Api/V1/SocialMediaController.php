@@ -1503,6 +1503,10 @@ class SocialMediaController extends Controller
                         $options);
         $to_user_id = $user->id;
         $user_id = auth()->user()->id;
+        $id_admin = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $admin_id = $id_admin->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
@@ -1525,6 +1529,7 @@ class SocialMediaController extends Controller
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
                 where deleted_by !=  $user_id  and delete_status != 2
+                and users.id != $admin_id
             order by chats.created_at desc");
 
         $groups = DB::table('chat_group_members')
@@ -1572,7 +1577,6 @@ class SocialMediaController extends Controller
                     $merged[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-
         //to user
         $messages_to =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
@@ -1596,6 +1600,7 @@ class SocialMediaController extends Controller
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
                 where deleted_by !=  $to_user_id  and delete_status != 2
+                and users.id != $admin_id
             order by chats.created_at desc");
 
             $groups_to = DB::table('chat_group_members')
@@ -1737,6 +1742,11 @@ class SocialMediaController extends Controller
             for ($i = 0; count($group_message) > $i; $i++) {
                 $user_id = $group_message[$i]['member_id'];
                 //all
+                $id_admin = User::whereHas('roles', function ($query) {
+                    $query->where('name', '=', 'admin');
+                })->first();
+                $admin_id = $id_admin->id;
+
                 $messages_all = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.from_user_id as from_id,chats.to_user_id as to_id
                 from
                     chats
@@ -1758,6 +1768,7 @@ class SocialMediaController extends Controller
                             (created_at = m)
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
+                        and users.id != $admin_id
                         order by chats.created_at desc");
 
                 $groups_all = DB::table('chat_group_members')
@@ -1868,6 +1879,10 @@ class SocialMediaController extends Controller
          broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
+        $id_admin = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $admin_id = $id_admin->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
@@ -1890,6 +1905,7 @@ class SocialMediaController extends Controller
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
                 where deleted_by !=  $user_id  and delete_status != 2
+                and users.id != $admin_id
             order by chats.created_at desc limit  3");
         // dd($messages);
         $groups = DB::table('chat_group_members')
@@ -1959,6 +1975,7 @@ class SocialMediaController extends Controller
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
                 where deleted_by !=  $to_user_id  and delete_status != 2
+                and users.id != $admin_id
             order by chats.created_at desc limit  3");
       // dd($messages);
             $groups_to = DB::table('chat_group_members')
@@ -2064,8 +2081,6 @@ public function chat_admin(Request $request)
     public function chat_messages(Request $request)
     {
         $id = $request->id;
-       
-       
         $auth_user = auth()->user();
         if ($request->is_group == 0) {
             $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
@@ -2168,6 +2183,10 @@ public function chat_admin(Request $request)
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
         $array =  join(",",$b,); 
+        $id_admin = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $admin_id = $id_admin->id;
         if($array){
             $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
             from
@@ -2191,6 +2210,7 @@ public function chat_admin(Request $request)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
                     where users.id not in ($array)
+                    and users.id != $admin_id
                     order by chats.created_at desc");
         }
         else{
@@ -2215,6 +2235,7 @@ public function chat_admin(Request $request)
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
+                and users.id != $admin_id
                 order by chats.created_at desc");
         }
         
@@ -3022,6 +3043,10 @@ public function chat_admin(Request $request)
         ->get();
         for ($i = 0; count($group_message) > $i; $i++) {
         $user_id_to = $group_message[$i]['member_id'];
+        $id_admin = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $admin_id = $id_admin->id;
         $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
             from
                 chats
@@ -3043,6 +3068,7 @@ public function chat_admin(Request $request)
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
+                    and users.id != $admin_id
                     order by chats.created_at desc limit  3");
         // dd($messages);
 

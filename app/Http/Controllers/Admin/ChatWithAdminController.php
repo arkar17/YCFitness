@@ -160,9 +160,12 @@ class ChatWithAdminController extends Controller
 
 
         $auth_user_name = auth()->user()->name;
-        $receiver_user = User::where('users.id', $id)->with('user_profile')->first();
-
-        $sender_user = User::where('id', $auth_user->id)->with('user_profile')->first();
+        $receiver_user = User::select('users.*','profiles.id as profileid','profiles.profile_image')->where('users.id', $id)
+        ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+        ->first();
+        $sender_user = User::select('users.*','profiles.id as profileid','profiles.profile_image')->where('users.id', $auth_user->id)
+        ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+        ->first();
 
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
@@ -186,6 +189,7 @@ class ChatWithAdminController extends Controller
             ->whereIn('id', $n)
             ->where('id', '!=', $user->id)
             ->get();
+      
 
         return view('admin.chat_messages_admin', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
     }

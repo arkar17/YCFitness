@@ -3,7 +3,7 @@
 @section('content')
 @include('sweetalert::alert')
 
-@if (count($errors) > 0)
+{{-- @if (count($errors) > 0)
     <div class="alert alert-warning alert-dismissible fade show">
         <ul>
             @foreach ($errors->all() as $error)
@@ -12,6 +12,15 @@
         </ul>
 
     </div>
+@endif --}}
+@if(Session::has('error'))
+    <script>
+        swal({
+            title: "Validation Error",
+            text: "{{ Session::get('error') }}",
+            icon: "error",
+        });
+    </script>
 @endif
 <style>
     .member-duration{
