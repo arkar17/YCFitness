@@ -588,15 +588,16 @@
             formData.append('totalFiles', fileLength);
             formData.append('sender', auth_user_name);
         }
+       
 
         if (messageInput != null) {
-            axios.post('/api/message/chat/' + recieveUserId, {
+            axios.post('/message/chat/' + recieveUserId, {
                 text: messageInput.value,
                 sender: auth_user_name
             }).then();
             messageInput.value = "";
         } else {
-            axios.post('/api/message/chat/' + recieveUserId, formData).then();
+            axios.post('/message/chat/' + recieveUserId, formData).then();
             clearAddPost()
 
         }

@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\RequestAcceptDeclineController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
+use App\Http\Controllers\Customer\ChattingController;
 use App\Http\Controllers\Admin\ChatWithAdminController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
@@ -105,6 +106,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/socialmedia/message/chat/{id}', [SocialmediaController::class, 'chat_message'])->name('message.chat');
         Route::get('/socialmedia/message/chat_admin', [SocialmediaController::class, 'chat_message_admin'])->name('message.chat.admin');
         
+
+        //new chat
+        Route::post('message/chat/{user}',[ChattingController::class,'chatting']);
 
         Route::get('/socialmedia/message/deletechat', [SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
         Route::get('/socialmedia/message/viewmedia/{id}', [SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');
