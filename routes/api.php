@@ -163,7 +163,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
     Route::post('profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
-    Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']);
+    
     Route::post('message/chat_admin',[SocialMediaController::class,'chatting_admin']);//web
     Route::post('group/message/chat/{id}',[SocialMediaController::class,'group_chatting']);
 
@@ -239,6 +239,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 });
 
-
+Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']);
 
 Route::get('test', [AuthController::class, 'test']);
