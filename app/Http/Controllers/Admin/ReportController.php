@@ -197,16 +197,15 @@ class ReportController extends Controller
         $comment->report_status=1;
         $comment->update();
        }
+       $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
         $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'cluster' => 'eu',
             'encrypted' => true
-            );
-            $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            $options
-            );
+        )
+    );
 
                 $data = 'Removed';
                 $description='Against Our Community And Guidelines';

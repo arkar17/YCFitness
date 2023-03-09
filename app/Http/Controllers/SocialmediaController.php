@@ -227,17 +227,15 @@ class SocialmediaController extends Controller
             $react->update();
         } else {
             $react->save();
-            $options = array(
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
-            );
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),
                 env('PUSHER_APP_ID'),
-                $options
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
             );
-
             $post_owner = Post::where('posts.id', $react->post_id)->first();
             if ($post_owner->user_id != auth()->user()->id) {
                 $data = auth()->user()->name . ' liked your post!';
@@ -892,18 +890,14 @@ class SocialmediaController extends Controller
         $friendship->date =  Carbon::Now()->toDateTimeString();
         $friendship->friend_status = 1;
         $friendship->save();
-
-
-
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
 
         $data = $sender->name . ' send you a friend request!';
@@ -953,17 +947,15 @@ class SocialmediaController extends Controller
             ->where('sender_id', $request->id)
             ->update(['friend_status' => 2, 'date' =>  Carbon::Now()->toDateTimeString()]);
 
-        $options = array(
-            'cluster' => 'eu',
-            'encrypted' => true
-        );
-        // dd($options);
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            $options
-        );
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
+            );
         // $pusher = new Pusher(
         //     env('PUSHER_APP_KEY'),
         //     env('PUSHER_APP_SECRET'),
@@ -1663,15 +1655,14 @@ class SocialmediaController extends Controller
         $comments->save();
 
         $post_owner = Post::where('posts.id', $comments->post_id)->first();
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
         if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == "null") {
             $data2 = auth()->user()->name . ' commented on your post!';
@@ -1914,16 +1905,15 @@ class SocialmediaController extends Controller
         $chat_message->sender_id = $groupOwner;
         $chat_message->text = $message;
         $chat_message->save();
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
-            );
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
             $group_message = ChatGroupMember::select('member_id')->where('group_id', $group->id)
             ->where('member_id','!=',$groupOwner)->get();
             for ($i = 0; count($group_message) > $i; $i++)
@@ -2129,8 +2119,10 @@ class SocialmediaController extends Controller
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
 
         $data = 'Thanks for your report,we will check.';

@@ -35,14 +35,15 @@ class RequestAcceptDeclineController extends Controller
         $date  = Carbon::Now()->toDateString();
 
         $shop_member = ShopMember::where('member_type', 'level3')->first();
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true);
         $pusher = new Pusher(
-                        env('PUSHER_APP_KEY'),
-                        env('PUSHER_APP_SECRET'),
-                        env('PUSHER_APP_ID'),
-                        $options);
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
         if ($member_history != null && $member_history->user_id == $id) {
 
             $member_history->create([

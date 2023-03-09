@@ -362,7 +362,6 @@
 @endsection
 
 @push('scripts')
-@push('scripts')
 <script>
     var messageForm = document.getElementById('message_form');
 
@@ -372,6 +371,7 @@
     var recieveUser = document.getElementById('recieveUser');
 
     var messageContainer = document.querySelector('.group-chat-messages-container');
+
 
     var auth_user_id = {{ auth()->user()->id }};
     var auth_user_name = "{{ auth()->user()->name }}";
@@ -408,25 +408,25 @@
 
 
         ///start
-        var check_receiver_img = @json($receiver_user) == null;
-        var check_sender_img = @json($sender_user) == null;
+        var check_receiver_img = @json($receiver_user->user_profile) == null;
+        var check_sender_img = @json($sender_user->user_profile) == null;
 
         // console.log(check_sender_img == null)
 
         if (check_receiver_img) {
 
-            receive_user_img = @json($receiver_user->profile_image);
+            receive_user_img = @json($receiver_user->user_profile);
         } else {
             // console.log("receiver img not null")
-            receive_user_img = @json($receiver_user?->profile_image);
+            receive_user_img = @json($receiver_user->user_profile?->profile_image);
         }
         if (check_sender_img) {
             // console.log("sender img  null")
-            sender_user_img = @json($sender_user->profile_image);
+            sender_user_img = @json($sender_user->user_profile);
 
         } else {
             // console.log("sender img not null")
-            sender_user_img = @json($sender_user?->profile_image);
+            sender_user_img = @json($sender_user->user_profile?->profile_image);
         }
 
 
@@ -559,6 +559,10 @@
         }
     }
 
+
+
+
+
     //image and video select end
 
 
@@ -589,13 +593,13 @@
         }
 
         if (messageInput != null) {
-            axios.post('/api/message/chat/' + recieveUserId, {
+            axios.post('/api/message/chat_admin/', {
                 text: messageInput.value,
                 sender: auth_user_name
             }).then();
             messageInput.value = "";
         } else {
-            axios.post('/api/message/chat/' + recieveUserId, formData).then();
+            axios.post('/api/message/chat_admin/', formData).then();
             clearAddPost()
 
         }
@@ -1082,25 +1086,7 @@
 </script>
 
 
-<script>
-    $(".chat-backdrop").hide();
-    var voice_receive_user_img = @json($receiver_user->profile_image);
-    var profile
-    console.log("ferer", voice_receive_user_img);
 
-
-    let receiver_user_name = @json($receiver_user->name);
-
-
-    let incoming_call = document.getElementById('incoming_call')
-    let incomingCallContainer = document.querySelector('#incomingCallContainer')
-
-    if (voice_receive_user_img == null) {
-        profile = `img/customer/imgs/user_default.jpg`
-    } else {
-        var image = @json($receiver_user?->profile_image);
-        profile = `storage/post/${image}`
-    }
 
 
 @endpush

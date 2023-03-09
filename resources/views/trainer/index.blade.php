@@ -616,7 +616,7 @@
 
         //     var id = localStorage.getItem('group_id');
         //     Pusher.logToConsole = true;
-        // var pusher = new Pusher('576dc7f4f561e15a42ef', {
+        // var pusher = new Pusher('6606755f57556c2654c6', {
         //     cluster: 'eu',
         //     encrypted: true
         // });
@@ -659,7 +659,7 @@
         var id = localStorage.getItem('group_id');
             console.log('group id pusher', id);
         Pusher.logToConsole = true;
-        var pusher = new Pusher('576dc7f4f561e15a42ef', {
+        var pusher = new Pusher('6606755f57556c2654c6', {
             cluster: 'eu',
             encrypted: true
         });

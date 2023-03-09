@@ -274,15 +274,14 @@ class SocialMediaController extends Controller
         $friendship->friend_status = 1;
         $friendship->save();
 
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
         $data = $sender->name . ' send you a friend request!';
         $fri_noti = new Notification();
@@ -330,17 +329,15 @@ class SocialMediaController extends Controller
             ->where('sender_id', $request->id)
             ->update(['friend_status' => 2, 'date' =>  Carbon::Now()->toDateTimeString()]);
 
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            $options
-        );
-
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
+            );
         $data = $user->name . ' accepted your friend request!';
 
         $fri_noti = new Notification();
@@ -1493,14 +1490,15 @@ class SocialMediaController extends Controller
 
             broadcast(new Chatting($message, $request->sender));
         }
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true);
         $pusher = new Pusher(
-                        env('PUSHER_APP_KEY'),
-                        env('PUSHER_APP_SECRET'),
-                        env('PUSHER_APP_ID'),
-                        $options);
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
         $to_user_id = $user->id;
         $user_id = auth()->user()->id;
         $id_admin = User::whereHas('roles', function ($query) {
@@ -1662,7 +1660,7 @@ class SocialMediaController extends Controller
 
     public function chatting_admin(Request $request, User $user)
     {
-    //    dd($request);
+   
      $id = User::whereHas('roles', function ($query) {
         $query->where('name', '=', 'admin');
     })->first();
@@ -1727,17 +1725,15 @@ class SocialMediaController extends Controller
             $message->save();
 
 
-            $options = array(
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
-            );
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),
                 env('PUSHER_APP_ID'),
-                $options
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
             );
-
             $group_message = ChatGroupMember::select('member_id')->where('group_id', $id)->get();
             for ($i = 0; count($group_message) > $i; $i++) {
                 $user_id = $group_message[$i]['member_id'];
@@ -2318,15 +2314,14 @@ public function chat_admin(Request $request)
         $comments->mentioned_users = json_encode($request->mention);
         $comments->save();
         $post_owner = Post::where('posts.id', $comments->post_id)->first();
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
         if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == "null") {
             $data2 = auth()->user()->name . ' commented on your post!';
@@ -2397,15 +2392,14 @@ public function chat_admin(Request $request)
             $react->update();
         } else {
             $react->save();
-            $options = array(
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true
-            );
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),
                 env('PUSHER_APP_ID'),
-                $options
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
             );
             $post_owner = Post::where('posts.id', $react->post_id)->first();
             if ($post_owner->user_id != auth()->user()->id) {
@@ -2606,16 +2600,15 @@ public function chat_admin(Request $request)
         $group->group_name = $groupName;
         $group->group_owner_id = $groupOwner;
         $group->save();
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
-            );
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
         if ($request->members) {
             $members = $request->members;
             $id = $group->id;
@@ -2818,16 +2811,15 @@ public function chat_admin(Request $request)
         $group_message_delete = ChatGroupMessage::where('group_id', $request->id);
         $group_message_delete->delete();
 
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
-            );
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
 
             $group_message = ChatGroupMember::select('member_id')->where('group_id', $request->id)
             ->where('member_id','!=',auth()->user()->id)->get();
@@ -3028,16 +3020,16 @@ public function chat_admin(Request $request)
             $sms['to_user_id'] = 0;
         }
 
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
+
         $user_id = auth()->user()->id;
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)
         ->get();
@@ -3170,16 +3162,16 @@ public function chat_admin(Request $request)
         $message->delete_status = 2;
         $message->deleted_by = auth()->user()->id;
         $message->update();
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
+        
         $to_user_id = Chat::select('to_user_id')->where('id', $request->id)->first();
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
         $pusher->trigger('message-delete.' . $to_user_id->to_user_id . '.' . auth()->user()->id, 'message-delete-event', ['message' => $message]);
 
@@ -3214,18 +3206,15 @@ public function chat_admin(Request $request)
         
         
 
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-
-            $options
-        );
-
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
+            );
         $data = 'Thanks for your report,we will check.';
         $new_data = 'Reported';
 
