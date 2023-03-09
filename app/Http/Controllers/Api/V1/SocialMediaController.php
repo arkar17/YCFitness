@@ -1659,41 +1659,7 @@ class SocialMediaController extends Controller
         $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
     }
 
-    public function chatting_admin(Request $request, User $user)
-    {
-   
-     $id = User::whereHas('roles', function ($query) {
-        $query->where('name', '=', 'admin');
-    })->first();
-    $to_user_id = $id->id;
-        if ($request->text == null && $request->fileSend == null) {
-        } else {
-            $message = new Chat();
-            $sendFile = $request->all();
-            if ($request->totalFiles != 0) {
-                $files = $sendFile['fileSend'];
-                if ($sendFile['fileSend']) {
-                    foreach ($files as $file) {
-                        $extension = $file->extension();
-                        $name = rand() . "." . $extension;
-                        $file->storeAs('/public/customer_message_media/', $name);
-                        $imgData[] = $name;
-                        $message->media = json_encode($imgData);
-                        $message->text = null;
-                    }
-                }
-            } else {
-                $message->text = $request->text;
-                $message->media = null;
-            }
 
-            $message->from_user_id = auth()->user()->id;
-            $message->to_user_id = $to_user_id;
-            $message->save();
-           // dd($request->sender);
-            broadcast(new Chatting($message, $request->sender));
-        }
-    }
 
     public function group_chatting(Request $request, $id)
     {

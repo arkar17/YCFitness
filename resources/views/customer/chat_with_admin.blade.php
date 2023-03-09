@@ -593,13 +593,13 @@
         }
 
         if (messageInput != null) {
-            axios.post('/api/message/chat_admin/', {
+            axios.post('/message/chat_admin/', {
                 text: messageInput.value,
                 sender: auth_user_name
             }).then();
             messageInput.value = "";
         } else {
-            axios.post('/api/message/chat_admin/', formData).then();
+            axios.post('/message/chat_admin/', formData).then();
             clearAddPost()
 
         }

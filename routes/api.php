@@ -120,7 +120,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('chat/sendmessage/{id}', [TrainingManagementController::class, 'sendmessage']);
     Route::get('chat/showmessage/{id}', [TrainingManagementController::class, 'chatshow']);
     Route::post('chat_admin',[SocialMediaController::class,'chat_admin']); //formobile
-    Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']); // for web
+    // Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']); // for web
 
     //social media
     Route::post('search_users', [SocialMediaController::class, 'search_users']); //search users
@@ -165,7 +165,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
     
-    Route::post('message/chat_admin',[SocialMediaController::class,'chatting_admin']);//web
+    // Route::post('message/chat_admin',[SocialMediaController::class,'chatting_admin']);//web
     Route::post('group/message/chat/{id}',[SocialMediaController::class,'group_chatting']);
 
     Route::post('chat',[SocialMediaController::class,'chat']); 

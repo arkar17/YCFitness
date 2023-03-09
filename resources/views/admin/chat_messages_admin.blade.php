@@ -419,7 +419,8 @@
 
 
     //image and video select end
-
+    to_user_id = {{ $receiver_user->id }}
+    // console.log(to_user_id , "touserid");
 
 
     sendMessage.addEventListener('click', function(e) {
@@ -445,18 +446,19 @@
             formData.append('fileInput', fileName);
             formData.append('totalFiles', fileLength);
             formData.append('sender', auth_user_name);
+            formData.append('to_user_id', to_user_id);
         }
-
+        
         if (messageInput != null) {
-            axios.post('/api/message/chat_admin/', {
+            axios.post('/message/chat_admin/admin_side', {
                 text: messageInput.value,
-                sender: auth_user_name
+                sender: auth_user_name,
+                to_user_id : to_user_id
             }).then();
             messageInput.value = "";
         } else {
-            axios.post('/api/message/chat_admin/', formData).then();
+            axios.post('/message/chat_admin/admin_side', formData).then();
             clearAddPost()
-
         }
 
     })
