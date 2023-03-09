@@ -1463,6 +1463,7 @@ class SocialMediaController extends Controller
 
     public function chatting(Request $request, User $user)
     {
+        dd(auth()->user()->id);
         if ($request->text == null && $request->fileSend == null) {
         } else {
             $message = new Chat();
