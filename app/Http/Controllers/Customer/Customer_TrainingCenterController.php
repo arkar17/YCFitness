@@ -744,15 +744,20 @@ class Customer_TrainingCenterController extends Controller
 
     public function profile_update_profile_img(Request $request)
     {
+        // dd($request);
         if($request->hasFile('profile_image')){
             $file = $request->file('profile_image');
             $extension = $file->extension();
             $name = rand().".".$extension;
             // $file->storeAs('/public/post/', $name);
-            Storage::put(
-                'public/post/'.$name,
-                file_get_contents($file),'public'
-               );
+            Storage::put('public/post/'.$name,file_get_contents($file),'public');
+
+            // Storage::disk('do_spaces')->put('uploads', $request->file('profile_image'), 'public');
+
+
+            
+            // $file->storeAs('/public/post/', $name);
+
             $imgData = $name;
 
         }
