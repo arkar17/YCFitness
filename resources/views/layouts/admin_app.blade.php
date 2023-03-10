@@ -602,7 +602,7 @@
     <script src=" https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- Scripts -->
 
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}" ></script>
     <script src="{{ asset('js/new.js') }}"></script>
 
     <!-- MDB -->
@@ -680,8 +680,7 @@
 
     <script src={{ asset('js/notify.js') }}></script>
 
-    {{-- pusher --}}
-    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
 
     @stack('scripts')
     <script>
@@ -812,6 +811,7 @@
             cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
             encrypted: true
         });
+        console.log(pusher)
         var channel = pusher.subscribe('friend_request.' + user_id);
         channel.bind('friendRequest', function(data) {
             console.log(data);

@@ -217,6 +217,7 @@
 
 @endsection
 @push('scripts')
+
 <script>
     var messageForm = document.getElementById('message_form');
 
@@ -474,7 +475,6 @@
             console.log($('.group-chat-send-form-message-parent-container'))
             $('.group-chat-send-form-message-parent-container').append(messageInput_message)
             $(".group-chat-img-preview-container-wrapper").hide()
-
         } else {
             messageInput_message.remove()
             $(".group-chat-img-preview-container-wrapper").show()
@@ -499,15 +499,19 @@
         }).then(
             $(e.target).closest(".group-chat-sender-container").remove()
         )
-
-
     }
 
 
+    var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            encrypted: true
+        });
 
-    Echo.channel('chatting.' + auth_user_id + '.' + recieveUserId)
+    
+
+        Echo.channel('chatting.' + auth_user_id + '.' + recieveUserId)
         .listen('.chatting-event', (data) => {
-                console.log('asdufsasusiui', data);
+      
                 if (data.message.from_user_id == recieveUserId) {
                     if (data.message.media == null && data.message.text == null) {} else {
                         if (data.message.media != null) {
@@ -737,189 +741,8 @@
     }
     })
 
-    Echo.channel('chatting.' + recieveUserId + '.' + auth_user_id)
-        .listen('.chatting-event', (data) => {
-                console.log(data);
-                if (data.message.from_user_id == recieveUserId) {
-                    if (data.message.media == null && data.message.text == null) {} else {
-                        if (data.message.media != null) {
 
-                            var imageFile = data.message.media
-                            var imageArr = JSON.parse(imageFile)
-                            var receiverMessageMedia
-
-                            receiverMessageMedia = `
-                            <div class = "group-chat-imgs-vids-container">
-                                ${Object.keys(imageArr).map(key => {
-                                    if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
-                                        .split('.').pop() ===
-                                        'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split(
-                                            '.')
-                                        .pop() === 'gif') {
-
-                                                    return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                                        <div class="modal-dialog modal-dialog-centered">
-                                                                            <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                        aria-label="Close"></button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
-                                                                                        alt="test" class="w-100">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
-                                                                    </a>`;
-
-
-                                    } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
-                                        .pop() ===
-                                        'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                return `<video width = "100%" height = "100%" controls>
-                                <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
-                                </video>`
-
-                    }
-                }).join('')
-        } </div>`;
-
-            if (receive_user_img != null) {
-                messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
-                                                                        <div class="group-chat-receiver-text-container">
-
-                                                                            ${receiverMessageMedia}
-                                                                        </div>
-                                                                    </div>`;
-            } else {
-                messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                                        <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                                                        <div class="group-chat-receiver-text-container">
-
-                                                                            ${receiverMessageMedia}
-                                                                        </div>
-                                                                    </div>`;
-            }
-
-        }
-    else {
-
-        if (receive_user_img != null) {
-            messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
-                                                    <div class="group-chat-receiver-text-container">
-
-                                                        <p>${data.message.text}</p>
-                                                    </div>
-                                                </div>`;
-        } else {
-            messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                        <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                                    <div class="group-chat-receiver-text-container">
-
-                                                        <p>${data.message.text}</p>
-                                                    </div>
-                                                </div>`;
-        }
-
-    }
-    }
-    } else {
-        if (data.message.media == null && data.message.text == null) {} else {
-            if (data.message.media != null) {
-
-                var imageFile = data.message.media
-                var imageArr = JSON.parse(imageFile)
-                var messageMediaContainer
-
-                var messageMediaContainer = `<div class="group-chat-imgs-vids-container">
-                                ${
-                                    Object.keys(imageArr).map(key => {
-
-                                    if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
-                                        .split('.').pop() ===
-                                        'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split('.')
-                                        .pop() === 'gif') {
-                                            return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
-                                                                aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                                                <div class="modal-dialog modal-dialog-centered">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
-                                                                                alt="test" class="w-100">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                    <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
-                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
-                                                    </a>`
-
-
-                                        } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
-                                            .pop() ===
-                                            'mov' || imageArr[key].split('.').pop() === 'webm') {
-                                                return `<video width = "100%" height = "100%" controls>
-                    <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
-                    </video>`
-
-        }
-    }).join('')
-} </div>`;
-
-    if (receive_user_img != null) {
-        messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
-                                                                                <div class="group-chat-receiver-text-container">
-
-                                                                                    ${receiverMessageMedia}
-                                                                                </div>
-                                                                            </div>`;
-    } else {
-        messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                                                <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                                                                <div class="group-chat-receiver-text-container">
-
-                                                                                    ${receiverMessageMedia}
-                                                                                </div>
-                                                                            </div>`;
-    }
-    } else {
-        if (receive_user_img != null) {
-            messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                        <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
-                                                        <div class="group-chat-receiver-text-container">
-
-                                                            <p>${data.message.text}</p>
-                                                        </div>
-                                                    </div>`;
-        } else {
-            messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
-                                                            <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
-                                                        <div class="group-chat-receiver-text-container">
-
-                                                            <p>${data.message.text}</p>
-                                                        </div>
-                                                    </div>`;
-        }
-
-    }
-
-    }
-    }
-
-    })
+  
 
 
     //message delete and hide start
@@ -929,15 +752,15 @@
         $(event.target).next('.message-actions-box').toggle()
     }
 
-    Echo.channel('message-delete.' + recieveUserId + '.' + auth_user_id)
-        .listen('.message-delete-event', (data) => {
-            console.log(data);
-            $.each($(".group-chat-receiver-container"), function() {
-                if ($(this).data('messageid') === data.id) {
-                    $(this).remove()
-                }
-            })
-        })
+    // Echo.channel('message-delete.' + recieveUserId + '.' + auth_user_id)
+    //     .listen('.message-delete-event', (data) => {
+    //         console.log(data);
+    //         $.each($(".group-chat-receiver-container"), function() {
+    //             if ($(this).data('messageid') === data.id) {
+    //                 $(this).remove()
+    //             }
+    //         })
+    //     })
 
     // message delete and hide end
 </script>

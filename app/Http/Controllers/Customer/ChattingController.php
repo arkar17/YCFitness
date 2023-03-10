@@ -297,7 +297,7 @@ class ChattingController extends Controller
             $message->from_user_id = auth()->user()->id;
             $message->to_user_id = $to_user_id;
             $message->save();
-           // dd($request->sender);
+            
             broadcast(new Chatting($message, $request->sender));
         }
     }
