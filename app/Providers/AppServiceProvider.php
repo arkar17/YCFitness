@@ -176,11 +176,18 @@ class AppServiceProvider extends ServiceProvider
                     $f = (array)$block;
                     array_push($b, $f['sender_id'], $f['receiver_id']);
                 }
-                $array =  join(",",$b); 
+                $array =  join(",",$b);
+
                 $id_admin = User::whereHas('roles', function ($query) {
                     $query->where('name', '=', 'admin');
                 })->first();
-                $admin_id = $id_admin->id;
+                // if($id_admin){
+                  $admin_id = $id_admin->id;
+                // }
+                // else{
+                //     $admin_id = null;
+                // }
+               
                 // dd($array);
             if($array){
                 $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id

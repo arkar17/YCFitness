@@ -247,8 +247,7 @@
                             <iconify-icon icon="material-symbols:check-small-rounded" class="shop-member-plan-benefit-icon"></iconify-icon>
                             <p>{{__('msg.can upload 10 posts per month')}}</p>
                         </div>
-                        <form action="{{route('shoppayment')}}" method="POST">
-                            @csrf
+                        <form action="{{route('shoppayment')}}" method="GET">
                             <input type="hidden" name="shop_level_id" value={{$shop_level->id}}>
                             <button type="submit" class="customer-secondary-btn">
                                 {{__('msg.upgrade')}}

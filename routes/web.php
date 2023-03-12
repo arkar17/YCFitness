@@ -82,7 +82,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/shop/rating',[ShopController::class, 'shop_rating'])->name('shop_rating');
         Route::post('/shop/list', [ShopController::class, 'shop_list'])->name('shop.list');
         Route::get('/shop/request', [ShopController::class, 'shoprequest'])->name('shoprequest');
-        Route::post('/shop/payment', [ShopController::class, 'payment'])->name('shoppayment');
+        Route::get('/shop/payment', [ShopController::class, 'payment'])->name('shoppayment');
         Route::post('/shop/post/store', [ShopController::class, 'shoppost_store'])->name('shoppost.store');
         Route::get('/shop/{id}/post', [ShopController::class, 'shoppost'])->name('shoppost');
         Route::post('/shop/edit/{id}', [ShopController::class, 'shoppost_edit'])->name('shoppost.edit');

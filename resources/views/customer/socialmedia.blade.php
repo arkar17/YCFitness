@@ -48,20 +48,7 @@
                 <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
 
                 <div class="post-actions-container">
-                    <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
-                        <div class="post-action">
-                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                            @php
-                                $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
-                            @endphp
-
-                            @if ($already_save)
-                                <p class="save">Unsave</p>
-                            @else
-                                <p class="save">Save</p>
-                                @endif
-                        </div>
-                    </a>
+                   
                     @if ($post->user_id == auth()->user()->id)
 
                         <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
@@ -77,6 +64,20 @@
                             </div>
                         </a>
                     @else
+                    <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                        <div class="post-action">
+                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                            @php
+                                $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                            @endphp
+
+                            @if ($already_save)
+                                <p class="save">Unsave</p>
+                            @else
+                                <p class="save">Save</p>
+                            @endif
+                        </div>
+                    </a>
                     <div class="post-action" id="report" data-id="{{$post->id}}">
                         <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                         <p>Report</p>

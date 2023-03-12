@@ -3032,7 +3032,17 @@
 
                             }else{
                                 $('#edit_comments_modal').modal('hide');
-                                viewcomments()
+                                Swal.fire({
+                                            text: "Comment Edited",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then(() => {
+                                           
+                                            viewcomments()
+                                        })
+                                        viewcomments()
+                                $('.mentiony-content').empty()
                             }
                         }
 

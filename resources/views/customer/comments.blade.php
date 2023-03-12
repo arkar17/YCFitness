@@ -613,6 +613,16 @@
                                         })
 
                             }else{
+                                $('#editModal').modal('hide');
+                                Swal.fire({
+                                            text: "edited",
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then(() => {
+                                           
+                                            fetch_comment();
+                                        })
                                 fetch_comment();
                                 $('.mentiony-content').empty()
                             }

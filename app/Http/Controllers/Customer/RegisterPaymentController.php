@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Models\User;
+use App\Models\Member;
 use App\Models\Payment;
+use App\Models\ShopMember;
 use App\Models\BankingInfo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Member;
-use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
@@ -56,18 +57,22 @@ class RegisterPaymentController extends Controller
         //     'amount'=> 'required',
         //     'image' => 'required',
         // ]);
-
+        // dd($request);
         $validator = Validator::make($request->all(), [
             'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
             'payment_name' => 'required',
             'phone'=> 'required|min:9|max:11',
-            'amount'=> 'required',
+            'amount'=> 'required|same:cost',
             'image' => 'required',
+            
         ]);
         if ($validator->fails()) {
             Alert::success('error', 'Please fill data carefully!');
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        
+
 
         $user = auth()->user();
 

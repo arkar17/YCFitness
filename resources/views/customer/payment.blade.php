@@ -50,6 +50,7 @@
                 <img src="{{asset('image/kpay.png')}}"/>
             </div>
             @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
+            <input type = "hidden" name = "cost"  value = {{$member->price}}>
             <div class="customer-transaction-input-container">
                 <p>Choosen Plan:</p>
                 <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -59,6 +60,7 @@
                 <p class="member-cost">{{$member->price}}MMK</p>
             </div>
             @else
+            <input type = "hidden" name = "cost" value = {{$member->price}}>
             <div class="customer-transaction-input-container">
                 <p>Choosen Level:</p>
                 <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -69,12 +71,12 @@
             </div>
             @endif
             <div class="customer-transaction-input-container">
-                <p>Wave pay Phone Number:</p>
+                <p>KBZ pay Phone Number:</p>
                 <input type="text" name = "payment_name" hidden value="Wave Pay">
                 <input type="number" name="phone" required>
             </div>
             <div class="customer-transaction-input-container">
-                <p>Wave pay Name:</p>
+                <p>Kpay pay Name:</p>
                 <input type="text" name="account_name" required>
             </div>
             <div class="customer-transaction-input-container">
@@ -114,8 +116,6 @@
                 @endif
                 @endforeach
             </div>
-
-
             <div class="customer-transaction-form-btn-container">
                 <button type="submit" class="customer-transaction-form-submit">Confirm</button>
                 <button type="reset"  class="customer-transaction-form-cencel" onclick="clearTransactionImg()">Reset</button>
@@ -143,6 +143,7 @@
                     <img src="{{asset('image/cbpay.jfif')}}"/>
                 </div>
                 @if(auth()->user()->shopmember_type_id==0 || auth()->user()->shopmember_type_id==null)
+                <input type = "hidden" name = "cost" value = {{$member->price}}>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Plan:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -152,6 +153,7 @@
                     <p class="member-cost">{{$member->price}}MMK</p>
                 </div>
                 @else
+                <input type = "hidden" name = "cost" value = {{$member->price}}>
                 <div class="customer-transaction-input-container">
                     <p>Choosen Level:</p>
                     <p class="member-duration">{{$member->member_type}}( {{$member->duration}} month)</p>
@@ -162,12 +164,12 @@
                 </div>
                 @endif
                 <div class="customer-transaction-input-container">
-                    <p>Wave pay Phone Number:</p>
+                    <p>CB pay Phone Number:</p>
                     <input type="text" name = "payment_name" hidden value="Wave Pay">
                     <input type="number" name="phone" required>
                 </div>
                 <div class="customer-transaction-input-container">
-                    <p>Wave pay Name:</p>
+                    <p>CB pay Name:</p>
                     <input type="text" name="account_name" required>
                 </div>
                 <div class="customer-transaction-input-container">
@@ -346,12 +348,12 @@
                 </div>
                 @endif
                 <div class="customer-transaction-input-container">
-                    <p>Wave pay Phone Number:</p>
+                    <p>AYA pay Phone Number:</p>
                     <input type="text" name = "payment_name" hidden value="Wave Pay">
                     <input type="number" name="phone" required>
                 </div>
                 <div class="customer-transaction-input-container">
-                    <p>Wave pay Name:</p>
+                    <p>AYA pay Name:</p>
                     <input type="text" name="account_name" required>
                 </div>
                 <div class="customer-transaction-input-container">
@@ -1062,7 +1064,7 @@
         $(document).ready(function(){
             $('.alert').alert()
         })
+
     </script>
 
 @endpush
-

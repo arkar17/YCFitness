@@ -231,7 +231,7 @@ return[
     'cancel request' =>'Cancel Request',
     'create' => 'Create',
     'all' => 'All',
-    'block' => 'blocking',
+    'block' => 'Blocked User',
     'save and calculate BMI' => 'Save and Calculate BMI',
     'about_us_p' => 'YC fitness is located in Dawei, Tanintharyi. Since its establishment in 2018, it has been trained by 5 trainers. There are over 900 gym members and over 10,000 online members have been trained.',
     'zmk' => 'Zin Myo Ko',
