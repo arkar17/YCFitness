@@ -73,6 +73,7 @@
         <div class="social-media-requests-container">
             <div class="social-media-requests-today-container">
                 <p>Today</p>
+               
                 @forelse($friend_requests as $requests)
                 <div class="social-media-request-row">
 

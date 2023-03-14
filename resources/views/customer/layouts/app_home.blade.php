@@ -415,7 +415,7 @@
                     <div class="social-media-left-friends-container">
                         <div class="social-media-left-container-header">
                             <p>{{__('msg.friends')}}</p>
-                            <a href="{{ route('friendsList', auth()->user()->id) }}">{{__('msg.see all')}} <iconify-icon
+                            <a href="{{ route('friendsList',auth()->user()->id) }}">{{__('msg.see all')}} <iconify-icon
                                     icon="bi:arrow-right" class="arrow-icon"></iconify-icon></a>
                         </div>
                         <div class="social-media-left-friends-rows-container">

@@ -750,7 +750,6 @@ border-radius: 50%;
 
 .customer-profile-shop-container{
     max-width: 600px;
-
     margin: auto;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -759,11 +758,11 @@ border-radius: 50%;
     overflow-y: scroll;
 }
 
-.customer-profile-social-media-default-container{
+
+.customer-all-posts-container{
     height: 500px;
     overflow-y: scroll;
 }
-
 .customer-profile-friends-parent-container{
     padding: 20px 0;
     border-bottom: 1px solid var(--customer-light-text-color);

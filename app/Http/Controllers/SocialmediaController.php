@@ -348,8 +348,10 @@ class SocialmediaController extends Controller
     {
         $used_id = auth()->user()->id;
         if ($used_id == $id) {
+            
             return redirect()->route('customer-profile');
         } else {
+            // dd("Friends");
             $auth = Auth()->user()->id;
             $user = User::where('id', $id)->first();
             $posts = Post::where('user_id', $id)
@@ -394,7 +396,7 @@ class SocialmediaController extends Controller
                         }
                         }
                     }
-                    //dd($posts);
+                  //  dd($posts);
             return view('customer.socialmedia_profile', compact('user', 'posts', 'friends', 'friend'));
         }
     }
@@ -729,9 +731,9 @@ class SocialmediaController extends Controller
 
     public function friendsList(Request $request)
     {
-        //dd($request->user_id);
-        // $id = $request->id;
-        $id = auth()->user()->id;
+        //dd($request->id);
+        $id = $request->id;
+       
         $user = User::select('id', 'name')->where('id', $id)->first();
         $user_id = Auth::user()->id;
         $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
@@ -753,6 +755,7 @@ class SocialmediaController extends Controller
     {
         //dd($request->keyword);
         $id = $request->id;
+        //dd($id);
         $friendships = DB::table('friendships')
             ->where('friend_status', 2)
             ->where(function ($query) use ($id) {
@@ -768,8 +771,8 @@ class SocialmediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
-        $id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $user_id = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -821,24 +824,42 @@ class SocialmediaController extends Controller
 
     public function notification_center()
     {
-        $friend_requests = Friendship::select('sender.name', 'sender.id','profiles.profile_image')
-            ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
-            ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
-            ->join('profiles', 'sender.profile_id', '=', 'profiles.id')
-            ->where('receiver.id', auth()->user()->id)
-            ->where('friend_status', 1)
-            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), Carbon::Now()->toDateString())
-            ->get();
-           // dd($friend_requests);
-
-        $friend_requests_earlier = Friendship::select('sender.name', 'sender.id','profiles.profile_image')
-            ->join('users as receiver', 'receiver.id', '=', 'friendships.receiver_id')
-            ->join('users as sender', 'sender.id', '=', 'friendships.sender_id')
-            ->join('profiles', 'sender.profile_id', '=', 'profiles.id')
-            ->where('receiver.id', auth()->user()->id)
-            ->where('friend_status', 1)
+            $friend_requests = Friendship::select(
+                'users.id',
+                'users.name',
+                'profiles.profile_image',
+            )
+                ->leftJoin('users', 'friendships.sender_id', '=', 'users.id')
+                ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+                ->where('friendships.receiver_id', auth()->user()->id)
+                ->where('friendships.friend_status', '!=' ,2)
+                ->where(DB::raw("(DATE_FORMAT(friendships.date,'%Y-%m-%d'))"),'=',Carbon::Now()->toDateString())
+                ->orWhere(function ($query) {
+                    $query->where('receiver_id', auth()->user()->id)
+                     ->where('friendships.friend_status', '!=' ,2);
+                     
+                })
+                ->where(DB::raw("(DATE_FORMAT(friendships.date,'%Y-%m-%d'))"),'=',Carbon::Now()->toDateString())                
+                ->get();
+      
+        $friend_requests_earlier  = Friendship::select(
+            'users.id',
+            'users.name',
+            'profiles.profile_image',
+            
+        )
+            ->leftJoin('users', 'friendships.sender_id', '=', 'users.id')
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('friendships.receiver_id', auth()->user()->id)
+            ->where('friendships.friend_status', '!=' ,2)
             ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString())
+            ->orWhere(function ($query) {
+                $query->where('receiver_id', auth()->user()->id)
+                 ->where('friendships.friend_status', '!=' ,2);
+            })
+            ->where(DB::raw("(DATE_FORMAT(friendships.date,'%Y-%m-%d'))"),'!=',Carbon::Now()->toDateString()) 
             ->get();
+      
 
         $notification = Notification::select(
             'users.id as user_id',
@@ -849,14 +870,14 @@ class SocialmediaController extends Controller
             ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('notifications.receiver_id', auth()->user()->id)
-            ->where('notifications.post_id', '!=', null)
+            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString())
             ->orWhere(function ($query) {
                 $query->where('notifications.report_id', '!=', null)
-                    ->where('receiver_id', auth()->user()->id);
+                    ->where('receiver_id', auth()->user()->id)
+                    ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString());
             })
-            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), Carbon::Now()->toDateString())
             ->get();
-
+            //dd($notification);
         $notification_earlier = Notification::select(
             'users.id as user_id',
             'users.name',
@@ -866,14 +887,14 @@ class SocialmediaController extends Controller
             ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('notifications.receiver_id', auth()->user()->id)
-            ->where('notifications.post_id', '!=', null)
+            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString())
             ->orWhere(function ($query) {
                 $query->where('notifications.report_id', '!=', null)
-                    ->where('receiver_id', auth()->user()->id);
+                    ->where('receiver_id', auth()->user()->id)
+                    ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString());
             })
-            ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString())
             ->get();
-        // dd($notification_earlier);
+       
         return view('customer.noti_center', compact('friend_requests', 'friend_requests_earlier', 'notification', 'notification_earlier'));
     }
 
@@ -942,11 +963,11 @@ class SocialmediaController extends Controller
 
     public function confirmRequest(Request $request)
     {
+        // dd($request->id);
         $user = auth()->user();
         DB::table('friendships')->where('receiver_id', $user->id)
             ->where('sender_id', $request->id)
             ->update(['friend_status' => 2, 'date' =>  Carbon::Now()->toDateTimeString()]);
-
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),

@@ -27,7 +27,7 @@
 
             @else
                 <div class="social-media-photo">
-                    <img src="{{asset('storage/post/'.$profile->profile_image)}}" style="max-width:100%;cursor:pointer"
+                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$profile->profile_image }}" style="max-width:100%;cursor:pointer"
                     onclick="onClick(this)" class="modal-hover-opacity">
                 </div>
             @endif
@@ -43,7 +43,7 @@
 
         @else
             <div class="social-media-photo">
-                <img src="{{asset('storage/post/'.$cover->cover_photo)}}" style="max-width:100%;cursor:pointer"
+                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$cover->cover_photo}}" style="max-width:100%;cursor:pointer"
                 onclick="onClick(this)" class="modal-hover-opacity">
             </div>
         @endif

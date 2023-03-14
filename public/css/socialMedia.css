@@ -672,6 +672,12 @@
     border-bottom: 1px solid var(--customer-light-text-color);
 }
 
+
+a:hover{
+    color: var(--customer-primary-color);
+}
+
+
 .social-media-profile-friends-header{
     display: flex;
     justify-content: space-between;

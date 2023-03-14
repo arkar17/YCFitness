@@ -4,7 +4,7 @@
 @include('sweetalert::alert')
 
 <div class="social-media-right-container ">
-    <h3 style = "text-align: center"><b>{{$user->name}}'s</b> {{__('msg.friends')}} </h3>
+    <h3 style = "text-align: center"><b>{{$user->name}}'s </b> {{__('msg.friends')}} </h3>
     <div class="social-media-fris-search">
          <input type="text" placeholder="Search your friends" id = "search">
          <iconify-icon icon="akar-icons:search" class="search-icon"></iconify-icon>
