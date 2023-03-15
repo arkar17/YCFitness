@@ -8,6 +8,7 @@ use App\Models\Profile;
 use App\Models\BlockList;
 use App\Models\ChatGroup;
 use App\Models\Friendship;
+use App\Models\ShopMember;
 use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -315,6 +316,14 @@ class AppServiceProvider extends ServiceProvider
             $count->with('shopRequest_count', $shopRequest_count);
         }
     });
+
+    view()->composer('*',function($count){
+        if (Auth::check()) {
+            $shop_levels=ShopMember::get();
+    
+    $count->with('shop_levels', $shop_levels);
+                }
+                });
     
 
     }

@@ -349,7 +349,7 @@
                                                 if(posts[i].media!=null){
                                                     htmlView+=`<div class="social-media-post-comment-container">
                                                                 <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                                                                <p><span>`+posts[i].viewers+`</span>`
+                                                                <p><span id='viewers`+posts[i].viewers+`'>`+posts[i].viewers+`</span>`
                                                     if(posts[i].viewers >1){
                                                         htmlView+=` Views`
                                                     }else{
@@ -423,11 +423,23 @@
                 $(this).siblings(".shop-media-slider").show()
                 $(this).hide()
                 var post_id=$(this).data('id');
-                var add_url = "{{ route('user.view.post') }}";
+                // var add_url = "{{ route('user.view.post') }}";
+                // $.ajax({
+                //         method: "GET",
+                //         url: add_url,
+                //         data:{ post_id : post_id}
+                //     })
                 $.ajax({
                         method: "GET",
                         url: add_url,
-                        data:{ post_id : post_id}
+                        data:{ post_id : post_id},
+                        success: function(data) {
+                            
+                            document.querySelector(`#viewers`+post_id).innerHTML = data.data
+                                // alert();
+                                console.log(data.data);
+                                
+                    }
                     })
             })
 

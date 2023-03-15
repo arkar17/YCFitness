@@ -518,6 +518,24 @@
                                 <span>{{__('msg.in')}}</span>
                             </div>
                         </div>
+                        <div class="customer-profile-personaldetail-container">
+                            <p>{{__("msg.calf")}}:</p>
+                            <div>
+                                <input type="number"  value="{{auth()->user()->calf}}" name="calf" class="calf" readonly>
+                                <span>{{__('msg.in')}}</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="customer-profile-personaldetail-container">
+                            <p>{{__("msg.wrist")}}:</p>
+                            <div>
+                                <input type="number"  value="{{auth()->user()->wrist}}" name="wrist" class="wrist" readonly>
+                                <span>{{__('msg.in')}}</span>
+                            </div>
+
+                        </div>
                     </div>
                     <div class="customer-profile-personaldetails-right">
                         <div class="customer-profile-personaldetail-container">
@@ -545,6 +563,24 @@
 
                         </div>
 
+                        <div class="customer-profile-personaldetail-container">
+                            <p>{{__("msg.arm")}}:</p>
+                            <div>
+                                <input type="number"  value="{{auth()->user()->arm}}" name="arm" class="arm" readonly>
+                                <span>{{__('msg.in')}}</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="customer-profile-personaldetail-container">
+                            <p>{{__("msg.thigh")}}:</p>
+                            <div>
+                                <input type="number"  value="{{auth()->user()->thigh}}" name="thigh" class="thigh" readonly>
+                                <span>{{__('msg.in')}}</span>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <div class="customer-profile-save-cancel-container">
@@ -843,6 +879,10 @@
                 $(".waist").removeAttr("readonly");
                 $(".hip").removeAttr("readonly");
                 $(".shoulders").removeAttr("readonly");
+                $(".thigh").removeAttr("readonly");
+                $(".calf").removeAttr("readonly");
+                $(".arm").removeAttr("readonly");
+                $(".wrist").removeAttr("readonly");
                 $(".customer-bmi-calculate-btn").show();
                 $('select.height_ft').attr('disabled', false);
                 $('select.height_in').attr('disabled', false);

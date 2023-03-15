@@ -46,20 +46,7 @@
                 <iconify-icon icon="bi:three-dots-vertical" class="social-media-post-header-icon"></iconify-icon>
 
                 <div class="post-actions-container">
-                    <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
-                        <div class="post-action">
-                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
-                            @php
-                                $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
-                            @endphp
-
-                            @if ($already_save)
-                                <p class="save">Unsave</p>
-                            @else
-                                <p class="save">Save</p>
-                             @endif
-                        </div>
-                    </a>
+                    
                     @if ($post->user->id == auth()->user()->id)
 
                         <a id="edit_post" data-id="{{$post->id}}" data-bs-toggle="modal" >
@@ -79,6 +66,20 @@
                         <iconify-icon icon="material-symbols:report-outline" class="post-action-icon"></iconify-icon>
                         <p>Report</p>
                     </div>
+                    <a href="#" style="text-decoration:none" class="post_save" id="{{$post->id}}">
+                        <div class="post-action">
+                            <iconify-icon icon="bi:save" class="post-action-icon"></iconify-icon>
+                            @php
+                                $already_save=auth()->user()->user_saved_posts->where('post_id',$post->id)->first();
+                            @endphp
+
+                            @if ($already_save)
+                                <p class="save">Unsave</p>
+                            @else
+                                <p class="save">Save</p>
+                             @endif
+                        </div>
+                    </a>
                     @endif
                 </div>
             </div>
@@ -88,7 +89,7 @@
                 <p>{{$post->caption}}</p>
                 @else
                 <p>{{$post->caption}}</p>
-                <div class="social-media-media-container">
+                <div class="social-media-media-container" id = "photo_view_count" data-id = {{ $post->id }}>
                     <?php foreach (json_decode($post->media)as $m){?>
                     <div class="social-media-media">
                         @if (pathinfo($m, PATHINFO_EXTENSION) == 'mp4')
@@ -195,7 +196,7 @@
                 @if($post->media!=null)
                     <div class="social-media-post-comment-container">
                         <iconify-icon icon="ic:outline-remove-red-eye" class="comment-icon"></iconify-icon>
-                        <p><span>{{$post->viewers}}</span>
+                        <p><span id="viewers{{$post->id}}" >{{$post->viewers}}</span>
                             @if ($post->viewers>1)
                             Views
                             @else

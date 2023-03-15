@@ -192,6 +192,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::post('/socialmedia/user/react/', [SocialmediaController::class, 'user_react_post'])->name('user.react.post');
         Route::get('/socialmedia/user/view/', [SocialmediaController::class, 'user_view_post'])->name('user.view.post');
+        Route::get('/socialmedia/user/view1/', [SocialmediaController::class, 'user_view_post1'])->name('user.view.post1');
 
         Route::get('/cancelRequest/{id}', [SocialmediaController::class, 'cancelRequest'])->name('cancelRequest');
         Route::get('/declineRequest/{id}', [SocialmediaController::class, 'declineRequest'])->name('declineRequest');

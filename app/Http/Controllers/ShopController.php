@@ -46,9 +46,10 @@ class ShopController extends Controller
                     ->with('posts')
                     ->first();
         // $post = Post::find(17);
+        $shop_levels=ShopMember::get();
        
         //  dd($fileSize);
-        return view('customer.shop.shop',compact('shops'));
+        return view('customer.shop.shop',compact('shops','shop_levels'));
     }
 
     public function shop_list(Request $request)
@@ -223,6 +224,7 @@ class ShopController extends Controller
     public function shoprequest()
     {
         $shop_levels=ShopMember::get();
+        // dd($shop_levels);
         return view('customer.shop.shop_request',compact('shop_levels'));
     }
 

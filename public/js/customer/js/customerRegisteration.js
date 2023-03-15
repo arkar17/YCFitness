@@ -406,6 +406,10 @@
             var waist = document.querySelector('[name="waist"]')
             var hip = document.querySelector('[name="hip"]')
             var shoulders = document.querySelector('[name="shoulders"]')
+            var thigh = document.querySelector('[name="thigh"]')
+            var calf = document.querySelector('[name="calf"]')
+            var arm = document.querySelector('[name="arm"]')
+            var wrist = document.querySelector('[name="wrist"]')
             var bodyMeasurementsData
 
             if(valid){
@@ -434,6 +438,12 @@
                   waist : waist.value,
                   hip : hip?.value,
                   shoulders : shoulders.value,
+
+                  thigh : thigh.value,
+                  calf : calf.value,
+                  arm : arm.value,
+                  wrist : wrist.value,
+
                   request_type:request_type.value,
                 //   bmi : bmi,
                 //   bfp : bfp,

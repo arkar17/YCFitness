@@ -66,6 +66,13 @@ class CustomerRegisterController extends Controller
 
         $user->neck = $bodyMeasurements->neck;
         $user->shoulders = $bodyMeasurements->shoulders;
+
+        $user->thigh = $bodyMeasurements->thigh;
+        $user->calf = $bodyMeasurements->calf;
+        $user->arm = $bodyMeasurements->arm;
+        $user->wrist = $bodyMeasurements->wrist;
+
+
         $user->waist = $bodyMeasurements->waist;
 
         $user->weight = $weight->weight;

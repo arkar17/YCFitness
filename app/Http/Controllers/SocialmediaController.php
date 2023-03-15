@@ -258,14 +258,30 @@ class SocialmediaController extends Controller
 
     public function user_view_post(Request $request)
     {
+        // $post_id=$request->post_id;
+        // $post=Post::findOrFail($post_id);
+        // if(auth()->user()->id != $post->user_id){
+        //     $post->viewers = $post->viewers + 1;
+        // }
+        // $post->update();
+        // $viewer = $post->viewers;
+        // return response()->json([
+        //     'data' => $viewer
+        // ]);
+    }
+    public function user_view_post1(Request $request)
+    {
         $post_id=$request->post_id;
         $post=Post::findOrFail($post_id);
         if(auth()->user()->id != $post->user_id){
             $post->viewers = $post->viewers + 1;
         }
         $post->update();
+        $viewer = $post->viewers;
+        return response()->json([
+            'data' => $viewer
+        ]);
     }
-
     public function profile_photo_delete(Request $request)
     {
         $user = User::find(auth()->user()->id);

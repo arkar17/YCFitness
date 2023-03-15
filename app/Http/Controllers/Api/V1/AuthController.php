@@ -246,6 +246,12 @@ class AuthController extends Controller
         $user->waist = $request->waist;
         $user->hip = $request->hip ?? null;
         $user->shoulders = $request->shoulders;
+
+        $user->thigh = $request->thigh;
+        $user->calf = $request->calf;
+        $user->arm = $request->arm;
+        $user->wrist = $request->wrist;
+
         $user->member_code = 'yc-' . substr(Str::uuid(), 0, 8);
 
         // bmi , bmr, bfp

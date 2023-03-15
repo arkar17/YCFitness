@@ -157,7 +157,7 @@
 
                 if($user->shopmember_type_id!=null){
                     $shop_members=DB::table('shop_members')->where('id',$user->shopmember_type_id)->first();
-                    $shop_levels=$shop_members->member_type;
+                    $shop_levels = $shop_members->member_type;
                 }
             @endphp
 

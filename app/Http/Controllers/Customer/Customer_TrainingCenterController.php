@@ -662,6 +662,10 @@ class Customer_TrainingCenterController extends Controller
         $user->hip=$request->hip;
         $user->waist=$request->waist;
         $user->shoulders=$request->shoulders;
+        $user->thigh = $request->thigh;
+        $user->calf = $request->calf;
+        $user->arm = $request->arm;
+        $user->wrist = $request->wrist;
         $user->age=$request->age;
 
         $height_ft = $request->height_ft;

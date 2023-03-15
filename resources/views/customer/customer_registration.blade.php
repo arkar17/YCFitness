@@ -50,9 +50,30 @@
             <!-- <input  type="number" required class="customer-registeration-input" placeholder="Hip" name="hip"> -->
             <iconify-icon  icon="ant-design:exclamation-circle-outlined" class="description-icon hip-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Stand with your feet directly beneath your hips and wrap the tape around the widest part of your hips and buttocks."></iconify-icon>
         </div>
+
         <div class="customer-registeration-with-description">
             <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.shoulders')}}" name="shoulders">
             <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring Shoulders size"></iconify-icon>
+        </div>
+
+        <div class="customer-registeration-with-description">
+          <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.thigh')}}" name="thigh">
+          <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring thigh size"></iconify-icon>
+        </div>
+
+        <div class="customer-registeration-with-description">
+          <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.calf')}}" name="calf">
+          <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring calf size"></iconify-icon>
+        </div>
+
+        <div class="customer-registeration-with-description">
+          <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.arm')}}" name="arm">
+          <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring arm size"></iconify-icon>
+        </div>
+
+        <div class="customer-registeration-with-description">
+          <input  type="number" required class="customer-registeration-input" placeholder="{{__('msg.wrist')}}" name="wrist">
+          <iconify-icon icon="ant-design:exclamation-circle-outlined" class="description-icon" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Description on measuring wrist size"></iconify-icon>
         </div>
 
 

@@ -212,6 +212,12 @@ return[
     'waist'=>'Waist',
     'hip'=>'Hip',
     'shoulders'=>'Shoulders',
+    
+    'thigh'=>'thigh',
+    'calf'=>'calf',
+    'arm'=>'arm',
+    'wrist'=>'wrist',
+
     'in'=>'in',
     'lb'=>'lb',
     'workout'=>'Workout',
