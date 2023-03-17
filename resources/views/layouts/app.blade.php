@@ -405,6 +405,19 @@
 
                     </li>
 
+                    <li class="sidebar-item @yield('free-video-active')">
+
+                        <a class="sidebar-link" href="{{ route('free_video.index') }}">
+
+                            <i class="fa-solid fa-clipboard-list"></i>
+
+                            <span class="align-middle">Free Videos</span>
+
+                        </a>
+
+                    </li>
+
+
 
 
                     <li class="sidebar-item @yield('bankinginfo-active')">

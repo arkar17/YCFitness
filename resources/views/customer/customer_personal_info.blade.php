@@ -28,6 +28,13 @@
 </div>
 
 <section class="training-center-testimonials-section">
+    <div class="" style="float: left">
+        {{-- <button type="submit" class="customer-primary-btn create-group-submit-btn">{{__('msg.chatwithadmin')}}</button> --}}
+        <a href="{{route('free-videos')}}" class="customer-primary-btn add-friend-btn">
+            <iconify-icon icon="material-symbols:slow-motion-video-rounded" class="add-friend-icon"></iconify-icon>
+            <p>Watch Free Videos</p>
+        </a>
+    </div>
     <div class="" style="float: right">
         {{-- <button type="submit" class="customer-primary-btn create-group-submit-btn">{{__('msg.chatwithadmin')}}</button> --}}
         <a href="{{route('message.chat.admin')}}" class="customer-primary-btn add-friend-btn">

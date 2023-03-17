@@ -12,6 +12,7 @@ use App\Models\ShopRating;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Models\FreeVideo;
 use App\Models\UserReactShoppost;
 use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
@@ -428,6 +429,13 @@ class ShopController extends Controller
         $to_user_id = $id->id;
         return response()->json([
             'receiver_id' => $to_user_id
+        ]);
+    }
+
+    public function free_video(){
+        $videos = FreeVideo::get();
+        return response()->json([
+            'data' =>  $videos
         ]);
     }
 }

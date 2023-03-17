@@ -75,7 +75,6 @@ class CustomerProfileController extends Controller
 
         $user->update($request->all());
         $weight_history->save();
-
         return response()->json([
             'message' => 'success',
             'user' => $user

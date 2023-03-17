@@ -16,6 +16,7 @@ use App\Models\ShopReact;
 use App\Models\ShopMember;
 use App\Models\ShopRating;
 use App\Models\BankingInfo;
+use App\Models\FreeVideo;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
@@ -29,6 +30,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ShopController extends Controller
 {
+    public function freevideo(){
+        $videos = FreeVideo::get();
+        return view('customer.free_video',compact('videos'));
+    }
+
     public function index()
     {
         $user_id = auth()->user()->id;
@@ -227,7 +233,7 @@ class ShopController extends Controller
         // dd($shop_levels);
         return view('customer.shop.shop_request',compact('shop_levels'));
     }
-
+  
     public function payment(Request $request)
     {
         $user=auth()->user();

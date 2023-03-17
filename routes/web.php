@@ -39,6 +39,7 @@ use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
 use App\Http\Controllers\Customer\ChattingController;
 use App\Http\Controllers\Admin\ChatWithAdminController;
+use App\Http\Controllers\Admin\FreeVideosController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/locale/change', [HomeController::class, 'lang'])->name('langChange');
@@ -76,6 +77,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         //Social Media
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
 
+        Route::get('/free-video', [ShopController::class, 'freevideo'])->name('free-videos');
         Route::get('/account_delete', [AccDeleteController::class, 'acc_delete'])->name('acc_delete');
         Route::post('/account_del', [AccDeleteController::class, 'acc_del'])->name('acc_del');
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
@@ -380,6 +382,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
             
+            Route::resource('free_video', FreeVideosController::class);
+            Route::get('getVideos', [FreeVideosController::class, 'getVideos'])->name('getVideos');
+            Route::get('admin/video/{id}/delete', [FreeVideosController::class, 'destroy'])->name('video.delete');
 
 
         });

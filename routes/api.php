@@ -236,6 +236,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('shop/rating', [ShopController::class, 'shop_rating']);
     Route::get('admin_id', [ShopController::class, 'admin_id']);
 
+    Route::get('free_video', [ShopController::class, 'free_video']);
+
     Route::post('account_del', [CustomerProfileController::class, 'acc_del']);
 
 });

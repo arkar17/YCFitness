@@ -62,7 +62,7 @@ class WorkoutController extends Controller
     }
 
     public function createworkout(WorkoutRequest $request){
-
+        //dd($request);
         if($request->hasFile('video')) {
             $video = $request->file('video');
             $video_name =uniqid().'_'. $video->getClientOriginalName();
@@ -178,7 +178,7 @@ class WorkoutController extends Controller
         if($request->hasFile('video')) {
             $video = $request->file('video');
             $video_name =uniqid().'_'. $video->getClientOriginalName();
-            Storage::disk('local')->put(
+            Storage::put(
                 'public/upload/'.$video_name,
                 file_get_contents($video)
             );
@@ -188,7 +188,7 @@ class WorkoutController extends Controller
         if($request->hasFile('image')) {
             $image = $request->file('image');
             $image_name =uniqid().'_'. $image->getClientOriginalName();
-            Storage::disk('local')->put(
+            Storage::put(
                 'public/upload/'.$image_name,
                 file_get_contents($image)
             );
