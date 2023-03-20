@@ -114,7 +114,6 @@ class FreeVideosController extends Controller
     {
         //
         $data = FreeVideo::findOrFail($id);
-
         if($request->hasFile('video')) {
             $video = $request->file('video');
             $video_name =uniqid().'_'. $video->getClientOriginalName();
@@ -125,9 +124,11 @@ class FreeVideosController extends Controller
         }else{
             $video_name = $data->video;
         }
-        $video_create->name = $request->name;
-        $video_create->video = $video_name;
-        $check->update();
+        $video_naming = $request->name;
+        //dd($video_naming);
+        $data->name = $video_naming;
+        $data->video = $video_name;
+        $data->update();
         return redirect()->route('free_video.index')->with('success', 'FreeVideo is updated successfully!');
     }
 

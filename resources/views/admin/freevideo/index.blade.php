@@ -28,9 +28,9 @@
 @section('content')
     <div class="col-md-11 mx-auto">
         <div class="d-flex justify-content-between mb-3">
-            <h2 class="text-center mb-0">All Meals</h2>
+            <h2 class="text-center mb-0">Free Videos</h2>
             <a href="{{ route('free_video.create') }}" class="btn btn-primary align-middle"><i
-                    class="fa-solid fa-circle-plus me-2 fa-lg align-middle"></i> <span class="align-middle">Create Meal</span> </a>
+                    class="fa-solid fa-circle-plus me-2 fa-lg align-middle"></i> <span class="align-middle">Create New Videos</span> </a>
         </div>
 
         <div class="col-12 card p-4 mb-5">

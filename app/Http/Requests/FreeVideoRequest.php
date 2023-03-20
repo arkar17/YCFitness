@@ -26,7 +26,7 @@ class FreeVideoRequest extends FormRequest
         return [
             //
             'name' => 'required',
-            'video' => 'required|mimes:mp4,mov,webm',
+            'video' => 'mimes:mp4,mov,webm',
         ];
     }
 }
