@@ -138,19 +138,18 @@ class HomeController extends Controller
                                         $query->where('sender_id', $user_id)
                                             ->orWhere('receiver_id', $user_id);
                                     })
-                                    ->whereNotIn('sender_id',$b)
-                                    ->orWhereNotIn('receiver_id',$b)
                                     ->get(['sender_id', 'receiver_id'])->toArray();
-                                    //  dd($friends);
-                if (!empty($friends)) {
+                                    // dd($friends);
+                if (!empty($friends)) { 
                     $n = array();
                     foreach ($friends as $friend) {
                         $f = (array)$friend;
                         array_push($n, $f['sender_id'], $f['receiver_id']);
                     }
-                   
+                    $kq = [1,2];
                     $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                     ->whereIn('posts.user_id', $n)
+                    ->orWhereIn('posts.user_id',$kq)
                     ->whereNotIn('posts.user_id', $b)
                     ->where('posts.shop_status',0)
                     ->where('report_status','!=' ,1)
@@ -206,19 +205,17 @@ class HomeController extends Controller
                         array_push($b, $f['sender_id'], $f['receiver_id']);
                     }
                     $n = array();
-                    // $posts = Post::where('user_id', $user->id)
-                    //     ->where('report_status', 0)
-                    //     ->where('shop_status',0)
-                    //     ->orderBy('created_at', 'DESC')
-                    //     ->with('user')
-                    //     ->paginate(30);
+                    $kq = [1,2];
                     $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                     ->where('posts.shop_status',0)
+                    ->whereIn('posts.user_id',$kq)
+                    ->orWhere('posts.user_id', $user->id)
                     ->where('report_status','!=' ,1)
                     ->leftJoin('users', 'users.id', 'posts.user_id')
                     ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                     ->orderBy('posts.created_at', 'DESC')
                     ->paginate(30);
+                    // dd($posts);
                        
                     $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                     left join roles on model_has_roles.role_id = roles.id");

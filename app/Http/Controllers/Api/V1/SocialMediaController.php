@@ -61,8 +61,10 @@ class SocialMediaController extends Controller
                 $f = (array)$block;
                 array_push($b, $f['sender_id'], $f['receiver_id']);
             }
+            $kq = [1,2];
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->whereIn('posts.user_id', $n)
+                ->orWhereIn('posts.user_id',$kq)
                 ->whereNotIn('posts.user_id', $b)
                 ->where('posts.shop_status',0)
                 ->where('report_status','!=' ,1)
@@ -162,6 +164,7 @@ class SocialMediaController extends Controller
         } else {
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->where('posts.user_id', $user->id)
+                ->orWhereIn('posts.user_id',$kq)
                 ->where('posts.shop_status', 0)
                 ->where('report_status','!=' ,1)
                 ->leftJoin('users', 'users.id', 'posts.user_id')

@@ -775,6 +775,9 @@
                                         htmlView+=`
                                                 </div>
                                                     <p>`+res.comment[i].Replace+`</p>
+                                                    <p><span class="total_likes">10</span>
+                                                        xLikes
+                                                    </p>
                                                 </div>
                                             </div>
                                             `
