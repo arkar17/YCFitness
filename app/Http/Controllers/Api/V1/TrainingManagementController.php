@@ -25,9 +25,7 @@ class TrainingManagementController extends Controller
             $tmp = $request->file;
             $file = base64_decode($tmp);
             $file_name = $request->fileName;
-            Storage::disk('public')->put(
-                'trainer_message_media/' . $file_name,
-                $file
+            Storage::put('public/trainer_message_media/' . $file_name,$file,'public'
             );
             $message->media = $file_name;
         }else{
