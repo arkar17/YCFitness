@@ -40,7 +40,7 @@ class TrainerGroupController extends Controller
                 ->get();
         Alert::success('Success', 'New Training Group is created successfully');
 
-        return redirect()->route('trainer',compact('groups','members'))->with(
+        return redirect()->route('trainers',compact('groups','members'))->with(
         'success','');
     }
 

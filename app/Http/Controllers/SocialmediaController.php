@@ -335,7 +335,9 @@ class SocialmediaController extends Controller
     public function user_view_post1(Request $request)
     {
         $post_id=$request->post_id;
+        
         $post=Post::findOrFail($post_id);
+        // dd($post);
         if(auth()->user()->id != $post->user_id){
             $post->viewers = $post->viewers + 1;
         }

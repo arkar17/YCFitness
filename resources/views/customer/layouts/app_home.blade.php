@@ -873,6 +873,7 @@
             $('.social-media-media-slider').hide()
 
             $(document).on('click', '#photo_view_count', function(e) {
+                // alert("ok");
                 $(this).siblings(".social-media-media-slider").show()
                 $(this).hide()
                 var post_id=$(this).data('id');

@@ -3,16 +3,7 @@
 @section('content')
 @include('sweetalert::alert')
 
-{{-- @if (count($errors) > 0)
-    <div class="alert alert-warning alert-dismissible fade show">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
 
-    </div>
-@endif --}}
 @if(Session::has('error'))
     <script>
         swal({
@@ -72,7 +63,7 @@
             @endif
             <div class="customer-transaction-input-container">
                 <p>KBZ pay Phone Number:</p>
-                <input type="text" name = "payment_name" hidden value="Wave Pay">
+                <input type="text" name = "payment_name" hidden value="KBZ Pay">
                 <input type="number" name="phone" required>
             </div>
             <div class="customer-transaction-input-container">
@@ -165,7 +156,7 @@
                 @endif
                 <div class="customer-transaction-input-container">
                     <p>CB pay Phone Number:</p>
-                    <input type="text" name = "payment_name" hidden value="Wave Pay">
+                    <input type="text" name = "payment_name" hidden value="CB Pay">
                     <input type="number" name="phone" required>
                 </div>
                 <div class="customer-transaction-input-container">
@@ -349,7 +340,7 @@
                 @endif
                 <div class="customer-transaction-input-container">
                     <p>AYA pay Phone Number:</p>
-                    <input type="text" name = "payment_name" hidden value="Wave Pay">
+                    <input type="text" name = "payment_name" hidden value="AYA Pay">
                     <input type="number" name="phone" required>
                 </div>
                 <div class="customer-transaction-input-container">
@@ -774,8 +765,20 @@
             Confirm Transaction Via
         </p>
 
+        
+
         <div class="customer-transaction-choices-parent-container">
             <div class="customer-transaction-choices-ewallet-parent-container">
+                    @if (count($errors) > 0)
+                        <div class="alert alert-warning alert-dismissible fade show">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+
+                        </div>
+                    @endif
                 <p class="customer-transaction-choices-ewallet-header">
                     <iconify-icon icon="akar-icons:wallet" class="customer-transaction-choices-icon"></iconify-icon>
                     Ewallet
