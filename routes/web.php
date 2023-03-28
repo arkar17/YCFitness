@@ -193,6 +193,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/unfriend/{id}', [SocialmediaController::class, 'unfriend'])->name('unfriend');
 
         Route::post('/socialmedia/user/react/', [SocialmediaController::class, 'user_react_post'])->name('user.react.post');
+        Route::post('/socialmedia/user/comment/', [SocialmediaController::class, 'user_react_comment'])->name('user.react.comment');
         Route::get('/socialmedia/user/view/', [SocialmediaController::class, 'user_view_post'])->name('user.view.post');
         Route::get('/socialmedia/user/view1/', [SocialmediaController::class, 'user_view_post1'])->name('user.view.post1');
 

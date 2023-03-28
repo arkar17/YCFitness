@@ -2533,7 +2533,9 @@ public function chat_admin(Request $request)
         
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
+        $liked_comment_count = DB::select("SELECT COUNT(comment_id) as like_count, comment_id FROM user_react_comments GROUP BY comment_id");
         foreach($comments as $key=>$value){
+            $already_liked=Auth::user()->user_reacted_comments->where('comment_id',$value->id)->count();
             $comments[$key]['roles'] = null;
             if(!empty($roles)){
                 foreach($roles as $r){
@@ -2548,6 +2550,19 @@ public function chat_admin(Request $request)
             }
             else{
                 $comments[$key]['roles'] = null;
+            }
+
+            $comments[$key]['already_liked'] = $already_liked;
+
+            
+            foreach ($liked_comment_count as $like_count) {
+                //dd($like_count->like_count);
+                if ($like_count->comment_id == $value->id) {
+                    $comments[$key]['like_count'] = $like_count->like_count;
+                    break;
+                } else {
+                    $comments[$key]['like_count'] = 0;
+                }
             }
         }
         return response()->json([

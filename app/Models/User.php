@@ -42,6 +42,11 @@ class User extends Authenticatable
         return $this->hasMany(UserReactPost::class, 'user_id', 'id');
     }
 
+    public function user_reacted_comments()
+    {
+        return $this->hasMany(UserReactComment::class, 'user_id', 'id');
+    }
+
     public function user_saved_posts()
     {
         return $this->hasMany(UserSavedPost::class, 'user_id', 'id');

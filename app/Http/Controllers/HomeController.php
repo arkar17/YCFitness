@@ -139,7 +139,7 @@ class HomeController extends Controller
                                             ->orWhere('receiver_id', $user_id);
                                     })
                                     ->get(['sender_id', 'receiver_id'])->toArray();
-                                    // dd($friends);
+                    // dd($friends);
                 if (!empty($friends)) { 
                     $n = array();
                     foreach ($friends as $friend) {
@@ -195,6 +195,7 @@ class HomeController extends Controller
                                         }
                                        
                                 }
+                                // dd($posts);
                 }
                 } else {
                     $id = auth()->user()->id;

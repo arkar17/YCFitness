@@ -29,6 +29,7 @@ use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
+use App\Models\UserReactComment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -251,6 +252,68 @@ class SocialmediaController extends Controller
             }
         }
         $total_likes = UserReactPost::where('post_id', $post_id)->count();
+        return response()->json([
+            'total_likes' => $total_likes,
+        ]);
+    }
+    public function user_react_comment(Request $request)
+    {
+        $comment_id = $request['comment_id'];
+        // dd($comment_id);
+        $isLike = $request['isLike'] === true;
+
+        $update = false;
+        $comment = Comment::findOrFail($comment_id);
+
+        if (!$comment) {
+            return null;
+        }
+        $user = auth()->user();
+        $react = $user->user_reacted_comments()->where('comment_id', $comment_id)->first();
+
+        if (!empty($react)) {
+            $already_like = true;
+            $update = true;
+            $comment_noti_delete = Notification::where('sender_id', auth()->user()->id)
+                ->where('receiver_id', $comment->user_id)
+                ->where('comment_id', $comment_id);
+            $comment_noti_delete->delete();
+            $react->delete();
+        } else {
+            $react = new UserReactComment();
+        }
+        $react->user_id = $user->id;
+        $react->comment_id = $comment_id;
+        $react->reacted_status = true;
+
+        if ($update == true) {
+            $react->update();
+        } else {
+            $react->save();
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
+            );
+            $post_owner = Comment::where('comments.id', $react->comment_id)->first();
+            if ($post_owner->user_id != auth()->user()->id) {
+                $data = auth()->user()->name . ' liked your comment!';
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $post_owner->user_id;
+                $fri_noti->comment_id = $request->comment_id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data);
+            }
+        }
+        $total_likes = UserReactComment::where('comment_id', $comment_id)->count();
         return response()->json([
             'total_likes' => $total_likes,
         ]);
@@ -1768,6 +1831,8 @@ class SocialmediaController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
+        $liked_comment_count = DB::select("SELECT COUNT(comment_id) as like_count, comment_id FROM user_react_comments GROUP BY comment_id");
+        //dd($liked_comment_count);
         // dd($array);
         if($array){
             $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
@@ -1792,7 +1857,9 @@ class SocialmediaController extends Controller
 
         }
         
+        
         foreach ($comments as $key => $comm1) {
+            $already_liked=Auth::user()->user_reacted_comments->where('comment_id',$comm1->id)->count();
             $date = $comm1['created_at'];
             $comments[$key]['date'] = $date->toDayDateTimeString();
             $ids = json_decode($comm1->mentioned_users);
@@ -1822,6 +1889,7 @@ class SocialmediaController extends Controller
                 $comments[$key]['Replace'] = $comm1->comment;
             }
 
+
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $comm1->user_id ");
             foreach($roles as $r){
@@ -1841,7 +1909,21 @@ class SocialmediaController extends Controller
                     $comments[$key]['roles'] = null;
             }
             }
+            $comments[$key]['already_liked'] = $already_liked;
+
+            
+            foreach ($liked_comment_count as $like_count) {
+                //dd($like_count->like_count);
+                if ($like_count->comment_id == $comm1->id) {
+                    $comments[$key]['like_count'] = $like_count->like_count;
+                    break;
+                } else {
+                    $comments[$key]['like_count'] = 0;
+                }
+            }
+           
         }
+        // dd($comments);
         return response()->json([
             'comment' => $comments
         ]);
