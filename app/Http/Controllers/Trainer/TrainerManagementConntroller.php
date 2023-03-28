@@ -51,17 +51,22 @@ class TrainerManagementConntroller extends Controller
                         'fileInput.required' => 'You can send png,jpg,jpeg,gif,mp4,mov and webm extension'
                     ]);
 
-                $file = $request->file('fileInput');
-                $path =uniqid().'_'. $file->getClientOriginalName();
+                // $file = $request->file('fileInput');
+                
+                // $path =uniqid().'_'. $file->getClientOriginalName();
+                $tmp = $request->file('fileInput');
+                $file = base64_decode($tmp);
+                $image_name = $request->name;
+                Storage::put('public/trainer_message_media/' . $image_name,$file,'public');
                 // $disk = Storage;
-                Storage::put('public/trainer_message_media/'.$path,file_get_contents($file),'public');
+                // Storage::put('public/trainer_message_media/'.$path,file_get_contents($file),'public');
 
             }
 
             $message = new Message();
             $message->training_group_id = $id;
             $message->text = $request->text == null ?  null : $request->text;
-            $message->media = $request->fileInput == null ? null : $path;
+            $message->media = $image_name;
             $message->save();
 
             event(new TrainingMessageEvent($message,$path,$id));
