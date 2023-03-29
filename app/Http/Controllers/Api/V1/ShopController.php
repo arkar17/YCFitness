@@ -277,7 +277,7 @@ class ShopController extends Controller
             $post_one['comment_count'] = 0;
             $post_one['roles'] = null;
             foreach($roles as $r){
-                if($r->model_id == $value->user_id){
+                if($r->model_id == $post_one->user_id){
                     $post_one[$key]['roles'] = $r->name;
               }
               else{
