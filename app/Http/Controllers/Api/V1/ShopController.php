@@ -278,10 +278,10 @@ class ShopController extends Controller
             $post_one['roles'] = null;
             foreach($roles as $r){
                 if($r->model_id == $post_one->user_id){
-                    $post_one[$key]['roles'] = $r->name;
+                    $post_one['roles'] = $r->name;
               }
               else{
-                    $post_one[$key]['roles'] = null;
+                    $post_one['roles'] = null;
               }
             }
         }
