@@ -636,6 +636,7 @@
 
             })
             function fetch_comment(){
+               
                 var postid = "{{$post->id}}"
                             var comment_url = "{{ route('comment_list',':id') }}";
                             comment_url = comment_url.replace(':id', postid);
@@ -649,7 +650,7 @@
                         }
                         // table row with ajax
                         function table_post_row(res){
-                            console.log(res.comment.length)
+                            
                         let htmlView = '';
                             if(res.comment.length <= 0){
                                 console.log("no data");
@@ -661,21 +662,29 @@
                             var auth_id={{auth()->user()->id}};
 
                             for(let i = 0; i < res.comment.length; i++){
-                                console.log(res.comment , "comment")
+                                
                                 var comment_user=res.comment[i].user_id;
+                                var social_media = "{{ route('socialmedia.profile', [':id']) }}";
+                                    social_media = social_media.replace(':id',comment_user);
                                     var post_owner=res.comment[i].post_owner;
+                                   
                                         htmlView += `<div class="social-media-comment-container">`
+                                        
                                         if(res.comment[i].profile_image===null){
-                                            htmlView+= `<img src="{{ asset('/img/customer/imgs/user_default.jpg') }}" >`
+                                            htmlView+= `
+                                            <img src="{{ asset('/img/customer/imgs/user_default.jpg') }}"> `
                                         }else{
                                             htmlView+= `<img 
                                             src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.comment[i].profile_image}" >`
                                         }
-
+                                        
                                         htmlView += `<div class="social-media-comment-box">
                                             <div class="social-media-comment-box-header">
                                                 <div class="social-media-comment-box-name">
-                                                    <p>`+res.comment[i].name+` `
+                                                    <a href=` + social_media + ` style="text-decoration:none;" >
+                                                    <p>`+res.comment[i].name+` 
+                                                    </a> 
+                                                        `
                                                         
                                         if(res.comment[i].roles =='Gold'){
                                         htmlView += `
@@ -718,6 +727,7 @@
                                                     <span>`+res.comment[i].date+`</span>
                                                 </div>
                                             `
+                                        
                                             if(auth_id==post_owner && auth_id==comment_user){
                                                 htmlView+=`
                                                 <iconify-icon icon="bx:dots-vertical-rounded" class="social-media-comment-icon"></iconify-icon>

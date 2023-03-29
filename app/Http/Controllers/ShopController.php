@@ -292,11 +292,14 @@ class ShopController extends Controller
             foreach($images as $key=>$value){
                      for($i=0;$i<count($images);$i++){
 
-                        $img_size=File::size(public_path('storage/post/'.$value));
+                        // $img_size=File::size(public_path('storage/post/'.$value));
+                        $url='https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/'.$value;
+                        $response = Http::get($url);
+                        $fileSize = strlen($response->body());
 
                         // $obj['size']=$img_size;
                         // $obj['name']=$images[$i];
-                        $imageData->$key['size']=$img_size;
+                        $imageData->$key['size']=$fileSize;
                         $imageData->$key['name']=$value;
                         }
 
