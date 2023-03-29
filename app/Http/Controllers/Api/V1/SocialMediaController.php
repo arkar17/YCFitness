@@ -26,6 +26,7 @@ use App\Events\GroupVideoCall;
 use App\Events\DeclineCallUser;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
+use App\Models\UserReactComment;
 use App\Events\MakeAgoraAudioCall;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -47,7 +48,7 @@ class SocialMediaController extends Controller
                     ->orWhere('receiver_id', $user_id);
             })
             ->get(['sender_id', 'receiver_id'])->toArray();
-
+            $kq = [1,2];
         if (!empty($friends)) {
             $n = array();
             foreach ($friends as $friend) {
@@ -61,13 +62,13 @@ class SocialMediaController extends Controller
                 $f = (array)$block;
                 array_push($b, $f['sender_id'], $f['receiver_id']);
             }
-            $kq = [1,2];
+            
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+                ->where('posts.shop_status',0)
+                ->where('report_status','!=' ,1)
                 ->whereIn('posts.user_id', $n)
                 ->orWhereIn('posts.user_id',$kq)
                 ->whereNotIn('posts.user_id', $b)
-                ->where('posts.shop_status',0)
-                ->where('report_status','!=' ,1)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')
@@ -164,9 +165,9 @@ class SocialMediaController extends Controller
         } else {
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->where('posts.user_id', $user->id)
-                ->orWhereIn('posts.user_id',$kq)
                 ->where('posts.shop_status', 0)
                 ->where('report_status','!=' ,1)
+                ->orWhereIn('posts.user_id',$kq)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')
@@ -2391,6 +2392,69 @@ public function chat_admin(Request $request)
         ]);
     }
 
+    public function user_react_comment(Request $request)
+    {
+        $comment_id = $request['comment_id'];
+        // dd($comment_id);
+        $isLike = $request['isLike'] === true;
+
+        $update = false;
+        $comment = Comment::findOrFail($comment_id);
+
+        if (!$comment) {
+            return null;
+        }
+        $user = auth()->user();
+        $react = $user->user_reacted_comments()->where('comment_id', $comment_id)->first();
+
+        if (!empty($react)) {
+            $already_like = true;
+            $update = true;
+            $comment_noti_delete = Notification::where('sender_id', auth()->user()->id)
+                ->where('receiver_id', $comment->user_id)
+                ->where('comment_id', $comment_id);
+            $comment_noti_delete->delete();
+            $react->delete();
+        } else {
+            $react = new UserReactComment();
+        }
+        $react->user_id = $user->id;
+        $react->comment_id = $comment_id;
+        $react->reacted_status = true;
+
+        if ($update == true) {
+            $react->update();
+        } else {
+            $react->save();
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options = array(
+                    'cluster' => 'eu',
+                    'encrypted' => true
+                )
+            );
+            $post_owner = Comment::where('comments.id', $react->comment_id)->first();
+            if ($post_owner->user_id != auth()->user()->id) {
+                $data = auth()->user()->name . ' liked your comment!';
+                $fri_noti = new Notification();
+                $fri_noti->description = $data;
+                $fri_noti->date = Carbon::Now()->toDateTimeString();
+                $fri_noti->sender_id = auth()->user()->id;
+                $fri_noti->receiver_id = $post_owner->user_id;
+                $fri_noti->comment_id = $request->comment_id;
+                $fri_noti->notification_status = 1;
+                $fri_noti->save();
+                $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data);
+            }
+        }
+        $total_likes = UserReactComment::where('comment_id', $comment_id)->count();
+        return response()->json([
+            'total_likes' => $total_likes,
+        ]);
+    }
+
     public function comment_edit(Request $request)
     {
         $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
@@ -2533,7 +2597,9 @@ public function chat_admin(Request $request)
         
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
+        $liked_comment_count = DB::select("SELECT COUNT(comment_id) as like_count, comment_id FROM user_react_comments GROUP BY comment_id");
         foreach($comments as $key=>$value){
+            $already_liked=Auth::user()->user_reacted_comments->where('comment_id',$value->id)->count();
             $comments[$key]['roles'] = null;
             if(!empty($roles)){
                 foreach($roles as $r){
@@ -2548,6 +2614,19 @@ public function chat_admin(Request $request)
             }
             else{
                 $comments[$key]['roles'] = null;
+            }
+
+            $comments[$key]['already_liked'] = $already_liked;
+
+            
+            foreach ($liked_comment_count as $like_count) {
+                //dd($like_count->like_count);
+                if ($like_count->comment_id == $value->id) {
+                    $comments[$key]['like_count'] = $like_count->like_count;
+                    break;
+                } else {
+                    $comments[$key]['like_count'] = 0;
+                }
             }
         }
         return response()->json([

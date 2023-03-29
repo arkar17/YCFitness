@@ -139,7 +139,7 @@ class HomeController extends Controller
                                             ->orWhere('receiver_id', $user_id);
                                     })
                                     ->get(['sender_id', 'receiver_id'])->toArray();
-                                    // dd($friends);
+                    // dd($friends);
                 if (!empty($friends)) { 
                     $n = array();
                     foreach ($friends as $friend) {
@@ -148,11 +148,11 @@ class HomeController extends Controller
                     }
                     $kq = [1,2];
                     $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
+                    ->where('shop_status',0)
+                    ->where('report_status','!=' ,1)
                     ->whereIn('posts.user_id', $n)
                     ->orWhereIn('posts.user_id',$kq)
                     ->whereNotIn('posts.user_id', $b)
-                    ->where('posts.shop_status',0)
-                    ->where('report_status','!=' ,1)
                     ->leftJoin('users', 'users.id', 'posts.user_id')
                     ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                     ->orderBy('posts.created_at', 'DESC')
@@ -195,6 +195,7 @@ class HomeController extends Controller
                                         }
                                        
                                 }
+                                // dd($posts);
                 }
                 } else {
                     $id = auth()->user()->id;
@@ -208,9 +209,9 @@ class HomeController extends Controller
                     $kq = [1,2];
                     $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                     ->where('posts.shop_status',0)
+                    ->where('report_status','!=' ,1)
                     ->whereIn('posts.user_id',$kq)
                     ->orWhere('posts.user_id', $user->id)
-                    ->where('report_status','!=' ,1)
                     ->leftJoin('users', 'users.id', 'posts.user_id')
                     ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                     ->orderBy('posts.created_at', 'DESC')

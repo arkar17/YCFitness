@@ -49,27 +49,26 @@ class RegisterPaymentController extends Controller
     // }
     public function ewallet_store(Request $request)
     {
-        // dd($request);
-        // $this->validate($request,[
-        //     'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
-        //     'payment_name' => 'required',
-        //     'phone'=> 'required|min:9|max:11',
-        //     'amount'=> 'required',
-        //     'image' => 'required',
-        // ]);
-        // dd($request);
-        $validator = Validator::make($request->all(), [
+       // dd($request);
+        $this->validate($request,[
             'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
             'payment_name' => 'required',
             'phone'=> 'required|min:9|max:11',
             'amount'=> 'required|same:cost',
             'image' => 'required',
-            
         ]);
-        if ($validator->fails()) {
-            Alert::success('error', 'Please fill data carefully!');
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+        //dd($request);
+        // $validator = Validator::make($request->all(), [
+        //     'account_name'=> 'required|regex:/^[\pL\s\-]+$/u',
+        //     'payment_name' => 'required',
+        //     'phone'=> 'required|min:9|max:11',
+        //     'amount'=> 'required|same:cost',
+        //     'image' => 'required',
+        // ]);
+        // if ($validator->fails()) {
+        //     Alert::success('error', 'Please fill data carefully!');
+        //     return redirect()->back()->withErrors($validator)->withInput();
+        // }
 
         
 

@@ -352,6 +352,9 @@
 
         })
 
+
+
+
         $('.post_save').click(function(e){
             $('.post-actions-container').hide();
             e.preventDefault();
@@ -633,7 +636,6 @@
 
             })
             function fetch_comment(){
-
                 var postid = "{{$post->id}}"
                             var comment_url = "{{ route('comment_list',':id') }}";
                             comment_url = comment_url.replace(':id', postid);
@@ -659,7 +661,7 @@
                             var auth_id={{auth()->user()->id}};
 
                             for(let i = 0; i < res.comment.length; i++){
-                                console.log(res.comment[i].roles)
+                                console.log(res.comment , "comment")
                                 var comment_user=res.comment[i].user_id;
                                     var post_owner=res.comment[i].post_owner;
                                         htmlView += `<div class="social-media-comment-container">`
@@ -696,7 +698,6 @@
                                                 `
                                         }
                                         if(res.comment[i].roles == 'Ruby Premium'){
-                                            console.log("testing")
                                         htmlView += `
                                                         <span style = "color:#B22222;font-weight:bold"> [R <sup>+</sup>]</span>
                                                 `
@@ -775,11 +776,35 @@
                                             }
                                         htmlView+=`
                                                 </div>
-                                                    <p>`+res.comment[i].Replace+`</p>
-                                                    <p><span class="total_likes">10</span>
-                                                        xLikes
-                                                    </p>
-                                                    <p class="comment-reply" data-userid=${res.comment[i].user_id} data-username=${res.comment[i].name}>reply</p>
+                                                    <div>`+res.comment[i].Replace+`</div>
+                                                    <div class="comment-like-reply-container">
+                                                        <div class="comment-like-container">
+                                                            <a class="like_comment" style = "font-size:12px; text-decoration:none" herf = "#" id=`+res.comment[i].id+`>
+                                                    `
+                                                 if(res.comment[i].already_liked==0 ){
+                                        htmlView += `
+                                        <div class="social-media-post-comment-container">
+                                                        <iconify-icon icon="mdi:cards-heart-outline" class="like-icon-comment">
+                                                        </iconify-icon>`
+                                                    }
+
+                                                    else{
+                                        htmlView += `
+                                        <div class="social-media-post-comment-container">
+                                                        <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon-comment already-liked-comment">
+                                                        </iconify-icon>`
+                                                    }
+                                        htmlView += `
+                                                       </a>
+                                                       <p class="total-comment-likes">
+                                                        <span class="total_likes_comment">`+res.comment[i].like_count+`</span>
+                                                        <span>Likes</span>
+                                                       </p>
+                                                       </div>
+                                                       
+                                                       </div>
+                                                       <p class="comment-reply" data-username=${res.comment[i].name} data-userid=${res.comment[i].user_id}>reply</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                             `
@@ -807,6 +832,41 @@
                             //comment reply end
             }
 
+            // $('.like_comment').click(function(e){
+                $(document).on('click', '.like_comment', function(e) {
+                e.preventDefault();
+                var isLike=e.target.previousElementSibiling == null ? true : false;
+                var comment_id=$(this).attr('id');
+                console.log(comment_id)
+                var add_url = "{{ route('user.react.comment', [':comment_id']) }}";
+                add_url = add_url.replace(':comment_id', comment_id);
+                var that = $(this)
+                $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url: add_url,
+                            data:{ isLike : isLike , comment_id: comment_id },
+                            success:function(data){
+                                that.siblings('p').children('.total_likes_comment').html(data.total_likes)
+                                if(that.children('.like-icon-comment').hasClass("already-liked-comment")){
+                                    that.children('.like-icon-comment').attr('style','')
+                                    that.children('.like-icon-comment').attr('class','like-icon-comment')
+                                    that.children(".like-icon-comment").attr('icon','mdi:cards-heart-outline')
+                                }else{
+                                    that.children('.like-icon-comment').attr('style','color : red')
+                                    that.children('.like-icon-comment').attr('class','like-icon-comment already-liked-comment')
+                                    that.children(".like-icon-comment").attr('icon','mdi:cards-heart')
+                                }
+
+                            }
+                        })
+
+        })
+
 
             $('.mentiony-content').on('keydown', function(event) {
                 console.log(event.which)
@@ -819,10 +879,7 @@
                     console.log(el)
                     if (el.classList.contains('mentiony-link') || el.classList.contains('mention-area') || el.classList.contains('highlight')) {
                         console.log('delete mention')
-
-
                                 el.remove();
-
                             return;
 
                     }

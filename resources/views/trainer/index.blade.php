@@ -223,7 +223,7 @@
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <img src="{{ asset('/storage/trainer_message_media/${value.media}') }}" alt="test"
+                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/${value.media}" alt="test"
                                                         class="w-100">
                                                 </div>
                                             </div>
@@ -232,7 +232,7 @@
                                     <div class="group-chat-sender-container" id="trainer_message_el">
                                             <div class="group-chat-sender-text-container">
                                                 <a data-bs-toggle="modal" href="#exampleModalToggle${value.id}" role="button">
-                                                <img src="{{ asset('storage/trainer_message_media/${value.media}') }}">
+                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/${value.media}">
                                                 </a>
                                             </div>
                                             <img src="{{ asset('image/default.jpg') }}" />
@@ -242,7 +242,7 @@
                                         `<div class="group-chat-sender-container" id="trainer_message_el">
                                             <div class="group-chat-sender-text-container">
                                                 <video width="100%" height="100%" controls>
-                                                    <source src="{{ asset('storage/trainer_message_media/${value.media}') }}" type="video/mp4">
+                                                    <source src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/trainer_message_media/${value.media}" type="video/mp4">
                                                 </video>
                                             </div>
                                             <img src="{{ asset('image/default.jpg') }}" />

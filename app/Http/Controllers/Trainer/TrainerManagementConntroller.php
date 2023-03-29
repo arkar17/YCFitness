@@ -54,9 +54,7 @@ class TrainerManagementConntroller extends Controller
                 $file = $request->file('fileInput');
                 $path =uniqid().'_'. $file->getClientOriginalName();
                 // $disk = Storage;
-                Storage::put(
-                    'public/trainer_message_media/'.$path,file_get_contents($file),'public'
-                );
+                Storage::put('public/trainer_message_media/'.$path,file_get_contents($file),'public');
 
             }
 
