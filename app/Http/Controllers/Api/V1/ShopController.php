@@ -188,9 +188,7 @@ class ShopController extends Controller
 
                     $tmp = base64_decode($file);
                     $file_name = $filenames[$index];
-                    Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
+                    Storage::put('public/post/' . $file_name,$tmp,'public'
                     );
                     $imgData[] = $file_name;
                     $post->media = json_encode($imgData);
@@ -207,9 +205,9 @@ class ShopController extends Controller
 
                     $tmp = base64_decode($file);
                     $file_name = $filenames[$index];
-                    Storage::disk('public')->put(
-                        'post/' . $file_name,
-                        $tmp
+                    Storage::put(
+                        'public/post/' . $file_name,
+                        $tmp,'public'
                     );
                     $imgData[] = $file_name;
                     $post->media = json_encode($imgData);
