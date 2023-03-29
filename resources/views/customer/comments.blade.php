@@ -299,6 +299,7 @@
                         </div>
 
                         <p>{{$comment->comment}}</p>
+                        
                     </div>
                 </div>
                 @empty
@@ -778,12 +779,32 @@
                                                     <p><span class="total_likes">10</span>
                                                         xLikes
                                                     </p>
+                                                    <p class="comment-reply" data-userid=${res.comment[i].user_id} data-username=${res.comment[i].name}>reply</p>
                                                 </div>
                                             </div>
                                             `
                 }
 
                             $('.social-media-all-comments').html(htmlView);
+                             //comment reply start
+                            $(".comment-reply").click(function(){
+                                // console.log(this.getAttribute("data-userid"))
+                                $(".mentiony-content").append(
+                                    `
+                                    <span class="mention-area">
+                                        <span class="highlight">
+                                            <a data-item-id=${this.getAttribute("data-userid")} class="mentiony-link">
+                                                @${this.getAttribute("data-username")}
+                                            </a>
+                                        </span>
+                                    </span>
+                                    <span class="normal-text">&nbsp;</span>
+                                    `
+                                    
+                                    )
+                            })
+                            
+                            //comment reply end
             }
 
 
@@ -850,6 +871,8 @@
                         })
                 $('.social-media-left-searched-items-container').empty();
                 });
+
+       
 
 
     })
