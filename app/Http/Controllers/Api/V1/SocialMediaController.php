@@ -2450,10 +2450,8 @@ public function chat_admin(Request $request)
             }
         }
         $total_likes = UserReactComment::where('comment_id', $comment_id)->count();
-        $likes = UserReactComment::select('id')->where('id',$react->id)->first();
         return response()->json([
-            'total_likes' => $total_likes,
-            'like_id'     => $likes
+            'total_likes' => $total_likes
         ]);
     }
 

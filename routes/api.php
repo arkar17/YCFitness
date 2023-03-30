@@ -206,6 +206,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('post/like', [SocialmediaController::class, 'user_like_post']);
     Route::post('comment/like', [SocialmediaController::class, 'user_react_comment']);
+    
     Route::post('post/like/list', [SocialmediaController::class, 'social_media_likes']);
     Route::post('comment/like/list', [SocialmediaController::class, 'comment_likes']);
     Route::post('post/comment/list', [SocialmediaController::class, 'comment_list']);
