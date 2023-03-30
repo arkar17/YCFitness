@@ -61,7 +61,7 @@ class ShopController extends Controller
             ->get();
         }
         else{
-            $shop_list = User::select('users.id','users.name','profiles.profile_image')
+         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
@@ -205,9 +205,7 @@ class ShopController extends Controller
 
                     $tmp = base64_decode($file);
                     $file_name = $filenames[$index];
-                    Storage::put(
-                        'public/post/' . $file_name,
-                        $tmp,'public'
+                    Storage::put('public/post/' . $file_name, $tmp,'public'
                     );
                     $imgData[] = $file_name;
                     $post->media = json_encode($imgData);

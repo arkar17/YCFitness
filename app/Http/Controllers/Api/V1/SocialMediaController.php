@@ -738,7 +738,7 @@ class SocialMediaController extends Controller
             $caption = $input['caption'];
         } elseif ($input['caption'] == null) {
             $caption = null;
-
+ 
             if ($input['addPostInput']) {
 
                 $images = $input['addPostInput'];
@@ -2450,8 +2450,10 @@ public function chat_admin(Request $request)
             }
         }
         $total_likes = UserReactComment::where('comment_id', $comment_id)->count();
+        $likes = UserReactComment::select('id')->where('id',$react->id)->first();
         return response()->json([
             'total_likes' => $total_likes,
+            'like_id'     => $likes
         ]);
     }
 
@@ -2535,6 +2537,59 @@ public function chat_admin(Request $request)
 
         return response()->json([
             'data' =>  $post_likes
+        ]);
+    }
+
+    public function comment_likes(Request $request)
+    {
+        $auth = Auth()->user()->id;
+        $comment_id = $request->comment_id;
+        $comment_likes = UserReactComment::select('users.name', 'profiles.profile_image', 'user_react_comments.*')
+            ->leftJoin('users', 'users.id', 'user_react_comments.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('comment_id', $comment_id)
+            ->get();
+
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)
+       ");
+
+        foreach ($comment_likes as $key => $value) {
+            foreach ($friends as $fri) {
+                if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
+                    $comment_likes[$key]['friend_status'] = "cancel request";
+                    break;
+                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 1) {
+                    $comment_likes[$key]['friend_status'] = "response";
+                    break;
+                } else if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 2) {
+                    $comment_likes[$key]['friend_status'] = "friend";
+                    break;
+                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 2) {
+                    $comment_likes[$key]['friend_status'] = "friend";
+                    break;
+                } else if ($value->user_id == $auth) {
+                    $comment_likes[$key]['friend_status'] = "myself";
+                    break;
+                } else {
+                    $comment_likes[$key]['friend_status'] = "add friend";
+                }
+            }
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+            left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $value->user_id");
+           
+                if(!empty($roles)){
+                foreach($roles as $r){
+                    $comment_likes[$key]['roles'] = $r->name;  
+                    break;
+                 }
+                }
+                else{
+                    $comment_likes[$key]['roles'] = null;
+                }
+        }
+
+        return response()->json([
+            'data' =>  $comment_likes
         ]);
     }
 

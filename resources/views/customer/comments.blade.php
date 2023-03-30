@@ -676,7 +676,7 @@
                                         }else{
                                             htmlView+= `<img 
                                             src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${res.comment[i].profile_image}" >`
-                                        }
+                                        } 
                                         
                                         htmlView += `<div class="social-media-comment-box">
                                             <div class="social-media-comment-box-header">
