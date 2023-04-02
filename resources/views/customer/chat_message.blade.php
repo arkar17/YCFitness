@@ -194,17 +194,21 @@
                                         class="message-action-icon"></iconify-icon>
                                     {{__('msg.unsend')}}
                                 </p>
+                               
                             </div>
 
                         </div>
+                       
 
-
+                     
                         <div class="group-chat-sender-text-container">
                             @if ($send_message->media == null)
                                 <p>{{ $send_message->text }}</p>
                             @else
                                 <div class="group-chat-imgs-vids-container">
+                                    
                                     @foreach (json_decode($send_message->media) as $key => $media)
+                                    
                                         @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'jpg' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'jpeg')
@@ -227,11 +231,14 @@
                                             </div>
                                             {{-- end modal --}}
 
-
+                                            <button id = "download">
+                                                Download
+                                            </button>
+                                            
                                             <a data-bs-toggle="modal"
                                                 href="#exampleModalToggle{{ $send_message->id }}{{ $key }}"
                                                 role="button">
-                                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
+                                                <img class= "download_image" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
                                             </a>
                                         @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
@@ -359,7 +366,37 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
 <script>
+
+        $(document).ready(function() {
+        $('#download').click(function() {
+            alert("ok");
+            var url = $('.download_image').attr('src');
+            var fileName = url.substring(url.lastIndexOf('/')+1);
+            $.ajax({
+            url: url,
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(data) {
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(data);
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                }, 0);
+            }
+            });
+        });
+        });
+
+
+
     var messageForm = document.getElementById('message_form');
 
     var sendMessage = document.querySelector('.group-chat-send-form-submit-btn')
