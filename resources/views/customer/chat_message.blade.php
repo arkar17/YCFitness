@@ -231,14 +231,17 @@
                                             </div>
                                             {{-- end modal --}}
 
-                                            <button id = "download">
+                                            <button class="img-download-btn" id = "download">
                                                 Download
                                             </button>
                                             
                                             <a data-bs-toggle="modal"
                                                 href="#exampleModalToggle{{ $send_message->id }}{{ $key }}"
                                                 role="button">
-                                                <img class= "download_image" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
+                                                
+                                                    <img class= "download_image" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
+                                                
+                                                
                                             </a>
                                         @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
@@ -370,28 +373,62 @@
 <script>
 
         $(document).ready(function() {
-        $('#download').click(function() {
-            alert("ok");
-            var url = $('.download_image').attr('src');
+        $('.img-download-btn').click(function() {
+            // console.log($(this).next().find(".download_image"))
+            var url = $(this).next().find(".download_image").attr('src');            
             var fileName = url.substring(url.lastIndexOf('/')+1);
-            $.ajax({
-            url: url,
-            xhrFields: {
-                responseType: 'blob'
-            },
-            success: function(data) {
-                var a = document.createElement('a');
-                var url = window.URL.createObjectURL(data);
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(function() {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-                }, 0);
-            }
-            });
+            
+            fetch(url,{    
+            method: 'GET',    
+            withCredentials: true,    
+            crossorigin: true,    
+                   
+            })
+            .then(resp => resp.blob())
+            .then(blobobject => {
+                const blob = window.URL.createObjectURL(blobobject);
+                const anchor = document.createElement('a');
+                anchor.style.display = 'none';
+                anchor.href = blob;
+                anchor.download = "name.png";
+                document.body.appendChild(anchor);
+                anchor.click();
+                window.URL.revokeObjectURL(blob);
+            })
+            .catch(() => console.log('An error in downloadin the file sorry'));
+            
+                // fetch(url, {
+                //     mode : 'no-cors',
+                // })
+                //     .then(response => response.blob())
+                //     .then(blob => {
+                //     let blobUrl = window.URL.createObjectURL(blob);
+                //     let a = document.createElement('a');
+                //     a.download = url.replace(/^.*[\\\/]/, '');
+                //     a.href = blobUrl;
+                //     document.body.appendChild(a);
+                //     a.click();
+                //     a.remove();
+                // })
+            
+            // $.ajax({
+            // url: url,
+            // xhrFields: {
+            //     responseType: 'blob'
+            // },
+            // success: function(data) {
+            //     var a = document.createElement('a');
+            //     var url = window.URL.createObjectURL(data);
+            //     a.href = url;
+            //     a.download = fileName;
+            //     document.body.appendChild(a);
+            //     a.click();
+            //     setTimeout(function() {
+            //     document.body.removeChild(a);
+            //     window.URL.revokeObjectURL(url);
+            //     }, 0);
+            // }
+            // });
         });
         });
 
