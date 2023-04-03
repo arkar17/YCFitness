@@ -150,6 +150,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/profile', [Customer_TrainingCenterController::class, 'profile'])->name('customer-profile');
         Route::get('/profile/likes/{post_id}', [Customer_TrainingCenterController::class, 'profile_post_likes'])->name('profile.likes.view');
 
+        Route::get('/likes/comment/{id}', [Customer_TrainingCenterController::class, 'comment_likes'])->name('likes.comment');
+
         Route::post('customer/profile/update', [Customer_TrainingCenterController::class, 'profile_update'])->name('customer-profile.update');
         Route::post('customer/profile/name/update', [Customer_TrainingCenterController::class, 'profile_update_name'])->name('customer-profile-name.update');
 
@@ -179,6 +181,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/socialmedia/profile/{id}', [SocialmediaController::class, 'profile'])->name('socialmedia.profile');
 
         Route::get('/socialmedia/likes/{post_id}', [SocialmediaController::class, 'social_media_likes'])->name('social_media_likes');
+
+        Route::get('/comment/likes/{id}', [SocialmediaController::class, 'comment_likes'])->name('comment_likes');
 
         Route::post('/socialmedia_profile', [SocialmediaController::class, 'social_media_profile'])->name('social_media_profile');
 

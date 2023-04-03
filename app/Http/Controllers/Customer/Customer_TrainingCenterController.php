@@ -20,6 +20,7 @@ use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use App\Models\WeightHistory;
 use App\Models\PersonalMealInfo;
+use App\Models\UserReactComment;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
@@ -483,6 +484,52 @@ class Customer_TrainingCenterController extends Controller
                     ->leftJoin('users','users.id','user_react_posts.user_id')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
                     ->where('post_id',$post_id)
+                    ->get();
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
+
+                    foreach($post_likes as $key=>$value){
+                        foreach($friends as $fri){
+                            if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 1    ){
+                                $post_likes[$key]['friend_status'] = "cancel request";
+                                break;
+                            }
+                            else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 1    ){
+                                $post_likes[$key]['friend_status'] = "response";
+                                break;
+                            }
+                            else if($value->user_id == $fri->receiver_id AND $fri->sender_id == $auth AND $fri->friend_status == 2){
+                                $post_likes[$key]['friend_status'] = "friend";
+                                break;
+                            }
+                            else if($value->user_id == $fri->sender_id AND $fri->receiver_id == $auth AND $fri->friend_status == 2){
+                                $post_likes[$key]['friend_status'] = "friend";
+                                break;
+                            }
+                            else if($value->user_id == $auth){
+                                $post_likes[$key]['friend_status'] = "myself";
+                                break;
+                            }
+                            else{
+                                $post_likes[$key]['friend_status'] = "add friend";
+                            }
+                        }
+                    }
+
+        return response()
+        ->json([
+            'post_likes'=>$post_likes
+                    ]);
+    }
+
+
+    public function comment_likes($id)
+    {
+        // dd("okk");
+        $auth=auth()->user()->id;
+        $post_likes=UserReactComment::select('users.name','profiles.profile_image','user_react_comments.*')
+                    ->leftJoin('users','users.id','user_react_comments.user_id')
+                    ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->where('comment_id',$id)
                     ->get();
         $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
 

@@ -31,6 +31,27 @@
     </div>
 </div>
 
+<!-- Like Modal -->
+<div class="modal fade " id="staticBackdrop">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Likes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="social-media-all-likes-container">
+                <div class="social-media-all-likes-row">
+                    <div class="social-media-all-likes-row-img">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
 <div class="social-media-right-container">
     <div class="social-media-all-likes-parent-container">
         <div class="social-media-post-container">
@@ -635,6 +656,8 @@
                     });
 
             })
+            
+        
             function fetch_comment(){
                
                 var postid = "{{$post->id}}"
@@ -662,10 +685,13 @@
                             var auth_id={{auth()->user()->id}};
 
                             for(let i = 0; i < res.comment.length; i++){
-                                
+                            
+                               
                                 var comment_user=res.comment[i].user_id;
+                                var id=res.comment[i].id;
                                 var social_media = "{{ route('socialmedia.profile', [':id']) }}";
                                     social_media = social_media.replace(':id',comment_user);
+
                                     var post_owner=res.comment[i].post_owner;
                                    
                                         htmlView += `<div class="social-media-comment-container">`
@@ -804,15 +830,27 @@
                                                         <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon-comment already-liked-comment">
                                                         </iconify-icon>`
                                                     }
-                                        htmlView += `
-                                                       </a>
-                                                       <p class="total-comment-likes">
-                                                        <span class="total_likes_comment">`+res.comment[i].like_count+`</span>
-                                                        <span>Likes</span>
-                                                       </p>
-                                                       </div>
+
+                                        htmlView +=`</a>
+                                                                    <p>
+                                                                        <span class="total_likes">
+                                                                            `+res.comment[i].like_count+`
+                                                                        </span>
+                                                                        <a class="viewlikes" id="`+res.comment[i].id+`" style="display:inline;text-decoration:none;cursor: pointer, color: var(--customer-text-color);">`
+                                                                    if(res.comment[i].like_count >1 ){
+                                                                        htmlView+=`Likes`
+                                                                    }else{
+                                                                        htmlView+=`Like`
+                                                                    }
+                                                                    console.log(res.comment[i].like_count,'first cmt');
+                                                            htmlView +=`</a>
+                                                                    </p>
+                                                </div>`
+                                                                
+
+                                        htmlView += `                                                             
+                                                  </div>
                                                        
-                                                       </div>
                                                        <p class="comment-reply" data-username=${res.comment[i].name} data-userid=${res.comment[i].user_id}>reply</p>
                                                     </div>
                                                 </div>
@@ -841,6 +879,85 @@
                             
                             //comment reply end
             }
+
+
+            $(document).on('click', '.viewlikes', function(e) {
+            viewlikes(e);
+        })
+
+ 
+
+
+         function viewlikes(e){
+            e.preventDefault();
+            $(".social-media-all-likes-container").empty();
+            $('#staticBackdrop').modal('show');
+            // var post_id = $(this).attr('id');
+            // var post_id= 7 ;
+             var post_id=e.target.id;
+            // alert(post_id);
+            console.log(post_id,'post id');
+            var add_url = "{{ route('likes.comment', [':id']) }}";
+            add_url = add_url.replace(':id', post_id);
+
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                            success: function(data) {
+                                let htmlView = '';
+                                var finalHtmlView = ''
+                                var post_likes=data.post_likes
+                                console.log(post_likes);
+
+                                for(let i = 0; i < post_likes.length; i++){
+                                    htmlView = ''
+                                    user_id = post_likes[i].user_id;
+
+                                    var url = "{{ route('socialmedia.profile',[':id']) }}";
+                                    url = url.replace(':id', user_id);
+
+                                    if(post_likes[i].profile_image==null){
+                                        console.log(post_likes[i].name +"has no profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="{{asset('img/customer/imgs/user_default.jpg')}}"  alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }else{
+                                        console.log(post_likes[i].name +"has profile")
+                                        htmlView += `<a class="social-media-all-likes-row-img" href="`+url+`" style="text-decoration:none">
+                                                    <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+post_likes[i].profile_image+`" alt="" style="width:30px;height:30px"/>
+                                                    <p>`+post_likes[i].name+`</p>
+                                                </a>`
+                                    }
+
+                                    if(post_likes[i].friend_status=='myself'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='friend'){
+                                        htmlView += ``
+                                    }else if(post_likes[i].friend_status=='response'){
+                                        var add_url = "{{ route('socialmedia.profile', [':user_id']) }}";
+                                        var user_id=post_likes[i].user_id;
+                                        add_url = add_url.replace(':user_id', user_id);
+                                        htmlView += `<a class="customer-primary-btn" href="`+add_url+`" >Response</a>`
+                                    }else if(post_likes[i].friend_status=='cancel request'){
+                                        htmlView += `<a class="customer-primary-btn profile_cancelrequest" id="`+user_id+`">Cancel</a>`
+                                    }else{
+                                        htmlView += `<a class="customer-primary-btn profile_addfriend" id="`+user_id+`">Add</a>`
+                                    }
+
+                                    finalHtmlView = `<div class="social-media-all-likes-row">
+                                        ${htmlView}
+                                    </div>`
+
+                                    $('.social-media-all-likes-container').append(finalHtmlView);
+
+                                }
+
+                            }
+                    })
+
+        }
+
 
             // $('.like_comment').click(function(e){
                 $(document).on('click', '.like_comment', function(e) {

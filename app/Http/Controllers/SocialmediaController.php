@@ -597,6 +597,75 @@ class SocialmediaController extends Controller
         return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
+
+
+    public function comment_likes(Request $request, $id)
+    {
+        if (!empty($request->noti_id)) {
+            $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
+        }
+        $auth = Auth()->user()->id;
+        $post_likes = UserReactComment::where('comment_id', $id)
+            ->with('user')
+            ->get();
+        $post = Comment::findOrFail($id);
+
+        // $friends=DB::table('friendships')->get()->toArray();
+        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
+
+        foreach ($post_likes as $key => $value) {
+            foreach ($friends as $fri) {
+                if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
+                    $post_likes[$key]['friend_status'] = "cancel request";
+                    break;
+                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 1) {
+                    $post_likes[$key]['friend_status'] = "response";
+                    break;
+                } else if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 2) {
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 2) {
+                    $post_likes[$key]['friend_status'] = "friend";
+                    break;
+                } else if ($value->user_id == $auth) {
+                    $post_likes[$key]['friend_status'] = "myself";
+                    break;
+                } else {
+                    $post_likes[$key]['friend_status'] = "add friend";
+                }
+            }
+           
+                $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                left join roles on model_has_roles.role_id = roles.id where  model_id = $value->user_id");
+                foreach($roles as $r){
+                                        
+                    if($r->model_id == $value->user_id){
+                        $post_likes[$key]['roles'] = $r->name;
+                        break;
+                    }
+                    else{
+                            $post_likes[$key]['roles'] = null;
+                        }
+                    }   
+           
+        }
+        foreach($post as $key=>$value){
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+        left join roles on model_has_roles.role_id = roles.id where  model_id = $post->user_id");
+            foreach($roles as $r){
+                                    
+                if($r->model_id == $post->user_id){
+                    $post['roles'] = $r->name;
+                    break;
+                }
+                else{
+                        $post['roles'] = null;
+                    }
+                }   
+        }
+        return view('customer.socialmedia_likes', compact('post_likes', 'post'));
+    }
+
     public function socialmedia_profile_photos(Request $request,$id)
     {
         $user_id = $id;
