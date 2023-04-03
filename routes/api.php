@@ -242,6 +242,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('free_video', [ShopController::class, 'free_video']);
 
     Route::post('account_del', [CustomerProfileController::class, 'acc_del']);
+    Route::post('feedback_send', [CustomerProfileController::class, 'feedback_send']);
 
 });
 

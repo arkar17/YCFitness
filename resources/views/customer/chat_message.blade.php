@@ -377,11 +377,12 @@
             // console.log($(this).next().find(".download_image"))
             var url = $(this).next().find(".download_image").attr('src');            
             var fileName = url.substring(url.lastIndexOf('/')+1);
-            
+                console.log(url)
             fetch(url,{    
             method: 'GET',    
             withCredentials: true,    
-            crossorigin: true,    
+            crossorigin: true,
+            mode: 'no-cors'    
                    
             })
             .then(resp => resp.blob())
@@ -390,7 +391,7 @@
                 const anchor = document.createElement('a');
                 anchor.style.display = 'none';
                 anchor.href = blob;
-                anchor.download = "name.png";
+                anchor.download = url.replace(/^.*[\\\/]/, '');
                 document.body.appendChild(anchor);
                 anchor.click();
                 window.URL.revokeObjectURL(blob);

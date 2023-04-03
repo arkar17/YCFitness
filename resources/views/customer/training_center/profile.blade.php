@@ -330,8 +330,34 @@
                     <div class="col-2">
                         <p href="#" class="social-media-profile-photos-link">{{__('msg.photos')}}</p>
                     </div>
-                    <div class="col-6">
+                    <div class="col-3">
                         <p href="#" class="social-media-profile-block-link customer-profile-see-all-block-btn">{{__('msg.block')}}</p>
+                    </div>
+                    <div class="modal fade " id="exampleModal">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="staticBackdropLabel">Send Feedback</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action = "{{ route('feedback.store') }}" method="post">
+                                    @csrf
+                                    <div class="mb-3">
+                                      <label for="message-text" class="col-form-label">Message:</label>
+                                      <textarea class="form-control" id="message-text" name="description" required></textarea>
+                                    </div>
+                                  
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="customer-primary-btn addpost-submit-btn">Send</button>
+                            </div>
+                        </form>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <p href="#" class="social-media-profile-block-link " data-bs-toggle="modal" data-bs-target="#exampleModal">{{__('msg.feedback')}}</p>
                     </div>
                 </div>
             </div>
@@ -3757,6 +3783,7 @@
             $(".customer-profile-social-media-photoes-container").hide()
             $(".customer-profile-social-media-fris-container").hide()
             $(".customer-profile-social-media-default-container").show()
+            $(".customer-profile-social-media-block-container").hide()
         })
 
         $(".social-media-profiles-tab").addClass("social-media-photos-tab-active")

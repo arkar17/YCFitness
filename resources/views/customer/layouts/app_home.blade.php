@@ -391,6 +391,7 @@
                 <iconify-icon icon="akar-icons:circle-plus" class="addpost-icon"></iconify-icon>
                 <p>{{ __('msg.add post') }}</p>
             </button>
+            
         </div>
 
         <div class="social-media-left-container-trigger">

@@ -10,6 +10,7 @@ use App\Models\Report;
 use App\Models\Comment;
 use App\Models\Payment;
 use App\Models\Profile;
+use App\Models\Feedback;
 use App\Models\ChatGroup;
 use App\Models\Friendship;
 use App\Models\ShopRating;
@@ -44,6 +45,19 @@ class CustomerProfileController extends Controller
         return response()->json([
             'message' => 'success',
             'user' => $user,
+        ]);
+    }
+
+    public function feedback_send(Request $request ){
+        // dd($request->description);
+        $user_id = Auth::user()->id;
+        $feedback_store = New Feedback();
+        $feedback_store->user_id = $user_id;
+        $feedback_store->description = $request->description;
+        $feedback_store->save();
+        
+        return response()->json([
+            'message' => 'success',
         ]);
     }
 
