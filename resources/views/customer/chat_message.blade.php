@@ -151,7 +151,26 @@
 
                 <div class="group-chat-header-name-text-container">
                     <p>{{ $receiver_user->name }}</p>
-                    <small class="active-now" style="color:#3CDD57;"></small>
+                    @if(Cache::has('user-is-online-' . $receiver_user->id))
+                    {{-- <small class="active-now" style="color:#3CDD57;">o</small> --}}
+                    {{-- <iconify-icon icon="carbon:user-online"></iconify-icon> --}}
+                    <span class="text-success" style="color:#3CDD57;">Online</span>
+                    @else
+                    {{-- <small class="active-now" style="color:#3CDD57;">o</small> --}}
+                    
+                        <span class="text-secondary">
+                            @if ($receiver_user->last_seen)
+                            <ul>
+                                <li>{{ \Carbon\Carbon::parse($receiver_user->last_seen)->diffForHumans() }}</li>
+                            </ul>
+                            @else
+                            <ul>
+                               offline
+                            </ul>
+                            @endif
+                        </span>
+                    @endif
+                    
                 </div>
             </div>
 
@@ -231,7 +250,7 @@
                                             </div>
                                             {{-- end modal --}}
 
-                                            <button class="img-download-btn" id = "download">
+                                            <button class="img-download-btn download" id = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
                                                 Download
                                             </button>
                                             
@@ -372,66 +391,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
 <script>
 
-        $(document).ready(function() {
-        $('.img-download-btn').click(function() {
-            // console.log($(this).next().find(".download_image"))
-            var url = $(this).next().find(".download_image").attr('src');            
-            var fileName = url.substring(url.lastIndexOf('/')+1);
-                console.log(url)
-            fetch(url,{    
-            method: 'GET',    
-            withCredentials: true,    
-            crossorigin: true,
-            mode: 'no-cors'    
-                   
-            })
-            .then(resp => resp.blob())
-            .then(blobobject => {
-                const blob = window.URL.createObjectURL(blobobject);
-                const anchor = document.createElement('a');
-                anchor.style.display = 'none';
-                anchor.href = blob;
-                anchor.download = url.replace(/^.*[\\\/]/, '');
-                document.body.appendChild(anchor);
-                anchor.click();
-                window.URL.revokeObjectURL(blob);
-            })
-            .catch(() => console.log('An error in downloadin the file sorry'));
-            
-                // fetch(url, {
-                //     mode : 'no-cors',
-                // })
-                //     .then(response => response.blob())
-                //     .then(blob => {
-                //     let blobUrl = window.URL.createObjectURL(blob);
-                //     let a = document.createElement('a');
-                //     a.download = url.replace(/^.*[\\\/]/, '');
-                //     a.href = blobUrl;
-                //     document.body.appendChild(a);
-                //     a.click();
-                //     a.remove();
-                // })
-            
-            // $.ajax({
-            // url: url,
-            // xhrFields: {
-            //     responseType: 'blob'
-            // },
-            // success: function(data) {
-            //     var a = document.createElement('a');
-            //     var url = window.URL.createObjectURL(data);
-            //     a.href = url;
-            //     a.download = fileName;
-            //     document.body.appendChild(a);
-            //     a.click();
-            //     setTimeout(function() {
-            //     document.body.removeChild(a);
-            //     window.URL.revokeObjectURL(url);
-            //     }, 0);
-            // }
-            // });
-        });
-        });
+        // $(document).ready(function() {
+        //     $(document).on('click', '#download', function(e) {
+        //         var post_id=e.target.id;
+        //         var add_url = "{{ route('likes.comment', [':id']) }}";
+        //         add_url = add_url.replace(':id', post_id);
+
+        //             $.ajax({
+        //                 method: "GET",
+        //                 url: add_url,
+        //                     success: function(data) {
+        //                     }
+        //                 })
+        //     })
+        // });
 
 
 

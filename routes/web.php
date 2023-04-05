@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\RequestController;
 use App\Http\Controllers\Admin\TrainerController;
 use App\Http\Controllers\Admin\WorkoutController;
 use App\Http\Controllers\Admin\BanWordsController;
+use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\MealPlanController;
 use App\Http\Controllers\Auth\PassResetController;
 use App\Http\Controllers\Admin\FreeVideosController;
@@ -30,7 +31,6 @@ use App\Http\Controllers\User\UserWorkoutController;
 use App\Http\Controllers\Admin\BankinginfoController;
 use App\Http\Controllers\Admin\ShopRequestController;
 use App\Http\Controllers\Customer\ChattingController;
-use App\Http\Controllers\Customer\FeedbackController;
 use App\Http\Controllers\Admin\ChatWithAdminController;
 use App\Http\Controllers\Admin\TrainingGroupController;
 use App\Http\Controllers\Admin\TrainingCenterController;
@@ -42,6 +42,7 @@ use App\Http\Controllers\Admin\RequestAcceptDeclineController;
 use App\Http\Controllers\Trainer\TrainerManagementConntroller;
 use App\Http\Controllers\Customer\CustomerManagementController;
 use App\Http\Controllers\Customer\Customer_TrainingCenterController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/locale/change', [HomeController::class, 'lang'])->name('langChange');
@@ -58,7 +59,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
     // NCK
     Route::get('/customer_payment_active_staus/{id}', [RegisterPaymentController::class, 'changeStatusAndType'])->name('customer_upgrade');
-
+    
+    
 
     Route::post('/member/upgraded-history/', [HomeController::class, 'memberUpgradedHistory'])->name('member-upgraded-history');
     Route::post('/member/upgraded-history-monthly/', [HomeController::class, 'memberUpgradedHistory_monthly'])->name('member-upgraded-history-monthly');
@@ -80,6 +82,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');
 
         Route::get('/free-video', [ShopController::class, 'freevideo'])->name('free-videos');
+
+        Route::get('/downloadImage', [ShopController::class, 'downloadImage'])->name('download.image');
+
         Route::post('/feedback/store', [FeedbackController::class, 'feedback_send'])->name('feedback.store');
         Route::get('/account_delete', [AccDeleteController::class, 'acc_delete'])->name('acc_delete');
         Route::post('/account_del', [AccDeleteController::class, 'acc_del'])->name('acc_del');
@@ -395,6 +400,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::resource('free_video', FreeVideosController::class);
             Route::get('getVideos', [FreeVideosController::class, 'getVideos'])->name('getVideos');
             Route::get('admin/video/{id}/delete', [FreeVideosController::class, 'destroy'])->name('video.delete');
+
+
+            //feedback
+            Route::resource('feedback', FeedbackController::class);
+            Route::get('getfeedbcak', [FeedbackController::class, 'getFeedback'])->name('admin.getFeedback');
 
 
         });

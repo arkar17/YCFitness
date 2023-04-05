@@ -30,10 +30,54 @@ use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Builder;
 
 class CustomerProfileController extends Controller
 {
+
+    public function userOnlineStatus()
+    {
+        $users = User::select('id','name')->get();
+        // dd($users);
+        foreach ($users as $key=>$user) {
+            $status = [];
+            if (Cache::has('user-is-online-' . $user->id)){
+                $online = 'online';
+                if($user->last_seen){
+                    $last_seen = Carbon::parse($user->last_seen)->diffForHumans();
+                }
+                else{
+                    $last_seen = null;
+                }
+               
+                
+                $users[$key]['online'] = "online";
+                $users[$key]['last_seen'] = $last_seen;
+                // dd($last_seen,$status);
+                // echo $user->name . " is online. Last seen: " .  . " <br>";
+            }
+            else{
+                $offline = 'offline';
+                if($user->last_seen){
+                    $last_seen = Carbon::parse($user->last_seen)->diffForHumans();
+                }
+                else{
+                    $last_seen = null;
+                }
+
+                $users[$key]['online'] = "offline";
+                $users[$key]['last_seen'] = $last_seen;
+                // dd($last_seen,$status);
+                // echo $user->name . " is offline. Last seen: " . Carbon::parse($user->last_seen)->diffForHumans() . " <br>";
+            }
+                
+         }
+         return response()->json([
+            'data' => $users,
+        ]);
+    }
+
     public function customerProfile()
     {
         $auth_user = auth()->user();

@@ -33,6 +33,7 @@ use App\Models\UserReactComment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -1739,6 +1740,8 @@ class SocialmediaController extends Controller
 
 
         // dd($comment_post_count);
+
+        
  
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
     }

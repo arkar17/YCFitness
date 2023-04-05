@@ -10,16 +10,17 @@ use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\Comment;
 use Carbon\CarbonPeriod;
 use App\Models\BlockList;
 use App\Models\BankingInfo;
-use App\Models\Comment;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\Models\MemberHistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Cache;
 use Spatie\Permission\Contracts\Role;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
@@ -273,8 +274,7 @@ class HomeController extends Controller
         }
     }
 
-
-
+   
 
     public function memberUpgradedHistory(Request $request)
     {
