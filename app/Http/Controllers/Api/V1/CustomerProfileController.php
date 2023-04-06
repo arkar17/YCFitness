@@ -38,38 +38,24 @@ class CustomerProfileController extends Controller
 
     public function userOnlineStatus()
     {
-        $users = User::select('id','name')->get();
+        $users = User::select('id','name','last_seen')->get();
         // dd($users);
         foreach ($users as $key=>$user) {
-            $status = [];
+            // dd($user->id);
             if (Cache::has('user-is-online-' . $user->id)){
-                $online = 'online';
-                if($user->last_seen){
-                    $last_seen = Carbon::parse($user->last_seen)->diffForHumans();
-                }
-                else{
-                    $last_seen = null;
-                }
-               
-                
+                //dd("online");        
                 $users[$key]['online'] = "online";
-                $users[$key]['last_seen'] = $last_seen;
-                // dd($last_seen,$status);
-                // echo $user->name . " is online. Last seen: " .  . " <br>";
+                $users[$key]['last_seen'] = null;
             }
             else{
-                $offline = 'offline';
                 if($user->last_seen){
                     $last_seen = Carbon::parse($user->last_seen)->diffForHumans();
                 }
                 else{
                     $last_seen = null;
                 }
-
                 $users[$key]['online'] = "offline";
                 $users[$key]['last_seen'] = $last_seen;
-                // dd($last_seen,$status);
-                // echo $user->name . " is offline. Last seen: " . Carbon::parse($user->last_seen)->diffForHumans() . " <br>";
             }
                 
          }

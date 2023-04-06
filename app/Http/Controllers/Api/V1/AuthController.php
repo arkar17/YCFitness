@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\Payment;
+use App\Models\ShopPost;
 use App\Models\BankingInfo;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -13,12 +14,12 @@ use App\Models\WeightHistory;
 use App\Models\PersonalChoice;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Models\ShopPost;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 use function PHPUnit\Framework\isEmpty;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -169,6 +170,12 @@ class AuthController extends Controller
                     ->where('users.id',$id)
                     ->first();
             $token = $user->createToken('gym');
+            // if (Auth::check()) {
+                $expiresAt = Carbon::now()->addMinutes(1); // keep online for 1 min
+                Cache::put('user-is-online-' . Auth::user()->id, true, $expiresAt);
+                // last seen
+                User::where('id', Auth::user()->id)->update(['last_seen' => (new \DateTime())->format("Y-m-d H:i:s")]);
+            // }
 
             return response()->json([
                 'message' => 'Successfully Login!',
@@ -181,6 +188,8 @@ class AuthController extends Controller
                 'message' => 'User credential do not match our records!'
             ]);
         }
+
+        
     }
 
     public function getRole(){
@@ -452,6 +461,9 @@ class AuthController extends Controller
         
         $user = auth()->user();
         $user->currentAccessToken()->delete();
+       
+        User::where('id', Auth::user()->id)->update(['last_seen' => (new \DateTime())->format("Y-m-d H:i:s")]);
+        
         session()->flush();
         Auth::logout();
         return response()->json([
