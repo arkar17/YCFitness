@@ -249,18 +249,21 @@
                                                 </div>
                                             </div>
                                             {{-- end modal --}}
-
-                                            <button class="img-download-btn download" id = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
-                                                Download
+                                            @php 
+                                            $download_image = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/$media";
+                                            @endphp
+                                        <div class="d-flex align-self-end">
+                                         <form action="{{ route('download-image') }}" method="get">
+                                            <input type="hidden" name="url" value={{ $download_image }}>
+                                            <button type="submit" class="group-chat-send-form-submit-btn" style="padding:10px 10px;"><iconify-icon icon="ic:baseline-download"></iconify-icon>
                                             </button>
-                                            
+                                         </form>
+                                        </div>
                                             <a data-bs-toggle="modal"
                                                 href="#exampleModalToggle{{ $send_message->id }}{{ $key }}"
                                                 role="button">
                                                 
                                                     <img class= "download_image" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/{{ $media }}">
-                                                
-                                                
                                             </a>
                                         @elseif(pathinfo($media, PATHINFO_EXTENSION) == 'mp4' ||
                                             pathinfo($media, PATHINFO_EXTENSION) == 'mov' ||
@@ -391,20 +394,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
 <script>
 
-        // $(document).ready(function() {
-        //     $(document).on('click', '#download', function(e) {
-        //         var post_id=e.target.id;
-        //         var add_url = "{{ route('likes.comment', [':id']) }}";
-        //         add_url = add_url.replace(':id', post_id);
-
-        //             $.ajax({
-        //                 method: "GET",
-        //                 url: add_url,
-        //                     success: function(data) {
-        //                     }
-        //                 })
-        //     })
-        // });
+        $(document).ready(function() {
+           
+        });
 
 
 

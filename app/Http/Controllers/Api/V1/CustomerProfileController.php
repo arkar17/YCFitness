@@ -36,29 +36,31 @@ use Illuminate\Database\Eloquent\Builder;
 class CustomerProfileController extends Controller
 {
 
-    public function userOnlineStatus()
+    public function userOnlineStatus(Request $request)
     {
-        $users = User::select('id','name','last_seen')->get();
+        // dd($request->id);
+        $users = User::select('id','name','last_seen')->where('id',$request->id)->first();
         // dd($users);
-        foreach ($users as $key=>$user) {
+        // dd($users);
+        // foreach ($users as $key=>$user) {
             // dd($user->id);
-            if (Cache::has('user-is-online-' . $user->id)){
+            if (Cache::has('user-is-online-' . $users->id)){
                 //dd("online");        
-                $users[$key]['online'] = "online";
-                $users[$key]['last_seen'] = null;
+                $users['online'] = "online";
+                $users['last_seen'] = null;
             }
             else{
-                if($user->last_seen){
-                    $last_seen = Carbon::parse($user->last_seen)->diffForHumans();
+                if($users->last_seen){
+                    $last_seen = Carbon::parse($users->last_seen)->diffForHumans();
                 }
                 else{
                     $last_seen = null;
                 }
-                $users[$key]['online'] = "offline";
-                $users[$key]['last_seen'] = $last_seen;
+                $users['online'] = "offline";
+                $users['last_seen'] = $last_seen;
             }
                 
-         }
+        //  }
          return response()->json([
             'data' => $users,
         ]);

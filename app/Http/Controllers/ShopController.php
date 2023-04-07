@@ -34,9 +34,15 @@ class ShopController extends Controller
         $videos = FreeVideo::get();
         return view('customer.free_video',compact('videos'));
     }
-    public function downloadImage(){
-        dd("ok");
+    public function download( Request $request ){
+        $url = $request->query('url');
+        $imageData = file_get_contents($url);
+        $headers = [
+            'Content-Type' => 'image/jpeg',
+        ];
+        return response($imageData, 200, $headers)->header('Content-Disposition', 'attachment; filename="image.jpg"');
     }
+    
     public function index()
     {
         $user_id = auth()->user()->id;
