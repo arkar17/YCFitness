@@ -39,7 +39,7 @@ class CustomerProfileController extends Controller
     public function userOnlineStatus(Request $request)
     {
         // dd($request->id);
-        $users = User::select('id','name','last_seen')->where('id',$request->id)->first();
+        $users = User::select('id','name','last_seen as last')->where('id',$request->id)->first();
         // dd($users);
         // dd($users);
         // foreach ($users as $key=>$user) {
@@ -51,7 +51,7 @@ class CustomerProfileController extends Controller
             }
             else{
                 if($users->last_seen){
-                    $last_seen = Carbon::parse($users->last_seen)->diffForHumans();
+                    $last_seen = Carbon::parse($users->last)->diffForHumans();
                 }
                 else{
                     $last_seen = null;
