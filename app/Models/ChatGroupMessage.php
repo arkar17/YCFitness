@@ -12,7 +12,7 @@ class ChatGroupMessage extends Model
     // public function user(){
     //     return $this->belongsTo(User::class);
     // }
-    public function user()
+    public function users()
     {
         return $this->belongsTo(User::class, 'sender_id', 'id');
     }
