@@ -76,7 +76,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Auth::routes();
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth','activity'])->group(function () {
 
         //Social Media
         // Route::get('/socialmedia_profile/{id}', [SocialmediaController::class, 'socialmedia_profile'])->name('socialmedia.profile');

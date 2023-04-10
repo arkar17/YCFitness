@@ -39,37 +39,25 @@ class CustomerProfileController extends Controller
     public function userOnlineStatus(Request $request)
     {
         $users = User::select('id','name','last_seen as last')->where('id',$request->id)->first();
-       
-            // if (Cache::has('user-is-online-' . $users->id)){
+            if($users){
+                if (Cache::has('user-is-online-' . $users->id)){
                       
-            //     $users['online'] = "online";
-            //     $users['last_seen'] = null;
-            // }
-            // else{
-            //     if($users->last){
-            //         $last_seen = Carbon::parse($users->last)->diffForHumans();
-            //     }
-            //     else{
-            //         $last_seen = null;
-            //     }
-            //     $users['online'] = "offline";
-            //     $users['last_seen'] = $last_seen;
-            // }
-                
-        
-            // if (auth()->check()) {
-            //     $user = auth()->user();
-                
-                if ($users->online) {
-                    // User is online
                     $users['online'] = "online";
-                } else {
-                    // User is offline
-                    $users['online'] = "offline";
+                    $users['last_seen'] = null;
                 }
-            // } else {
-            //     // User is not authenticated
-            // }
+                else{
+                    if($users->last){
+                        $last_seen = Carbon::parse($users->last)->diffForHumans();
+                    }
+                    else{
+                        $last_seen = null;
+                    }
+                    $users['online'] = "offline";
+                    $users['last_seen'] = $last_seen;
+                }
+                    
+            }
+            
          return response()->json([
             'data' => $users,
         ]);

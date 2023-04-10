@@ -22,10 +22,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        //
-    }
+    
 
     /**
      * Bootstrap any application services.
@@ -34,23 +31,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
-        Event::listen('Illuminate\Auth\Events\Authenticated', function ($event) {
-            $event->user->update(['last_seen' => now()]);
-        });
-    }
-
-    // public function booted(Closure $callback = null)
-    // {
-    //     parent::booted($callback);
-
-    //     // Here you can define your event listeners and policies
-    //     $this->registerPolicies();
-
-    //     Event::listen('Illuminate\Auth\Events\Authenticated', function ($event) {
-    //         $event->user->update(['last_seen' => now()]);
-    //     });
-    // }
-    
+      
+    }    
 }

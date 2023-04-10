@@ -40,7 +40,8 @@ Route::get('get-banking-infos', [AuthController::class, 'getBankingInfos']);
 // change password
 Route::post('change-password', [AuthController::class, 'passwordChange']);
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+// Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::middleware(['auth:sanctum', 'activity'])->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::get('get/role', [AuthController::class, 'getRole']);
 
