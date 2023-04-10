@@ -2190,7 +2190,9 @@ class SocialmediaController extends Controller
         try {
             $group = ChatGroup::where('id', $id)->first();
             if($group->id == $id){
-            $gp_messages = ChatGroupMessage::where('group_id', $id)->with('users')->get();
+            $gp_messages = ChatGroupMessage::where('group_id', $id)
+            ->with(['users', 'users.user_profile'])
+            ->get();
             dd($gp_messages);
             $auth_user_data = User::where('id', auth()->user()->id)->with('user_profile')->first();
 
