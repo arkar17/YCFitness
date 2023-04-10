@@ -158,7 +158,7 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
     Route::post('post_update', [SocialmediaController::class, 'post_update']);
-    Route::post('post_update_image', [SocialmediaController::class, 'post_update_image']);
+    Route::post('shop_update_image', [SocialmediaController::class, 'post_update_image']);
     Route::post('post_save', [SocialmediaController::class, 'post_save']);
 
     Route::post('profile/cover/update', [SocialmediaController::class, 'profile_update_cover']);
