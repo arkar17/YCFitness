@@ -2195,7 +2195,7 @@ class SocialmediaController extends Controller
             ->with('users')
             ->get();
             $gp_messages_withpro = ChatGroupMessage::where('group_id', $id)
-            ->with(['users', 'users.profiles'])
+            ->with(['users', 'users.user_profile'])
             ->get();
             dd($gp_messages,$gp_messages_withpro);
             $auth_user_data = User::where('id', auth()->user()->id)->with('user_profile')->first();
