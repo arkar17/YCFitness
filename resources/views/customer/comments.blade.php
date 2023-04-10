@@ -660,7 +660,7 @@
         
             function fetch_comment(){
                
-                var postid = "{{$post->id}}"
+                        var postid = "{{$post->id}}"
                             var comment_url = "{{ route('comment_list',':id') }}";
                             comment_url = comment_url.replace(':id', postid);
                             $.post(comment_url,

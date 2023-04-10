@@ -26,6 +26,15 @@ class ActivityByUser
             // last seen
             User::where('id', Auth::user()->id)->update(['last_seen' => (new \DateTime())->format("Y-m-d H:i:s")]);
         }
+
+        $user = Auth::guard('api')->user();
+
+        if ($user) {
+            $expiresAt = Carbon::now()->addMinutes(1); // keep online for 1 min
+            Cache::put('user-is-online-' . $user->id, true, $expiresAt);
+            User::where('id', $user->id)->update(['last_seen' => (new \DateTime())->format("Y-m-d H:i:s")]);
+        }
+        
         return $next($request);
     }
 }

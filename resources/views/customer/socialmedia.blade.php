@@ -233,7 +233,7 @@
             var add_url = "{{ route('user.react.post', [':post_id']) }}";
             add_url = add_url.replace(':post_id', post_id);
             var that = $(this)
-            $.ajaxSetup({
+                        $.ajaxSetup({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             }
