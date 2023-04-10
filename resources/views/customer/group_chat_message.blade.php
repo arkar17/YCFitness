@@ -171,7 +171,7 @@
                 @if (auth()->user()->id != $gp_message->sender_id)
                     @if ($gp_message->text != null)
                         <div class="group-chat-receiver-container">
-                            @if ($gp_message->user->user_profile == null)
+                            @if ($gp_message->user == null || $gp_message->user->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
                                 <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->user->user_profile->profile_image}}" />
