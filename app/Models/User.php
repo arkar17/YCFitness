@@ -31,7 +31,16 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $appends = ['online'];
 
+    public function getOnlineAttribute()
+    {
+        $lastSeenAt = $this->last_seen;
+        $currentTime = now();
+        $onlineThreshold = config('app.online_threshold', 5); // in minutes
+    
+        return $lastSeenAt && $lastSeenAt->diffInMinutes($currentTime) <= $onlineThreshold;
+    }
     // public function member_histories()
     // {
     //     return $this->hasMany(MemberHistory::class);
