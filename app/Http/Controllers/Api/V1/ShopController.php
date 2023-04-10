@@ -398,23 +398,35 @@ class ShopController extends Controller
     }
 
     public function shop_rating(Request $request){
+        
+        $rating=$request->rating;
         $user_id = auth()->user()->id;
         $shop_id = $request->shop_id;
         $shop_rating = ShopRating::where('user_id', $user_id)->where('shop_id',$shop_id)->first();
-        if($shop_rating->shop_id != auth()->user()->id){
-            if($shop_rating){
+
+
+
+        if($shop_rating){
+            if($shop_rating->shop_id != auth()->user()->id){
                 DB::table('shop_ratings')->where('user_id', $user_id)->where('shop_id',$shop_id)->update(['rating' => $request->rating]);
+                $message='rated';
+
             }
             else{
-                $shop_rating = new ShopRating();
-                $shop_rating->user_id = $user_id;
-                $shop_rating->shop_id = $shop_id;
-                $shop_rating->rating = $request->rating;
-                $shop_rating->save();
+                $message='error';
+
             }
+        }else{
+            $shop_rating = new ShopRating();
+            $shop_rating->user_id = $user_id;
+            $shop_rating->shop_id = $shop_id;
+            $shop_rating->rating = $request->rating;
+            $shop_rating->save();
+            $message='rated';
         }
+
         return response()->json([
-            'success' => 'rated'
+            'success' => $message
         ]);
     }
 
