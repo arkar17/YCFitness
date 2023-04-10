@@ -183,6 +183,7 @@
                         </div>
                     @else
                         <div class="group-chat-receiver-container">
+                            
                             @if ($gp_message->user->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
