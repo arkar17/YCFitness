@@ -449,7 +449,7 @@ class ShopController extends Controller
     }
 
     public function shop_post_count(){
-        $post_count = User::select('shop_post_count')->where('id',Auth::user()->id)->get();
+        $post_count = User::select('shop_post_count')->where('id',Auth::user()->id)->first();
         return response()->json([
             'data' =>  $post_count
         ]);
