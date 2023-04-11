@@ -6,18 +6,19 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\ShopPost;
 use App\Models\BlockList;
+use App\Models\FreeVideo;
 use App\Models\ShopReact;
 use App\Models\ShopMember;
 use App\Models\ShopRating;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
-use App\Models\FreeVideo;
 use App\Models\UserReactShoppost;
 use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserReactedShoppost;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ShopController extends Controller
@@ -444,6 +445,13 @@ class ShopController extends Controller
         $videos = FreeVideo::get();
         return response()->json([
             'data' =>  $videos
+        ]);
+    }
+
+    public function shop_post_count(){
+        $post_count = User::select('shop_post_count')->where('id',Auth::user()->id)->get();
+        return response()->json([
+            'data' =>  $post_count
         ]);
     }
 }

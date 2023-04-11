@@ -243,6 +243,8 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
 
     Route::get('free_video', [ShopController::class, 'free_video']);
 
+    Route::get('shop-post-count', [ShopController::class, 'shop_post_count']);
+
     Route::post('account_del', [CustomerProfileController::class, 'acc_del']);
     Route::post('feedback_send', [CustomerProfileController::class, 'feedback_send']);
     Route::post('user-online-status', [CustomerProfileController::class, 'userOnlineStatus']);
