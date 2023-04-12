@@ -167,6 +167,19 @@
                     <a class="back-btn" href="javascript:history.back()">
                         <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
                     </a>
+                    
+                    @if(Auth::user()->shop_post_count != 0)
+                        <div>
+                            You can post {{ Auth::user()->shop_post_count }} times.
+                        </div>
+                    @elseif(Auth::user()->shop_post_count == 0 and (Auth::user()->member_type == 'Ruby' || Auth::user()->member_type == 'Ruby Premium'))
+                    
+                    <div>
+                        You bought an unlimited plan. You can post unlimited time.
+                    </div>
+                    
+                    @endif
+                   
                     <div class="shop-addpost-btns-container">
                         @if ($user->shop_request==1 || $user->shop_request==3)
                             @if ($user->shop_request==1)
