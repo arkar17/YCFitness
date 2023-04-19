@@ -117,7 +117,7 @@
 
             $(document).on('click', '.view_comment', function(e) {
                 e.preventDefault();
-                alert("view_post")
+                // alert("view_post")
                 var url = new URL(this.href);
                 var id = url.searchParams.get("id");
                 //  console.log(id,"noti_id");
@@ -143,15 +143,23 @@
                         noti_id: id
                     },
                     success: function(data) {
-                        console.log(data)
-                        window.location.href = comment_url
+                        if(data.comment == null){
+                            Swal.fire({
+                            text: "Post Deleted!",
+                            confirmButtonColor: '#3CDD57',
+                            timer: 3000
+                      });
+                        }
+                        else{
+                            window.location.href = comment_url
+                        }
                     }
                 })
             });
 
             $(document).on('click', '.view_like', function(e) {
                 e.preventDefault();
-                alert("view_post")
+                // alert("view_post")
                 var url = new URL(this.href);
                 var id = url.searchParams.get("id");
                 //  console.log(id,"noti_id");
@@ -179,6 +187,13 @@
                     success: function(data) {
                         console.log(data)
                         window.location.href = like_url
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            text: "Post Deleted!",
+                            confirmButtonColor: '#3CDD57',
+                            timer: 3000,
+                        })
                     }
                 })
             });

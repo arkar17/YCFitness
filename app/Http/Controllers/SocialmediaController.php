@@ -528,73 +528,81 @@ class SocialmediaController extends Controller
 
     public function social_media_likes(Request $request, $post_id)
     {
+        // dd($post_id);
         if (!empty($request->noti_id)) {
             $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
         }
-        $auth = Auth()->user()->id;
-        $post_likes = UserReactPost::where('post_id', $post_id)
-            ->with('user')
-            ->get();
-        // $post_likes=UserReactPost::select('users.id','users.name','profiles.profile_image','user_react_posts.*')
-        //             ->leftJoin('users','users.id','user_react_posts.user_id')
-        //             ->leftJoin('profiles','users.profile_id','profiles.id')
-        //             ->where('post_id',$post_id)
-        //             ->get();
-        $post = Post::findOrFail($post_id);
 
-        // $friends=DB::table('friendships')->get()->toArray();
-        $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
-
-        foreach ($post_likes as $key => $value) {
-            foreach ($friends as $fri) {
-                if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
-                    $post_likes[$key]['friend_status'] = "cancel request";
-                    break;
-                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 1) {
-                    $post_likes[$key]['friend_status'] = "response";
-                    break;
-                } else if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 2) {
-                    $post_likes[$key]['friend_status'] = "friend";
-                    break;
-                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 2) {
-                    $post_likes[$key]['friend_status'] = "friend";
-                    break;
-                } else if ($value->user_id == $auth) {
-                    $post_likes[$key]['friend_status'] = "myself";
-                    break;
-                } else {
-                    $post_likes[$key]['friend_status'] = "add friend";
-                }
-            }
-           
-                $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
-                left join roles on model_has_roles.role_id = roles.id where  model_id = $value->user_id");
-                foreach($roles as $r){
-                                        
-                    if($r->model_id == $value->user_id){
-                        $post_likes[$key]['roles'] = $r->name;
-                        break;
-                    }
-                    else{
-                            $post_likes[$key]['roles'] = null;
+        //  $deleted_posts = Post::select('id','deleted_at')->onlyTrashed()->get();
+        // foreach($deleted_posts as $del_post){
+        //     if($del_post->id == $post_id){
+        //         $post_likes = null;
+        //     }
+        //     else{
+                $auth = Auth()->user()->id;
+                $post_likes = UserReactPost::where('post_id', $post_id)
+                    ->with('user')
+                    ->get();
+             
+                $post = Post::findOrFail($post_id);
+        
+               
+                $friends = DB::select("SELECT * FROM `friendships` WHERE (receiver_id = $auth or sender_id = $auth)");
+        
+                foreach ($post_likes as $key => $value) {
+                    foreach ($friends as $fri) {
+                        if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
+                            $post_likes[$key]['friend_status'] = "cancel request";
+                            break;
+                        } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 1) {
+                            $post_likes[$key]['friend_status'] = "response";
+                            break;
+                        } else if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 2) {
+                            $post_likes[$key]['friend_status'] = "friend";
+                            break;
+                        } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 2) {
+                            $post_likes[$key]['friend_status'] = "friend";
+                            break;
+                        } else if ($value->user_id == $auth) {
+                            $post_likes[$key]['friend_status'] = "myself";
+                            break;
+                        } else {
+                            $post_likes[$key]['friend_status'] = "add friend";
                         }
-                    }   
-           
-        }
-        foreach($post as $key=>$value){
-            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
-        left join roles on model_has_roles.role_id = roles.id where  model_id = $post->user_id");
-            foreach($roles as $r){
-                                    
-                if($r->model_id == $post->user_id){
-                    $post['roles'] = $r->name;
-                    break;
-                }
-                else{
-                        $post['roles'] = null;
                     }
-                }   
-        }
+                   
+                        $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                        left join roles on model_has_roles.role_id = roles.id where  model_id = $value->user_id");
+                        foreach($roles as $r){
+                                                
+                            if($r->model_id == $value->user_id){
+                                $post_likes[$key]['roles'] = $r->name;
+                                break;
+                            }
+                            else{
+                                    $post_likes[$key]['roles'] = null;
+                                }
+                            }   
+                   
+                }
+                foreach($post as $key=>$value){
+                    $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                left join roles on model_has_roles.role_id = roles.id where  model_id = $post->user_id");
+                    foreach($roles as $r){
+                                            
+                        if($r->model_id == $post->user_id){
+                            $post['roles'] = $r->name;
+                            break;
+                        }
+                        else{
+                                $post['roles'] = null;
+                            }
+                        }   
+                }
+        
+            // }
+        // }
+        
         return view('customer.socialmedia_likes', compact('post_likes', 'post'));
     }
 
@@ -1887,115 +1895,127 @@ class SocialmediaController extends Controller
 
     public function comment_list(Request $request)
     {
+        //dd($request->noti_id);
         if (!empty($request->noti_id)) {
             $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
         }
         $id = $request->id;
-        $user_id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
-       // dd($block_list);
-        $b = array();
-        foreach ($block_list as $block) {
-            $f = (array)$block;
-            array_push($b, $f['sender_id'], $f['receiver_id']);
-        }
-        $array = \array_filter($b, static function ($element) {
-            $user_id = auth()->user()->id;
-            return $element !== $user_id;
-            //                   ↑
-            // Array value which you want to delete
-        });
-        $liked_comment_count = DB::select("SELECT COUNT(comment_id) as like_count, comment_id FROM user_react_comments GROUP BY comment_id");
-        //dd($liked_comment_count);
-        // dd($array);
-        if($array){
-            $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
-            ->leftJoin('users', 'users.id', 'comments.user_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->leftJoin('posts', 'posts.id', 'comments.post_id')
-            ->where('post_id', $id)
-            ->where('comments.report_status','!=' ,1)
-            ->whereNotIn('comments.user_id',$array)
-            ->orderBy('created_at', 'DESC')->get();
-
-
-        }
-        else{
-            $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
-            ->leftJoin('users', 'users.id', 'comments.user_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->leftJoin('posts', 'posts.id', 'comments.post_id')
-            ->where('post_id', $id)
-            ->where('comments.report_status','!=' ,1)
-            ->orderBy('created_at', 'DESC')->get();
-
-        }
-        
-        
-        foreach ($comments as $key => $comm1) {
-            $already_liked=Auth::user()->user_reacted_comments->where('comment_id',$comm1->id)->count();
-            $date = $comm1['created_at'];
-            $comments[$key]['date'] = $date->toDayDateTimeString();
-            $ids = json_decode($comm1->mentioned_users);
-            if ($ids != null) {
-                $count = count($ids);
-                $main =  $comm1['comment'];
-                $date = $comm1['created_at'];
-                for ($i = 0; $i < $count; $i++) {
-                    $arr_id = json_decode(json_encode($ids[$i]), true);
-                    $mentioned_user_id = $arr_id['id'];
-
-                    $url = route('socialmedia.profile', $mentioned_user_id);
-                    $comments[$key]['Replace'] = sizeof($ids);
-                    if (str_contains($main, '@' . $mentioned_user_id)) {
-                        $replace =
-                            str_replace(
-                                ['@' . $mentioned_user_id],
-                                "<a href=$url>" . $arr_id['name'] . '</a>',
-                                $main
-                            );
-                        $main = $replace;
-                        $comments[$key]['Replace'] = $main;
-                    }
-                    $comments[$key]['Replace'] = $main;
-                }
-            } else {
-                $comments[$key]['Replace'] = $comm1->comment;
+       // dd($id);
+        $deleted_posts = Post::select('id','deleted_at')->onlyTrashed()->get();
+        foreach($deleted_posts as $del_post){
+            if($del_post->id == $id){
+                $comments = null;
             }
+            else{
 
-
-            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
-            left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $comm1->user_id ");
-            foreach($roles as $r){
-                if(!empty($roles)){
-                    
-                    foreach($roles as $r){
-                        if($r->model_id == $comm1->user_id){
-                            $comments[$key]['roles'] = $r->name;
-                            break;
+                $user_id = auth()->user()->id;
+                $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+               // dd($block_list);
+                $b = array();
+                foreach ($block_list as $block) {
+                    $f = (array)$block;
+                    array_push($b, $f['sender_id'], $f['receiver_id']);
+                }
+                $array = \array_filter($b, static function ($element) {
+                    $user_id = auth()->user()->id;
+                    return $element !== $user_id;
+                    //                   ↑
+                    // Array value which you want to delete
+                });
+                $liked_comment_count = DB::select("SELECT COUNT(comment_id) as like_count, comment_id FROM user_react_comments GROUP BY comment_id");
+                //dd($liked_comment_count);
+                // dd($array);
+                if($array){
+                    $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
+                    ->leftJoin('users', 'users.id', 'comments.user_id')
+                    ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                    ->leftJoin('posts', 'posts.id', 'comments.post_id')
+                    ->where('post_id', $id)
+                    ->where('comments.report_status','!=' ,1)
+                    ->whereNotIn('comments.user_id',$array)
+                    ->orderBy('created_at', 'DESC')->get();
+        
+        
+                }
+                else{
+                    $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
+                    ->leftJoin('users', 'users.id', 'comments.user_id')
+                    ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                    ->leftJoin('posts', 'posts.id', 'comments.post_id')
+                    ->where('post_id', $id)
+                    ->where('comments.report_status','!=' ,1)
+                    ->orderBy('created_at', 'DESC')->get();
+        
+                }
+                
+                
+                foreach ($comments as $key => $comm1) {
+                    $already_liked=Auth::user()->user_reacted_comments->where('comment_id',$comm1->id)->count();
+                    $date = $comm1['created_at'];
+                    $comments[$key]['date'] = $date->toDayDateTimeString();
+                    $ids = json_decode($comm1->mentioned_users);
+                    if ($ids != null) {
+                        $count = count($ids);
+                        $main =  $comm1['comment'];
+                        $date = $comm1['created_at'];
+                        for ($i = 0; $i < $count; $i++) {
+                            $arr_id = json_decode(json_encode($ids[$i]), true);
+                            $mentioned_user_id = $arr_id['id'];
+        
+                            $url = route('socialmedia.profile', $mentioned_user_id);
+                            $comments[$key]['Replace'] = sizeof($ids);
+                            if (str_contains($main, '@' . $mentioned_user_id)) {
+                                $replace =
+                                    str_replace(
+                                        ['@' . $mentioned_user_id],
+                                        "<a href=$url>" . $arr_id['name'] . '</a>',
+                                        $main
+                                    );
+                                $main = $replace;
+                                $comments[$key]['Replace'] = $main;
+                            }
+                            $comments[$key]['Replace'] = $main;
+                        }
+                    } else {
+                        $comments[$key]['Replace'] = $comm1->comment;
                     }
-                    else{
+        
+        
+                    $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+                    left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $comm1->user_id ");
+                    foreach($roles as $r){
+                        if(!empty($roles)){
+                            
+                            foreach($roles as $r){
+                                if($r->model_id == $comm1->user_id){
+                                    $comments[$key]['roles'] = $r->name;
+                                    break;
+                            }
+                            else{
+                                    $comments[$key]['roles'] = null;
+                            }
+                            }
+                        }
+                        else{
                             $comments[$key]['roles'] = null;
                     }
                     }
+                    $comments[$key]['already_liked'] = $already_liked;
+        
+                    
+                    foreach ($liked_comment_count as $like_count) {
+                        //dd($like_count->like_count);
+                        if ($like_count->comment_id == $comm1->id) {
+                            $comments[$key]['like_count'] = $like_count->like_count;
+                            break;
+                        } else {
+                            $comments[$key]['like_count'] = 0;
+                        }
+                    }
+                   
                 }
-                else{
-                    $comments[$key]['roles'] = null;
+                
             }
-            }
-            $comments[$key]['already_liked'] = $already_liked;
-
-            
-            foreach ($liked_comment_count as $like_count) {
-                //dd($like_count->like_count);
-                if ($like_count->comment_id == $comm1->id) {
-                    $comments[$key]['like_count'] = $like_count->like_count;
-                    break;
-                } else {
-                    $comments[$key]['like_count'] = 0;
-                }
-            }
-           
         }
         // dd($comments);
         return response()->json([
