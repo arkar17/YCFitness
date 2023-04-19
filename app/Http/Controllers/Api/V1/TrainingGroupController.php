@@ -95,7 +95,7 @@ class TrainingGroupController extends Controller
         }
 
         if ($current_time >= 17 && $current_time <= 20) { // Dinner
-            $meals = Meal::where('day', $current_day)->where('meal_plan_type', 'Dinner')->get();
+            $meals = Meal::where('meal_plan_type', 'Dinner')->get();
 
             return response()->json([
                 'meals' => $meals

@@ -660,6 +660,20 @@ class SocialMediaController extends Controller
             ->where('receiver_id', auth()->user()->id)
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
+        $deleted_posts = Post::select('id','deleted_at')->onlyTrashed()->get();
+        // dd($posts);
+
+        foreach($notification as $key=>$noti){
+            foreach($deleted_posts as $del_post){
+                if($del_post->id == $noti->post_id){
+                    $notification[$key]['post_id'] = -1;
+                }
+                else{
+                    $notification[$key]['post_id'] = $noti->post_id;
+                }
+            }
+        }
+        
         return response()->json([
             'notification' => $notification
         ]);

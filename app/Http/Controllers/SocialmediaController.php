@@ -1739,8 +1739,8 @@ class SocialmediaController extends Controller
                       
 
 
-        // dd($comment_post_count);
-
+                
+                           // dd($notification);
         
  
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
