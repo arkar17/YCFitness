@@ -556,8 +556,8 @@ class SocialMediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
-        $id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $auth = auth()->user()->id;
+        $block_list = BlockList::where('sender_id',$auth)->orWhere('receiver_id',$auth)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
