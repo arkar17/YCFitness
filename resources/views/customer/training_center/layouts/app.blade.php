@@ -173,16 +173,16 @@
                             noti_id : id
                     },
                         success: function(data) {
-                            if(data.comment == null){
-                            Swal.fire({
-                            text: "Post Deleted!",
-                            confirmButtonColor: '#3CDD57',
-                            timer: 3000
-                      });
-                        }
-                        else{
+                            
                             window.location.href = comment_url
-                        }
+                        
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                text: "Post Deleted!",
+                                confirmButtonColor: '#3CDD57',
+                                timer: 3000,
+                            })
                         }
                     })
                 });

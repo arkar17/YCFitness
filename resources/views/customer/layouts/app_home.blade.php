@@ -1771,7 +1771,7 @@
 
             $(document).on('click', '.accept', function(e) {
                 e.preventDefault();
-                alert("okk")
+                // alert("okk")
                 var url = new URL(this.href);
                 var id = url.searchParams.get("id");
                 console.log(id, "noti_id");
@@ -1830,19 +1830,27 @@
                         noti_id: id
                     },
                     success: function(data) {
-                        if(data.comment == null){
-                            Swal.fire({
-                            text: "Post Deleted!",
-                            confirmButtonColor: '#3CDD57',
-                            timer: 3000
-                      });
-                        }
-                        else{
+                        // if(data.comment == null){
+                        //     Swal.fire({
+                        //     text: "Post Deleted!",
+                        //     confirmButtonColor: '#3CDD57',
+                        //     timer: 3000
+                        //  });
+                        // }
+                        //else{
                             window.location.href = comment_url
-                        }
+                        // }
                         //alert(data);
                         // 
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            text: "Post Deleted!",
+                            confirmButtonColor: '#3CDD57',
+                            timer: 3000,
+                        })
                     }
+            
                 })
             });
 
