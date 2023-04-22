@@ -191,7 +191,9 @@
                                     src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->user->user_profile->profile_image}}" />
                             @endif
                             <div class="group-chat-receiver-text-container">
-                                <span>{{ $gp_message->user->name }}</span>
+                                @if ($gp_message->user != null )
+                                 <span>{{ $gp_message->user->name }}</span>
+                                @endif
                                 <div class=" group-chat-imgs-vids-container">
                                     @foreach (json_decode($gp_message->media) as $key => $media)
                                         @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
