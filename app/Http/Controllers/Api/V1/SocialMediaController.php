@@ -653,6 +653,7 @@ class SocialMediaController extends Controller
             'users.id as user_id',
             'users.name',
             'notifications.*',
+            'notifications.post_id as post',
             'profiles.profile_image'
         )
             ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
