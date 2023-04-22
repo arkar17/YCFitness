@@ -171,29 +171,29 @@
                 @if (auth()->user()->id != $gp_message->sender_id)
                     @if ($gp_message->text != null)
                         <div class="group-chat-receiver-container">
-                            @if ($gp_message->user == null || $gp_message->user->user_profile == null)
+                            @if ($gp_message->users == null || $gp_message->users->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
-                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->user->user_profile->profile_image}}" />
+                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->users->user_profile->profile_image}}" />
                             @endif
                             <div class="group-chat-receiver-text-container">
-                                <span>{{ $gp_message->user->name }}</span>
+                                <span>{{ $gp_message->users->name }}</span>
                                 <p>{{ $gp_message->text }}</p>
                             </div>
                         </div>
                     @else
                         <div class="group-chat-receiver-container">
                             
-                            @if ($gp_message->user->user_profile == null)
+                            @if ($gp_message->users->user_profile == null)
                                 <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                             @else
                                 <img
-                                    src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->user->user_profile->profile_image}}" />
+                                    src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->users->user_profile->profile_image}}" />
                             @endif
                             <div class="group-chat-receiver-text-container">
-                                @if ($gp_message->user != null )
-                                 <span>{{ $gp_message->user->name }}</span>
-                                @endif
+                                {{-- @if ($gp_message->user != null ) --}}
+                                 <span>{{ $gp_message->users->name }}</span>
+                                {{-- @endif --}}
                                 <div class=" group-chat-imgs-vids-container">
                                     @foreach (json_decode($gp_message->media) as $key => $media)
                                         @if (pathinfo($media, PATHINFO_EXTENSION) == 'png' ||
@@ -243,7 +243,7 @@
                 @elseif(auth()->user()->id == $gp_message->sender_id)
                     <div class="group-chat-sender-container">
                         <div class="group-chat-sender-text-container">
-                            <span>{{ $gp_message->user->name }}</span>
+                            <span>{{ $gp_message->users->name }}</span>
                             @if ($gp_message->text != null)
                                 <p>{{ $gp_message->text }}</p>
                             @else
@@ -286,10 +286,10 @@
                                 </div>
                             @endif
                         </div>
-                        @if ($gp_message->user->user_profile == null)
+                        @if ($gp_message->users->user_profile == null)
                             <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
                         @else
-                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->user->user_profile->profile_image}}" />
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$gp_message->users->user_profile->profile_image}}" />
                         @endif
                     </div>
                 @else
