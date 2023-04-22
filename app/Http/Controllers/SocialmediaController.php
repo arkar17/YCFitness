@@ -308,6 +308,7 @@ class SocialmediaController extends Controller
                 $fri_noti->date = Carbon::Now()->toDateTimeString();
                 $fri_noti->sender_id = auth()->user()->id;
                 $fri_noti->receiver_id = $post_owner->user_id;
+                $fri_noti->post_id = $post_owner->post_id;
                 $fri_noti->comment_id = $request->comment_id;
                 $fri_noti->notification_status = 1;
                 $fri_noti->save();
