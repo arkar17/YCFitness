@@ -119,9 +119,9 @@ class ShopController extends Controller
     {
         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('users.id',auth()->user()->id)
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
-        ->where('users.id',auth()->user()->id)
         ->first();
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
                         ->where('shop_status',1)
