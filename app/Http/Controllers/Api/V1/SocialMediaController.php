@@ -256,7 +256,7 @@ class SocialMediaController extends Controller
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
             ->orWhere('users.phone', 'LIKE', '%' . $request->keyword . '%')
-            ->whereNotIn('id',$b)
+            ->whereNotIn('users.id',$b)
             ->get();
         $friends = DB::table('friendships')->get();
         return response()->json([
