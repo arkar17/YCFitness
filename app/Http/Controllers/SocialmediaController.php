@@ -1752,7 +1752,7 @@ class SocialmediaController extends Controller
         ->where('users.id',$hya)
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
-        ->first();
+        ->get();
 
         $ktw = 5;
         $shop_list_one = User::select('users.id','users.name','profiles.profile_image')
@@ -1760,14 +1760,14 @@ class SocialmediaController extends Controller
         ->where('users.id',$ktw)
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
-        ->first();
+        ->get();
 
         $shop_list_three = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('users.id',auth()->user()->id)
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
-        ->first();
+        ->get();
 
 
                 
