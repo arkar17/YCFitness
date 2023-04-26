@@ -1745,11 +1745,33 @@ class SocialmediaController extends Controller
                         if($comment_post_count->post_id == $post->id){
                             $post['comment_count'] = $comment_post_count->comment_count;
                         }
-                      
+
+        $hya = 10;
+        $shop_list = User::select('users.id','users.name','profiles.profile_image')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('users.id',$hya)
+        ->where('shop_request',2)
+        ->orWhere('shop_request',3)
+        ->first();
+
+        $ktw = 5;
+        $shop_list_one = User::select('users.id','users.name','profiles.profile_image')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('users.id',$ktw)
+        ->where('shop_request',2)
+        ->orWhere('shop_request',3)
+        ->first();
+
+        $shop_list_three = User::select('users.id','users.name','profiles.profile_image')
+        ->leftJoin('profiles','users.profile_id','profiles.id')
+        ->where('users.id',auth()->user()->id)
+        ->where('shop_request',2)
+        ->orWhere('shop_request',3)
+        ->first();
 
 
                 
-                           // dd($notification);
+                           dd($shop_list, $shop_list_one,$shop_list_three);
         
  
         return view('customer.comments', compact('post', 'comments', 'post_likes'));
