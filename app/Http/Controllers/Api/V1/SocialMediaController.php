@@ -2682,26 +2682,32 @@ public function chat_admin(Request $request)
        ");
 
         foreach ($post_likes as $key => $value) {
-            foreach ($friends as $fri) {
-                if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
-                    $post_likes[$key]['friend_status'] = "cancel request";
-                    break;
-                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 1) {
-                    $post_likes[$key]['friend_status'] = "response";
-                    break;
-                } else if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 2) {
-                    $post_likes[$key]['friend_status'] = "friend";
-                    break;
-                } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 2) {
-                    $post_likes[$key]['friend_status'] = "friend";
-                    break;
-                } else if ($value->user_id == $auth) {
-                    $post_likes[$key]['friend_status'] = "myself";
-                    break;
-                } else {
-                    $post_likes[$key]['friend_status'] = "add friend";
+            if($friends){
+                foreach ($friends as $fri) {
+                    if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
+                        $post_likes[$key]['friend_status'] = "cancel request";
+                        break;
+                    } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 1) {
+                        $post_likes[$key]['friend_status'] = "response";
+                        break;
+                    } else if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 2) {
+                        $post_likes[$key]['friend_status'] = "friend";
+                        break;
+                    } else if ($value->user_id == $fri->sender_id and $fri->receiver_id == $auth and $fri->friend_status == 2) {
+                        $post_likes[$key]['friend_status'] = "friend";
+                        break;
+                    } else if ($value->user_id == $auth) {
+                        $post_likes[$key]['friend_status'] = "myself";
+                        break;
+                    } else {
+                        $post_likes[$key]['friend_status'] = "add friend";
+                    }
                 }
             }
+            else{
+                $post_likes[$key]['friend_status'] = "add friend";
+            }
+    
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $value->user_id");
            
