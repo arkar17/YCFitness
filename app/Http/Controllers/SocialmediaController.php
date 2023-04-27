@@ -1750,24 +1750,30 @@ class SocialmediaController extends Controller
         $shop_list = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('users.id',$hya)
-        ->where('shop_request',2)
-        ->orWhere('shop_request',3)
-        ->get();
+        ->where(function($query) {
+            $query->where('shop_request',2)
+                ->orWhere('shop_request',3);
+        })
+        ->first()->toArray();
 
-        $ktw = 5;
+        $ktw = 6;
         $shop_list_one = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('users.id',$ktw)
-        ->where('shop_request',2)
-        ->orWhere('shop_request',3)
-        ->get();
+        ->where(function($query) {
+            $query->where('shop_request',2)
+                ->orWhere('shop_request',3);
+        })
+        ->first()->toArray();
 
         $shop_list_three = User::select('users.id','users.name','profiles.profile_image')
         ->leftJoin('profiles','users.profile_id','profiles.id')
         ->where('users.id',auth()->user()->id)
-        ->where('shop_request',2)
-        ->orWhere('shop_request',3)
-        ->get();
+        ->where(function($query) {
+            $query->where('shop_request',2)
+                ->orWhere('shop_request',3);
+        })
+        ->first()->toArray();
 
 
                 
