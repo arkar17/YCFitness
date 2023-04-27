@@ -122,12 +122,12 @@ class ShopController extends Controller
         ->where('users.id',auth()->user()->id)
         ->where('shop_request',2)
         ->orWhere('shop_request',3)
-        ->get();
+        ->first();
+       
         $total_count = Post::select("user_id",DB::raw("Count('id') as total_count"))
                         ->where('user_id',auth()->user()->id)
                         ->where('shop_status',1)
-                        
-                     ->first();
+                        ->first();
         if(!empty($shop_list)){
             foreach($shop_list as $value){
                 if(!empty($total_count)){
