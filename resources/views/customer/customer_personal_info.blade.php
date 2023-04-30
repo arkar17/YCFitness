@@ -10,9 +10,9 @@
         <ul id="move">
             <li> <img src="{{ asset('trainer/1.jpg')}}"></li>
 
-            <li> <img src="{{ asset('trainer/2.jpg')}}"></li>
+            {{-- <li> <img src="{{ asset('trainer/2.jpg')}}"></li>
 
-            <li> <img src="{{ asset('trainer/3.jpg')}}"></li>
+            <li> <img src="{{ asset('trainer/3.jpg')}}"></li> --}}
         </ul>
         <div id="back">
             <
