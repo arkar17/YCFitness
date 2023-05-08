@@ -182,15 +182,17 @@ class AppServiceProvider extends ServiceProvider
                 $id_admin = User::whereHas('roles', function ($query) {
                     $query->where('name', '=', 'admin');
                 })->first();
+
                 // if($id_admin){
-                  $admin_id = $id_admin->id;
+                 
                 // }
                 // else{
                 //     $admin_id = null;
                 // }
                
-                // dd($array);
-            if($array){
+               
+            if($array && $id_admin ){
+                $admin_id = $id_admin->id;
                 $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
                 from
                     chats
@@ -238,7 +240,7 @@ class AppServiceProvider extends ServiceProvider
                             (created_at = m)
                         left join users on users.id = user
                         left join profiles on users.profile_id = profiles.id
-                        where users.id != $admin_id
+                      
                         order by chats.created_at desc");
             }
            

@@ -68,7 +68,7 @@ class CreateUsersTable extends Migration
             $table->integer('cover_id')->nullable();
             $table->integer('chat_id')->default(0);
             $table->integer('message_id')->default(0);
-            $table->datatime('last_seen')->nullable();
+            $table->date('last_seen')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
