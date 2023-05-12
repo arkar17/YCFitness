@@ -182,7 +182,7 @@ class SocialMediaController extends Controller
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where report_status = 0 GROUP BY post_id");
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where report_status = 0 and deleted_at = null GROUP BY post_id");
 
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -420,7 +420,7 @@ class SocialMediaController extends Controller
             ->where('user_react_posts.user_id', $auth)->get();
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments GROUP BY post_id");
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where deleted_at = null GROUP BY post_id");
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
         left join roles on model_has_roles.role_id = roles.id");
         // dd($liked_post);
@@ -985,7 +985,7 @@ class SocialMediaController extends Controller
 
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
 
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id and deleted_at = null");
         // dd($comment_post_count);
         // dd($liked_post);
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
@@ -1152,7 +1152,7 @@ class SocialMediaController extends Controller
 
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
 
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id and deleted_at = null");
         // dd($comment_post_count);
         // dd($liked_post);
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
@@ -1240,7 +1240,7 @@ class SocialMediaController extends Controller
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
 
-            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id and deleted_at = null");
 
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -1319,7 +1319,7 @@ class SocialMediaController extends Controller
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
 
-            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id");
+            $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments WHERE post_id = $id and deleted_at = null");
 
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
