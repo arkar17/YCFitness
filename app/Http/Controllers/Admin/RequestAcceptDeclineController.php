@@ -54,7 +54,7 @@ class RequestAcceptDeclineController extends Controller
             ]);
 
             if ($member->member_type == "Ruby" || $member->member_type == "Ruby Premium") {
-
+                //dd($member->member_type);
                 ShopmemberHistory::create([
                     'user_id' => $id,
                     'shopmember_type_id' => $shop_member->id,
@@ -84,20 +84,55 @@ class RequestAcceptDeclineController extends Controller
                 return back()->with('success', 'Upgraded Success');
             }
         } else {
-
             $current_date = Carbon::now()->toDateString();
             $member_role = Member::where('id', $member->id)->first();
             $role = Role::findOrFail($member_role->role_id);
             DB::table('model_has_roles')->where('model_id', $id)->delete();
+            if ($member->member_type == "Ruby" || $member->member_type == "Ruby Premium") {
+                //dd($member->member_type);
+                ShopmemberHistory::create([
+                    'user_id' => $id,
+                    'shopmember_type_id' => $shop_member->id,
+                    'date' => $date
+                ]);
 
-            $u->assignRole($role->name);
-            $u->member_type = $member->member_type;
-            $u->active_status = 2;
-            $u->request_type = 0;
-            $u->save();
-            $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date,'member_id' =>$member->id]);
-            $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
-            return back()->with('success', 'Accepted');
+                $u->shopmember_type_id = 0;
+                $u->shop_request = 2;
+                $u->active_status = 2;
+                // $u->request_type = 0;
+                $u->shop_post_count = 0;
+                $u->member_type = $member->member_type;
+                $role = Role::findOrFail($member->role_id);
+                $u->syncRoles($role->name);
+                $u->save();
+                $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date,'member_id' =>$member->id]);
+                $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
+                return back()->with('success', 'Upgraded Success');
+            } else {
+                $u->active_status = 2;
+                $u->request_type = 0;
+                $u->member_type = $member->member_type;
+                $role = Role::findOrFail($member->role_id);
+                $u->syncRoles($role->name);
+                $u->save();
+                $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date,'member_id' =>$member->id]);
+                $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
+                return back()->with('success', 'Upgraded Success');
+            }
+
+            // $current_date = Carbon::now()->toDateString();
+            // $member_role = Member::where('id', $member->id)->first();
+            // $role = Role::findOrFail($member_role->role_id);
+            // DB::table('model_has_roles')->where('model_id', $id)->delete();
+
+            // $u->assignRole($role->name);
+            // $u->member_type = $member->member_type;
+            // $u->active_status = 2;
+            // $u->request_type = 0;
+            // $u->save();
+            // $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date,'member_id' =>$member->id]);
+            // $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
+            // return back()->with('success', 'Accepted');
         }
     }
 
