@@ -33,4 +33,7 @@ class OneToOneChat
     {
         return new PrivateChannel('channel-one2one');
     }
+    public function broadcastAs() {
+        return 'one2one-event';
+    }
 }
