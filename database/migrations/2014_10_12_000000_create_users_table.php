@@ -50,6 +50,11 @@ class CreateUsersTable extends Migration
             $table->float('bmi')->default(0.0);
             $table->float('bmr')->default(0.0);
             $table->float('bfp')->default(0.0);
+            $table->float('thigh')->default(0.0);
+            $table->float('calf')->default(0.0);
+            $table->float('arm')->default(0.0);
+            $table->float('double')->default(0.0);
+            $table->float('wrist')->default(0.0);
             $table->string('gender')->nullable();
             $table->date('from_date')->nullable();
             $table->date('to_date')->nullable();

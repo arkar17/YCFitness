@@ -2005,8 +2005,6 @@ class SocialMediaController extends Controller
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
-
-
         $options = array(
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'encrypted' => true
@@ -2017,15 +2015,21 @@ class SocialMediaController extends Controller
             env('PUSHER_APP_ID'),
             $options
         );
-        // $pusher->trigger('chatting.'.auth()->user()->id.'.'.$to_user_id, 'chatting-event', ['message'=>$message]);
-        // $pusher->trigger('chatting.' . $to_user_id . '.' . auth()->user()->id, 'chatting-event', ['message' => $message]);
+      
+        
+
         $message_id = $message->id;
-        $message = Chat::select('chats.*','profiles.profile_image')
+        $message = Chat::select('chats.*','profiles.profile_image','users.name')
                     ->leftJoin('users','users.id','chats.from_user_id')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
                     ->where('chats.id',$message_id)
                     ->first();
-         broadcast(new Chatting($message, $request->sender));
+        foreach ($message as $key => $value) {
+            $message['isGroup'] = 0;
+        }
+       // $pusher->trigger('chat_message.' . auth()->user()->id, 'message', $message);
+        $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
+        // broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
         $id_admin = User::whereHas('roles', function ($query) {
