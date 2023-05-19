@@ -2225,7 +2225,20 @@ public function chat_admin(Request $request)
                 ->leftJoin('profiles','users.profile_id','profiles.id')
                 ->where('chats.id',$message_id)
                 ->first();
-    broadcast(new Chatting($message, $request->sender));
+    foreach ($message as $key => $value) {
+        $message['isGroup'] = 3;
+    }
+    $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        $options = array(
+            'cluster' => 'eu',
+            'encrypted' => true
+        )
+    );
+    $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
+    // broadcast(new Chatting($message, $request->sender));
     return response()->json([
         'success' =>  $message
     ]);
