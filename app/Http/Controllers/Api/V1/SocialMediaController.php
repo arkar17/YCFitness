@@ -2005,17 +2005,16 @@ class SocialMediaController extends Controller
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
-        $options = array(
-            'cluster' => env('PUSHER_APP_CLUSTER'),
-            'encrypted' => true
-        );
+        
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
             env('PUSHER_APP_ID'),
-            $options
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
         );
-      
         
 
         $message_id = $message->id;
@@ -2028,6 +2027,7 @@ class SocialMediaController extends Controller
             $message['isGroup'] = 0;
         }
        // $pusher->trigger('chat_message.' . auth()->user()->id, 'message', $message);
+       
         $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
         // broadcast(new Chatting($message, $request->sender));
 
@@ -3358,7 +3358,9 @@ public function chat_admin(Request $request)
                     and users.id != $admin_id
                     order by chats.created_at desc limit  3");
         // dd($messages);
-
+        foreach($messages as $key=>$value){
+            $messages[$key]['isGroup'] = 1;
+        }
 
         $groups = DB::table('chat_group_members')
             ->select('group_id')
@@ -3389,17 +3391,17 @@ public function chat_admin(Request $request)
                 foreach($latest_group_sms as $key=>$value){
                     $latest_group_sms[$key]['is_group'] = 1;
                 }
-                        $merged = array_merge($arr, $latest_group_sms);
-                        $keys = array_column($merged, 'date');
-                        array_multisort($keys, SORT_DESC, $merged);
-                        $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
-                        foreach($merged as $key=>$value){
-                               $merged[$key]['owner_id'] = 0;
-                            foreach($group_owner as $owner){
-                                if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
-                                $merged[$key]['owner_id'] = $owner->group_owner_id;
-                            }
-                        }
+                $merged = array_merge($arr, $latest_group_sms);
+                $keys = array_column($merged, 'date');
+                array_multisort($keys, SORT_DESC, $merged);
+                $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
+                foreach($merged as $key=>$value){
+                        $merged[$key]['owner_id'] = 0;
+                    foreach($group_owner as $owner){
+                        if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
+                        $merged[$key]['owner_id'] = $owner->group_owner_id;
+                    }
+                }
             $pusher->trigger('groupChatting.' . $group_message[$i]['member_id'], 'group-chatting-event', ["message" => $message, "senderImg" => $request->senderImg, "senderName" => $request->senderName]);
             $pusher->trigger('all_message.' . $group_message[$i]['member_id'], 'all', $merged);
         }
@@ -3468,9 +3470,11 @@ public function chat_admin(Request $request)
                 'encrypted' => true
             )
         );
-        $pusher->trigger('message-delete.' . $to_user_id->to_user_id . '.' . auth()->user()->id, 'message-delete-event', ['message' => $message]);
 
-        $pusher->trigger('message-delete.' . auth()->user()->id . '.' . $to_user_id->to_user_id, 'message-delete-event', ['message' => $message]);
+        $pusher->trigger('message-delete.' . $to_user_id->to_user_id, 'message', $message);
+        //$pusher->trigger('message-delete.' . $to_user_id->to_user_id . '.' . auth()->user()->id, 'message-delete-event', ['message' => $message]);
+
+        //$pusher->trigger('message-delete.' . auth()->user()->id . '.' . $to_user_id->to_user_id, 'message-delete-event', ['message' => $message]);
         // broadcast(new MessageDelete($message, $request->id));
         return response()->json([
             'success' => 'Deleted Success'
