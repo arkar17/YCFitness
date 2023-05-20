@@ -3371,8 +3371,9 @@ public function chat_admin(Request $request)
                     and users.id != $admin_id
                     order by chats.created_at desc limit  3");
         // dd($messages);
+        
         foreach($messages as $key=>$value){
-            $messages[$key]['isGroup'] = 1;
+            $messages[$key]->isGroup = 1;
         }
 
         $groups = DB::table('chat_group_members')
