@@ -33,13 +33,21 @@ class MessageDelete implements ShouldBroadcast
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
+    // public function broadcastOn()
+    // {
+    //     // return new Channel("message-delete.{$this->message->from_user_id}.{$this->message->to_user_id}");
+    //     return new PrivateChannel('message-delete');
+    // }
+
+    // public function broadcastAs(){
+    //     return 'message-delete-event';
+    // }
+
     public function broadcastOn()
     {
-        // return new Channel("message-delete.{$this->message->from_user_id}.{$this->message->to_user_id}");
         return new PrivateChannel('message-delete');
     }
-
-    public function broadcastAs(){
+    public function broadcastAs() {
         return 'message-delete-event';
     }
 }

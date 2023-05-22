@@ -3584,26 +3584,26 @@ public function chat_admin(Request $request)
                    (
                      (select id, to_user_id user, created_at
                        from chats
-                       where from_user_id= $to_user_id  and delete_status <> 2 and deleted_by != $to_user_id )
+                       where from_user_id= $to_user_id->to_user_id  and delete_status <> 2 and deleted_by != $to_user_id->to_user_id )
                    union
                      (select id, from_user_id user, created_at
                        from chats
-                       where to_user_id= $to_user_id  and delete_status <> 2 and deleted_by != $to_user_id)
+                       where to_user_id= $to_user_id->to_user_id  and delete_status <> 2 and deleted_by != $to_user_id->to_user_id)
                     ) t1
                group by user) t2
-                on ((from_user_id= $to_user_id and to_user_id=user) or
-                    (from_user_id=user and to_user_id= $to_user_id)) and
+                on ((from_user_id= $to_user_id->to_user_id and to_user_id=user) or
+                    (from_user_id=user and to_user_id= $to_user_id->to_user_id)) and
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-                where deleted_by !=  $to_user_id  and delete_status != 2
+                where deleted_by !=  $to_user_id->to_user_id  and delete_status != 2
                 and users.id != $admin_id
             order by chats.created_at desc limit  3");
       // dd($messages);
             $groups_to = DB::table('chat_group_members')
                         ->select('group_id')
                         ->groupBy('group_id')
-                        ->where('chat_group_members.member_id',$to_user_id)
+                        ->where('chat_group_members.member_id',$to_user_id->to_user_id)
                         ->get()
                         ->pluck('group_id')->toArray();
 
