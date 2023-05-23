@@ -3416,9 +3416,10 @@ public function chat_admin(Request $request)
                 }
 
         $messagegp_id = $message->id;
-        $message_gp = ChatGroupMessage::select('chat_group_messages.*','profiles.profile_image','users.name')
+        $message_gp = ChatGroupMessage::select('chat_group_messages.*','profiles.profile_image','users.name','chat_groups.name as group_name')
                     ->leftJoin('users','users.id','chat_group_messages.sender_id')
                     ->leftJoin('profiles','users.profile_id','profiles.id')
+                    ->leftJoin('chat_groups','chat_group_messages.group_id','chat_groups.id')
                     ->where('chat_group_messages.id',$messagegp_id)
                     ->first();
         foreach ($message_gp as $key => $value) {
