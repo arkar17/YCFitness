@@ -3650,9 +3650,9 @@ public function chat_admin(Request $request)
         $arr_six_to = array_reverse($arr_six_to);
 
         $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
-        $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);
+        $pusher->trigger('chat_message.' . $to_user_id->to_user_id, 'chat', $arr_six_to);
 
-        $pusher->trigger('all_message.'.$to_user_id , 'all', $merged_to);
+        $pusher->trigger('all_message.'.$to_user_id->to_user_id , 'all', $merged_to);
         $pusher->trigger('all_message.'.$user_id , 'all', $merged);
         return response()->json([
             'success' => 'Deleted Success'
