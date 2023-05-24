@@ -3597,9 +3597,9 @@ public function chat_admin(Request $request)
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-                where deleted_by !=  $to_user_id->to_user_id  and delete_status != 2
-                and users.id != $admin_id
-            order by chats.created_at desc limit  3");
+                and deleted_by !=  $to_user_id->to_user_id  and delete_status != 2
+                where users.id != $admin_id
+                order by chats.created_at desc");
       // dd($messages);
             $groups_to = DB::table('chat_group_members')
                         ->select('group_id')
