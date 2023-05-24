@@ -3597,7 +3597,6 @@ public function chat_admin(Request $request)
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-                and deleted_by !=  $to_user_id->to_user_id  and delete_status != 2
                 where users.id != $admin_id
                 order by chats.created_at desc");
       // dd($messages);
