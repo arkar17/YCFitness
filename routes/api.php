@@ -171,6 +171,7 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
     Route::post('group/message/chat/{id}',[SocialMediaController::class,'group_chatting']);
 
     Route::post('chat',[SocialMediaController::class,'chat']); 
+    Route::post('chat_read_unread',[SocialmediaController::class,'chat_read']);
 
     Route::post('chat/messages',[SocialMediaController::class,'chat_messages']);
     Route::get('chat/messages_admin',[SocialMediaController::class,'chat_messages_admin']);
