@@ -33,6 +33,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Class\AgoraDynamicKey\RtcTokenBuilder;
+use App\Models\GroupChatMessageReadStatus;
 
 class SocialMediaController extends Controller
 {
@@ -2185,20 +2186,24 @@ class SocialMediaController extends Controller
             ->update(['read_or_not' => 1]);
 
         return response()->json([
-            'success' =>  "readed"
+            'success' =>  "read"
         ]);
     }
     public function gp_chat_read(Request $request)
     {
-        $from_user_id = $request->auth_id;
-        $to_user_id = $request->user_id;
-        Chat::where('from_user_id', $from_user_id)
-            ->where('to_user_id', $to_user_id)
-            ->update(['read_or_not' => 1]);
-
+        $user_id = $request->auth_id;
+        $group_id = $request->group_id;
+        $read = new GroupChatMessageReadStatus();
+        $read->group_id = $group_id;
+        $read->user_id = $user_id;
+        $read->save();
         return response()->json([
-            'success' =>  "readed"
+            'success' =>  "read"
         ]);
+    }
+    public function message_count()
+    {
+        $user_id = Auth::user()->id;
     }
 
     public function chat_admin(Request $request)

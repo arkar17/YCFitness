@@ -41,7 +41,7 @@ Route::get('get-banking-infos', [AuthController::class, 'getBankingInfos']);
 Route::post('change-password', [AuthController::class, 'passwordChange']);
 
 // Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::middleware(['auth:sanctum', 'activity'])->group(function () {
+Route::middleware(['auth:sanctum', 'activity'])->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::get('get/role', [AuthController::class, 'getRole']);
 
@@ -120,7 +120,7 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
     //Group chat for mobile
     Route::post('chat/sendmessage/{id}', [TrainingManagementController::class, 'sendmessage']);
     Route::get('chat/showmessage/{id}', [TrainingManagementController::class, 'chatshow']);
-    Route::post('chat_admin',[SocialMediaController::class,'chat_admin']); //formobile
+    Route::post('chat_admin', [SocialMediaController::class, 'chat_admin']); //formobile
     // Route::post('message/chat/{user}',[SocialMediaController::class,'chatting']); // for web
 
     //social media
@@ -129,14 +129,14 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
     Route::post('unfriend', [SocialMediaController::class, 'unfriend']); //un friends
     Route::post('cancelRequest', [SocialmediaController::class, 'cancelRequest']); // cancel request
     Route::post('declineRequest', [SocialmediaController::class, 'declineRequest']); //
-    Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest']);//
-    Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile']);//
+    Route::post('confirmRequest', [SocialmediaController::class, 'confirmRequest']); //
+    Route::post('socialmedia_profile', [SocialmediaController::class, 'socialmedia_profile']); //
 
-    Route::post('cover_profile_photo', [SocialmediaController::class, 'cover_profile_photo']);//
+    Route::post('cover_profile_photo', [SocialmediaController::class, 'cover_profile_photo']); //
 
-    Route::post('friends', [SocialmediaController::class, 'friends']);//
+    Route::post('friends', [SocialmediaController::class, 'friends']); //
 
-    Route::get('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']);//
+    Route::get('friends_for_mention', [SocialmediaController::class, 'friends_for_mention']); //
 
     Route::get('user/blocklist', [SocialmediaController::class, 'block_list']);
     Route::post('user/block', [SocialmediaController::class, 'blockUser']);
@@ -149,11 +149,11 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
 
     Route::get('friend_request', [SocialmediaController::class, 'friend_request']);
     Route::get('newFeeds', [SocialmediaController::class, 'newFeeds']);
-    Route::get('saved_post',[SocialmediaController::class, 'saved_post']);
+    Route::get('saved_post', [SocialmediaController::class, 'saved_post']);
 
-    Route::post('one_post',[SocialmediaController::class, 'one_post']);
+    Route::post('one_post', [SocialmediaController::class, 'one_post']);
 
-  
+
     Route::post('post_create', [SocialmediaController::class, 'post_store']);
     Route::post('post_delete', [SocialmediaController::class, 'post_destroy']);
     Route::post('post_edit', [SocialmediaController::class, 'post_edit']);
@@ -166,40 +166,42 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
     Route::post('profile/bio/update', [SocialmediaController::class, 'profile_update_bio']);
     Route::post('profile/photo/delete', [SocialmediaController::class, 'profile_photo_delete']);
 
-    
+
     // Route::post('message/chat_admin',[SocialMediaController::class,'chatting_admin']);//web
-    Route::post('group/message/chat/{id}',[SocialMediaController::class,'group_chatting']);
+    Route::post('group/message/chat/{id}', [SocialMediaController::class, 'group_chatting']);
 
-    Route::post('chat',[SocialMediaController::class,'chat']); 
-    Route::post('chat_read_unread',[SocialmediaController::class,'chat_read']);
+    Route::post('chat', [SocialMediaController::class, 'chat']);
+    Route::post('chat_read_unread', [SocialmediaController::class, 'chat_read']);
+    Route::post('group_chat_read_unread', [SocialmediaController::class, 'gp_chat_read']);
+    Route::post('message_count', [SocialmediaController::class, 'message_count']);
 
-    Route::post('chat/messages',[SocialMediaController::class,'chat_messages']);
-    Route::get('chat/messages_admin',[SocialMediaController::class,'chat_messages_admin']);
-    Route::post('chat/messages/view_media',[SocialMediaController::class,'view_media_message']);
-    Route::get('chat/messages/view_media_admin',[SocialMediaController::class,'view_media_message_admin']);
+    Route::post('chat/messages', [SocialMediaController::class, 'chat_messages']);
+    Route::get('chat/messages_admin', [SocialMediaController::class, 'chat_messages_admin']);
+    Route::post('chat/messages/view_media', [SocialMediaController::class, 'view_media_message']);
+    Route::get('chat/messages/view_media_admin', [SocialMediaController::class, 'view_media_message_admin']);
 
-    Route::get('chat/messages/all_messages',[SocialMediaController::class,'see_all_message']);
-    Route::get('/socialmedia/message/deletechat',[SocialmediaController::class, 'delete_allchat_message']);
-    
+    Route::get('chat/messages/all_messages', [SocialMediaController::class, 'see_all_message']);
+    Route::get('/socialmedia/message/deletechat', [SocialmediaController::class, 'delete_allchat_message']);
+
     //socialmedia group
-    Route::post('group/create',[SocialMediaController::class,'group_create']);
-    Route::post('group/add_member',[SocialMediaController::class,'addmember']);
-    Route::post('group/members',[SocialMediaController::class,'members']);
-    Route::post('group/group_members',[SocialMediaController::class,'group_members']);
-    Route::post('group/kick_member',[SocialmediaController::class,'group_member_kick']);
-    Route::post('group/send_message',[SocialMediaController::class,'send_message']);
-    Route::post('group/group_messages',[SocialMediaController::class,'group_messages']);
-    Route::post('group/group_media',[SocialMediaController::class,'group_media']);
+    Route::post('group/create', [SocialMediaController::class, 'group_create']);
+    Route::post('group/add_member', [SocialMediaController::class, 'addmember']);
+    Route::post('group/members', [SocialMediaController::class, 'members']);
+    Route::post('group/group_members', [SocialMediaController::class, 'group_members']);
+    Route::post('group/kick_member', [SocialmediaController::class, 'group_member_kick']);
+    Route::post('group/send_message', [SocialMediaController::class, 'send_message']);
+    Route::post('group/group_messages', [SocialMediaController::class, 'group_messages']);
+    Route::post('group/group_media', [SocialMediaController::class, 'group_media']);
 
-    Route::post('group/leave_group',[SocialmediaController::class,'leave_group']);
-    Route::post('group/delete_group',[SocialmediaController::class,'delete_group']);
-    Route::post('group/delete_message',[SocialmediaController::class,'delete_message']);
-    Route::post('group/unsend_message',[SocialmediaController::class,'unsend_message']);
-    Route::post('group/delete_conversation',[SocialmediaController::class,'delete_allchat_message']);
+    Route::post('group/leave_group', [SocialmediaController::class, 'leave_group']);
+    Route::post('group/delete_group', [SocialmediaController::class, 'delete_group']);
+    Route::post('group/delete_message', [SocialmediaController::class, 'delete_message']);
+    Route::post('group/unsend_message', [SocialmediaController::class, 'unsend_message']);
+    Route::post('group/delete_conversation', [SocialmediaController::class, 'delete_allchat_message']);
 
 
 
-    Route::get('group/all_group',[SocialMediaController::class,'all_group']);
+    Route::get('group/all_group', [SocialMediaController::class, 'all_group']);
 
 
 
@@ -209,26 +211,26 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
 
     Route::post('post/like', [SocialmediaController::class, 'user_like_post']);
     Route::post('comment/like', [SocialmediaController::class, 'user_react_comment']);
-    
+
     Route::post('post/like/list', [SocialmediaController::class, 'social_media_likes']);
     Route::post('comment/like/list', [SocialmediaController::class, 'comment_likes']);
     Route::post('post/comment/list', [SocialmediaController::class, 'comment_list']);
 
     Route::post('post/viewer/count', [SocialmediaController::class, 'post_viewer']);
 
-    Route::post('socialmedia/report',[SocialmediaController::class,'post_report']);
+    Route::post('socialmedia/report', [SocialmediaController::class, 'post_report']);
 
-    Route::post('socialmedia/video_call',[SocialmediaController::class,'video_token']);
-    Route::post('socialmedia/audio_call',[SocialMediaController::class,'audio_token']);
+    Route::post('socialmedia/video_call', [SocialmediaController::class, 'video_token']);
+    Route::post('socialmedia/audio_call', [SocialMediaController::class, 'audio_token']);
     Route::post('socialmedia/decline_call_user', [SocialMediaController::class, 'declineCallUser']);
 
-    Route::post('socialmedia/gp_video_call',[SocialmediaController::class,'gp_video_token']);
-    Route::post('socialmedia/gp_audio_call',[SocialmediaController::class,'gp_audio_token']);
+    Route::post('socialmedia/gp_video_call', [SocialmediaController::class, 'gp_video_token']);
+    Route::post('socialmedia/gp_audio_call', [SocialmediaController::class, 'gp_audio_token']);
 
-    Route::post('socialmedia/call_accept',[SocialmediaController::class,'accept_call']);
+    Route::post('socialmedia/call_accept', [SocialmediaController::class, 'accept_call']);
 
     Route::get('user/list', [SocialmediaController::class, 'user_list']);
-   
+
     //shop
     Route::get('shop/status', [ShopController::class, 'shop_status']);
 
@@ -249,7 +251,6 @@ Route::post('change-password', [AuthController::class, 'passwordChange']);
     Route::post('account_del', [CustomerProfileController::class, 'acc_del']);
     Route::post('feedback_send', [CustomerProfileController::class, 'feedback_send']);
     Route::post('user-online-status', [CustomerProfileController::class, 'userOnlineStatus']);
-
 });
 
 
