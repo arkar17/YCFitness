@@ -2179,28 +2179,25 @@ class SocialMediaController extends Controller
 
     public function chat_read(Request $request)
     {
-        $from_user_id = $request->auth_id;
-        $to_user_id = $request->user_id;
-        $read = Chat::where('from_user_id', $from_user_id)
-            ->where('to_user_id', $to_user_id)
-            ->update(['read_or_not' => 1]);
-
+        if ($request->isGroup == 0) {
+            $from_user_id = $request->auth_id;
+            $to_user_id = $request->user_id;
+            $read = Chat::where('from_user_id', $from_user_id)
+                ->where('to_user_id', $to_user_id)
+                ->update(['read_or_not' => 1]);
+        } else {
+            $user_id = $request->auth_id;
+            $group_id = $request->group_id;
+            $read = new GroupChatMessageReadStatus();
+            $read->group_id = $group_id;
+            $read->user_id = $user_id;
+            $read->save();
+        }
         return response()->json([
             'success' =>  "read"
         ]);
     }
-    public function gp_chat_read(Request $request)
-    {
-        $user_id = $request->auth_id;
-        $group_id = $request->group_id;
-        $read = new GroupChatMessageReadStatus();
-        $read->group_id = $group_id;
-        $read->user_id = $user_id;
-        $read->save();
-        return response()->json([
-            'success' =>  "read"
-        ]);
-    }
+   
     public function message_count()
     {
         $user_id = Auth::user()->id;
@@ -3047,7 +3044,7 @@ class SocialMediaController extends Controller
             ->join('users as sender', 'sender.id', 'friendships.sender_id')
             ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
             ->get(['sender_id', 'receiver_id'])->toArray();
-            
+
         //dd($friends);
         $n = array();
         foreach ($friendships as $friend) {
