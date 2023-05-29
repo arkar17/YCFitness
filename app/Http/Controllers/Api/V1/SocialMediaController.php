@@ -33,6 +33,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Class\AgoraDynamicKey\RtcTokenBuilder;
+use App\Models\GroupChatMessageReadStatus;
 
 class SocialMediaController extends Controller
 {
@@ -48,7 +49,7 @@ class SocialMediaController extends Controller
                     ->orWhere('receiver_id', $user_id);
             })
             ->get(['sender_id', 'receiver_id'])->toArray();
-            $kq = [1,2];
+        $kq = [1, 2];
         if (!empty($friends)) {
             $n = array();
             foreach ($friends as $friend) {
@@ -56,18 +57,18 @@ class SocialMediaController extends Controller
                 array_push($n, $f['sender_id'], $f['receiver_id']);
             }
             $id = auth()->user()->id;
-            $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+            $block_list = BlockList::where('sender_id', $id)->orWhere('receiver_id', $id)->get(['sender_id', 'receiver_id'])->toArray();
             $b = array();
             foreach ($block_list as $block) {
                 $f = (array)$block;
                 array_push($b, $f['sender_id'], $f['receiver_id']);
             }
-            
+
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
-                ->where('posts.shop_status',0)
-                ->where('report_status','!=' ,1)
+                ->where('posts.shop_status', 0)
+                ->where('report_status', '!=', 1)
                 ->whereIn('posts.user_id', $n)
-                ->orWhereIn('posts.user_id',$kq)
+                ->orWhereIn('posts.user_id', $kq)
                 ->whereNotIn('posts.user_id', $b)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
@@ -89,25 +90,23 @@ class SocialMediaController extends Controller
                 //                   ↑
                 // Array value which you want to delete
             });
-            if($array){
+            if ($array) {
                 $comment_post_count =  DB::table('comments')
-                ->select('post_id', DB::raw('count(*) as comment_count'))
-                ->where('report_status',0)
-                ->where('deleted_at',null)
-                ->whereNotIn('user_id',$array)
-                ->groupBy('post_id')
-                ->get();
+                    ->select('post_id', DB::raw('count(*) as comment_count'))
+                    ->where('report_status', 0)
+                    ->where('deleted_at', null)
+                    ->whereNotIn('user_id', $array)
+                    ->groupBy('post_id')
+                    ->get();
+            } else {
+                $comment_post_count =  DB::table('comments')
+                    ->select('post_id', DB::raw('count(*) as comment_count'))
+                    ->where('report_status', 0)
+                    ->where('deleted_at', null)
+                    ->groupBy('post_id')
+                    ->get();
             }
-            else{
-                $comment_post_count =  DB::table('comments')
-                ->select('post_id', DB::raw('count(*) as comment_count'))
-                ->where('report_status',0)
-                ->where('deleted_at',null)
-                ->groupBy('post_id')
-                ->get();
 
-            }
-           
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
             //dd($comment_post_count);
@@ -151,23 +150,21 @@ class SocialMediaController extends Controller
                     }
                 }
 
-                foreach($roles as $r){
-                    if($r->model_id == $value->user_id){
+                foreach ($roles as $r) {
+                    if ($r->model_id == $value->user_id) {
                         $posts[$key]['roles'] = $r->name;
                         break;
-                  }
-                  else{
+                    } else {
                         $posts[$key]['roles'] = null;
-                  }
+                    }
                 }
-
             }
         } else {
             $posts = Post::select('users.name', 'profiles.profile_image', 'posts.*')
                 ->where('posts.user_id', $user->id)
                 ->where('posts.shop_status', 0)
-                ->where('report_status','!=' ,1)
-                ->orWhereIn('posts.user_id',$kq)
+                ->where('report_status', '!=', 1)
+                ->orWhereIn('posts.user_id', $kq)
                 ->leftJoin('users', 'users.id', 'posts.user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->orderBy('posts.created_at', 'DESC')
@@ -227,14 +224,13 @@ class SocialMediaController extends Controller
                         $posts[$key]['comment_count'] = 0;
                     }
                 }
-                foreach($roles as $r){
-                    if($r->model_id == $value->user_id){
+                foreach ($roles as $r) {
+                    if ($r->model_id == $value->user_id) {
                         $posts[$key]['roles'] = $r->name;
                         break;
-                  }
-                  else{
+                    } else {
                         $posts[$key]['roles'] = null;
-                  }
+                    }
                 }
             }
         }
@@ -246,7 +242,7 @@ class SocialMediaController extends Controller
     public function search_users(Request $request)
     {
         $id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $id)->orWhere('receiver_id', $id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -256,7 +252,7 @@ class SocialMediaController extends Controller
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('users.name', 'LIKE', '%' . $request->keyword . '%')
             ->orWhere('users.phone', 'LIKE', '%' . $request->keyword . '%')
-            ->whereNotIn('users.id',$b)
+            ->whereNotIn('users.id', $b)
             ->get();
         $friends = DB::table('friendships')->get();
         return response()->json([
@@ -333,15 +329,15 @@ class SocialMediaController extends Controller
             ->where('sender_id', $request->id)
             ->update(['friend_status' => 2, 'date' =>  Carbon::Now()->toDateTimeString()]);
 
-            $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                $options = array(
-                    'cluster' => 'eu',
-                    'encrypted' => true
-                )
-            );
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
         $data = $user->name . ' accepted your friend request!';
 
         $fri_noti = new Notification();
@@ -409,7 +405,7 @@ class SocialMediaController extends Controller
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->orderBy('posts.created_at', 'DESC')
-            ->where('posts.shop_status',0)
+            ->where('posts.shop_status', 0)
             ->paginate(30);
 
         $saved_post = UserSavedPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_saved_posts.post_id')
@@ -465,14 +461,13 @@ class SocialMediaController extends Controller
                     $posts[$key]['comment_count'] = 0;
                 }
             }
-            foreach($roles as $r){
-                if($r->model_id == $value->user_id){
+            foreach ($roles as $r) {
+                if ($r->model_id == $value->user_id) {
                     $posts[$key]['roles'] = $r->name;
                     break;
-              }
-              else{
+                } else {
                     $posts[$key]['roles'] = null;
-              }
+                }
             }
         }
         $friendships = DB::table('friendships')
@@ -492,7 +487,7 @@ class SocialMediaController extends Controller
         }
 
         $user_id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -557,7 +552,7 @@ class SocialMediaController extends Controller
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
         $auth = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$auth)->orWhere('receiver_id',$auth)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $auth)->orWhere('receiver_id', $auth)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -571,33 +566,30 @@ class SocialMediaController extends Controller
             })
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('users.id', '!=', $id)
-            ->whereNotIn('users.id',$b)
+            ->whereNotIn('users.id', $b)
             ->where('friendships.friend_status', 2)
             ->where('friendships.receiver_id', $id)
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
-            ->whereNotIn('users.id',$b)
+            ->whereNotIn('users.id', $b)
             ->paginate(3);
-            foreach($friends as $key=>$value){
-                $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
+        foreach ($friends as $key => $value) {
+            $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
                 left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $value->id");
-                if(!empty($roles)){
-                    foreach($roles as $r){
-                        if($value->id == $r->model_id){
-                            $friends[$key]['roles'] = $r->name;
-                            break;
-                        }
-                        else{
-                            $friends[$key]['roles'] = null;
-                        } 
+            if (!empty($roles)) {
+                foreach ($roles as $r) {
+                    if ($value->id == $r->model_id) {
+                        $friends[$key]['roles'] = $r->name;
+                        break;
+                    } else {
+                        $friends[$key]['roles'] = null;
                     }
                 }
-                else{
-                    $friends[$key]['roles'] = null;
-                }
-                
+            } else {
+                $friends[$key]['roles'] = null;
             }
+        }
         return response()->json([
             'friends' => $friends
         ]);
@@ -621,7 +613,7 @@ class SocialMediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
-        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $id)->orWhere('receiver_id', $id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -634,13 +626,13 @@ class SocialMediaController extends Controller
             })
             ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
             ->where('users.id', '!=', $id)
-            ->whereNotIn('users.id',$b)
+            ->whereNotIn('users.id', $b)
             ->where('friendships.friend_status', 2)
             ->where('friendships.receiver_id', $id)
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
-            ->whereNotIn('users.id',$b)
+            ->whereNotIn('users.id', $b)
             ->get();
         return response()->json([
             'friends' => $friends
@@ -661,20 +653,19 @@ class SocialMediaController extends Controller
             ->where('receiver_id', auth()->user()->id)
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
-        $deleted_posts = Post::select('id','deleted_at')->onlyTrashed()->get();
+        $deleted_posts = Post::select('id', 'deleted_at')->onlyTrashed()->get();
         // dd($posts);
 
-        foreach($notification as $key=>$noti){
-            foreach($deleted_posts as $del_post){
-                if($del_post->id == $noti->post_id){
+        foreach ($notification as $key => $noti) {
+            foreach ($deleted_posts as $del_post) {
+                if ($del_post->id == $noti->post_id) {
                     $notification[$key]['post_id'] = -1;
-                }
-                else{
+                } else {
                     $notification[$key]['post_id'] = $noti->post_id;
                 }
             }
         }
-        
+
         return response()->json([
             'notification' => $notification
         ]);
@@ -753,7 +744,7 @@ class SocialMediaController extends Controller
             $caption = $input['caption'];
         } elseif ($input['caption'] == null) {
             $caption = null;
- 
+
             if ($input['addPostInput']) {
 
                 $images = $input['addPostInput'];
@@ -764,7 +755,8 @@ class SocialMediaController extends Controller
                     $file_name = $filenames[$index];
                     Storage::put(
                         'public/post/' . $file_name,
-                        $tmp,'public'
+                        $tmp,
+                        'public'
                     );
                     $imgData[] = $file_name;
                     $post->media = json_encode($imgData);
@@ -783,7 +775,8 @@ class SocialMediaController extends Controller
                     $file_name = $filenames[$index];
                     Storage::put(
                         'public/post/' . $file_name,
-                        $tmp,'public'
+                        $tmp,
+                        'public'
                     );
                     $imgData[] = $file_name;
                     $post->media = json_encode($imgData);
@@ -819,29 +812,28 @@ class SocialMediaController extends Controller
         $id = $post->id;
 
         $post_one = Post::select('users.name', 'profiles.profile_image', 'posts.*')
-        ->where('posts.id', $id)
-        ->leftJoin('users', 'users.id', 'posts.user_id')
-        ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-        ->first();
+            ->where('posts.id', $id)
+            ->leftJoin('users', 'users.id', 'posts.user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->first();
 
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
         left join roles on model_has_roles.role_id = roles.id");
         foreach ($post_one as $key => $value) {
-        $post_one['is_save'] = 0;
-        $post_one['is_like'] = 0;
-        $post_one['like_count'] = 0;
-        $post_one['comment_count'] = 0;
-        $post_one['roles'] = null;
-        foreach($roles as $r){
-            if($r->model_id == $post_one->user_id){
-                $post_one['roles'] = $r->name;
-                break;
-          }
-          else{
-                $post_one['roles'] = null;
-          }
+            $post_one['is_save'] = 0;
+            $post_one['is_like'] = 0;
+            $post_one['like_count'] = 0;
+            $post_one['comment_count'] = 0;
+            $post_one['roles'] = null;
+            foreach ($roles as $r) {
+                if ($r->model_id == $post_one->user_id) {
+                    $post_one['roles'] = $r->name;
+                    break;
+                } else {
+                    $post_one['roles'] = null;
+                }
+            }
         }
-    }
         return response()->json([
             'data' => $post_one
         ]);
@@ -889,56 +881,56 @@ class SocialMediaController extends Controller
         //     $edit_post->media = json_encode($updateFilenames);
         // } elseif ($input['caption'] == null) {
         //     $caption = null;
-            // if ($input['addPostInput']) {
+        // if ($input['addPostInput']) {
 
-            //     $images = $input['addPostInput'];
+        //     $images = $input['addPostInput'];
 
-            //     $updateFilenames = $input['filenames'];
-            //     $newFilenames = $input['newFileNames'];
+        //     $updateFilenames = $input['filenames'];
+        //     $newFilenames = $input['newFileNames'];
 
-            //     foreach ($images as $index => $file) {
+        //     foreach ($images as $index => $file) {
 
-            //         $tmp = base64_decode($file);
+        //         $tmp = base64_decode($file);
 
-            //         $file_name = $newFilenames[$index];
-            //         Storage::put(
-            //             'public/post/' . $file_name,
-            //             $tmp,'public'
-            //         );
-            //         //  $imgData[] = $tmp;
-            //         //  $edit_post->media = json_encode($imgData);
-            //     }
-            //     $edit_post->media = json_encode($updateFilenames);
-            // }
+        //         $file_name = $newFilenames[$index];
+        //         Storage::put(
+        //             'public/post/' . $file_name,
+        //             $tmp,'public'
+        //         );
+        //         //  $imgData[] = $tmp;
+        //         //  $edit_post->media = json_encode($imgData);
+        //     }
+        //     $edit_post->media = json_encode($updateFilenames);
+        // }
         // } 
         // elseif ($input['addPostInput'] == null && $input['caption'] == null) {
         //     $caption = $input['caption'];
         //     $updateFilenames = $input['filenames'];
         //     $edit_post->media = json_encode($updateFilenames);
         // } else {
-            // $caption = $input['caption'];
-            // $images = $input['addPostInput'];
-            // if ($input['addPostInput']) {
+        // $caption = $input['caption'];
+        // $images = $input['addPostInput'];
+        // if ($input['addPostInput']) {
 
-            //     $images = $input['addPostInput'];
+        //     $images = $input['addPostInput'];
 
-            //     $updateFilenames = $input['filenames'];
-            //     $newFilenames = $input['newFileNames'];
+        //     $updateFilenames = $input['filenames'];
+        //     $newFilenames = $input['newFileNames'];
 
-            //     foreach ($images as $index => $file) {
+        //     foreach ($images as $index => $file) {
 
-            //         $tmp = base64_decode($file);
+        //         $tmp = base64_decode($file);
 
-            //         $file_name = $newFilenames[$index];
-            //         Storage::put(
-            //             'public/post/' . $file_name,
-            //             $tmp,'public'
-            //         );
-            //         //  $imgData[] = $tmp;
-            //         //  $edit_post->media = json_encode($imgData);
-            //     }
-            //     $edit_post->media = json_encode($updateFilenames);
-            // }
+        //         $file_name = $newFilenames[$index];
+        //         Storage::put(
+        //             'public/post/' . $file_name,
+        //             $tmp,'public'
+        //         );
+        //         //  $imgData[] = $tmp;
+        //         //  $edit_post->media = json_encode($imgData);
+        //     }
+        //     $edit_post->media = json_encode($updateFilenames);
+        // }
         // }
         $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
 
@@ -1026,14 +1018,13 @@ class SocialMediaController extends Controller
                 $post['comment_count'] = 0;
             }
 
-            foreach($roles as $r){
-                if($r->model_id == $post->user_id){
+            foreach ($roles as $r) {
+                if ($r->model_id == $post->user_id) {
                     $post['roles'] = $r->name;
                     break;
-              }
-              else{
+                } else {
                     $post['roles'] = null;
-              }
+                }
             }
         }
         return response()->json([
@@ -1070,15 +1061,15 @@ class SocialMediaController extends Controller
                     $file_name = $newFilenames[$index];
                     Storage::put(
                         'public/post/' . $file_name,
-                        $tmp,'public'
+                        $tmp,
+                        'public'
                     );
                     //  $imgData[] = $tmp;
                     //  $edit_post->media = json_encode($imgData);
                 }
                 $edit_post->media = json_encode($updateFilenames);
             }
-        } 
-        elseif ($input['addPostInput'] == null && $input['caption'] == null) {
+        } elseif ($input['addPostInput'] == null && $input['caption'] == null) {
             $caption = $input['caption'];
             $updateFilenames = $input['filenames'];
             $edit_post->media = json_encode($updateFilenames);
@@ -1099,7 +1090,8 @@ class SocialMediaController extends Controller
                     $file_name = $newFilenames[$index];
                     Storage::put(
                         'public/post/' . $file_name,
-                        $tmp,'public'
+                        $tmp,
+                        'public'
                     );
                     //  $imgData[] = $tmp;
                     //  $edit_post->media = json_encode($imgData);
@@ -1193,14 +1185,13 @@ class SocialMediaController extends Controller
                 $post['comment_count'] = 0;
             }
 
-            foreach($roles as $r){
-                if($r->model_id == $post->user_id){
+            foreach ($roles as $r) {
+                if ($r->model_id == $post->user_id) {
                     $post['roles'] = $r->name;
                     break;
-              }
-              else{
+                } else {
                     $post['roles'] = null;
-              }
+                }
             }
         }
         return response()->json([
@@ -1277,17 +1268,14 @@ class SocialMediaController extends Controller
                     $post['comment_count'] = 0;
                 }
 
-                foreach($roles as $r){
-                    if($r->model_id == $post->user_id){
+                foreach ($roles as $r) {
+                    if ($r->model_id == $post->user_id) {
                         $post['roles'] = $r->name;
                         break;
-                  }
-                  else{
+                    } else {
                         $post['roles'] = null;
-                  }
+                    }
                 }
-
-
             }
 
             return response()->json([
@@ -1355,21 +1343,18 @@ class SocialMediaController extends Controller
                 } else {
                     $post['comment_count'] = 0;
                 }
-                if(!empty($roles)){
-                    foreach($roles as $r){
-                        if($r->model_id == $post->user_id){
+                if (!empty($roles)) {
+                    foreach ($roles as $r) {
+                        if ($r->model_id == $post->user_id) {
                             $post['roles'] = $r->name;
                             break;
-                       }
-                      else{
+                        } else {
                             $post['roles'] = null;
-                      }
+                        }
                     }
-                }
-                else{
+                } else {
                     $post['roles'] = null;
                 }
-              
             }
 
             return response()->json([
@@ -1385,7 +1370,7 @@ class SocialMediaController extends Controller
             ->where('user_saved_posts.user_id', auth()->user()->id)
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->where('posts.report_status','!=' ,1)
+            ->where('posts.report_status', '!=', 1)
             ->orderBy('posts.created_at', 'DESC')
             ->get();
 
@@ -1394,7 +1379,7 @@ class SocialMediaController extends Controller
 
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
         $user_id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -1406,25 +1391,24 @@ class SocialMediaController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-        if($array){
+        if ($array) {
             $comment_post_count =  DB::table('comments')
-            ->select('post_id', DB::raw('count(*) as comment_count'))
-            ->where('report_status',0)
-            ->where('deleted_at',null)
-            ->whereNotIn('user_id',$array)
-            ->groupBy('post_id')
-            ->get();
-        }
-        else{
-            
+                ->select('post_id', DB::raw('count(*) as comment_count'))
+                ->where('report_status', 0)
+                ->where('deleted_at', null)
+                ->whereNotIn('user_id', $array)
+                ->groupBy('post_id')
+                ->get();
+        } else {
+
             $comment_post_count =  DB::table('comments')
-            ->select('post_id', DB::raw('count(*) as comment_count'))
-            ->where('report_status',0)
-            ->where('deleted_at',null)
-            ->groupBy('post_id')
-            ->get();
+                ->select('post_id', DB::raw('count(*) as comment_count'))
+                ->where('report_status', 0)
+                ->where('deleted_at', null)
+                ->groupBy('post_id')
+                ->get();
         }
-       
+
 
 
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
@@ -1462,14 +1446,13 @@ class SocialMediaController extends Controller
                     $posts[$key]['comment_count'] = 0;
                 }
             }
-            foreach($roles as $r){
-                if($r->model_id == $value->user_id){
+            foreach ($roles as $r) {
+                if ($r->model_id == $value->user_id) {
                     $posts[$key]['roles'] = $r->name;
                     break;
-              }
-              else{
+                } else {
                     $posts[$key]['roles'] = null;
-              }
+                }
             }
         }
 
@@ -1501,7 +1484,7 @@ class SocialMediaController extends Controller
 
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts WHERE post_id = $id");
         $user_id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -1514,24 +1497,23 @@ class SocialMediaController extends Controller
             //                   ↑
             // Array value which you want to delete
         });
-        if($array){
+        if ($array) {
             $comment_post_count =  DB::table('comments')
-            ->select('post_id', DB::raw('count(*) as comment_count'))
-            ->where('post_id',$id)
-            ->where('report_status',0)
-            ->where('deleted_at',null)
-            ->whereNotIn('user_id',$array)
-            ->first();
-        }
-        else{
+                ->select('post_id', DB::raw('count(*) as comment_count'))
+                ->where('post_id', $id)
+                ->where('report_status', 0)
+                ->where('deleted_at', null)
+                ->whereNotIn('user_id', $array)
+                ->first();
+        } else {
             $comment_post_count =  DB::table('comments')
-            ->select('post_id', DB::raw('count(*) as comment_count'))
-            ->where('post_id',$id)
-            ->where('report_status',0)
-            ->where('deleted_at',null)
-            ->first();
+                ->select('post_id', DB::raw('count(*) as comment_count'))
+                ->where('post_id', $id)
+                ->where('report_status', 0)
+                ->where('deleted_at', null)
+                ->first();
         }
-      
+
 
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
@@ -1564,19 +1546,18 @@ class SocialMediaController extends Controller
 
             if (!empty($comment_post_count)) {
                 // foreach ($comment_post_count as $comment_count) {
-                    $post['comment_count'] = $comment_post_count->comment_count;
+                $post['comment_count'] = $comment_post_count->comment_count;
                 // }
             } else {
                 $post['comment_count'] = 0;
             }
-            foreach($roles as $r){
-                if($r->model_id == $post->user_id){
+            foreach ($roles as $r) {
+                if ($r->model_id == $post->user_id) {
                     $post['roles'] = $r->name;
                     break;
-              }
-              else{
+                } else {
                     $post['roles'] = null;
-              }
+                }
             }
         }
         return response()->json([
@@ -1589,7 +1570,7 @@ class SocialMediaController extends Controller
         $tmp = $request->cover;
         $file = base64_decode($tmp);
         $image_name = $request->name;
-        Storage::put('public/post/' . $image_name,$file,'public');
+        Storage::put('public/post/' . $image_name, $file, 'public');
         $profile = new Profile();
         $profile->cover_photo = $image_name;
         $profile->user_id = auth()->user()->id;
@@ -1607,7 +1588,7 @@ class SocialMediaController extends Controller
         $tmp = $request->profile;
         $file = base64_decode($tmp);
         $image_name = $request->name;
-        Storage::put('public/post/' . $image_name,$file,'public');
+        Storage::put('public/post/' . $image_name, $file, 'public');
         $profile = new Profile();
         $profile->profile_image = $image_name;
         $profile->user_id = auth()->user()->id;
@@ -1732,12 +1713,12 @@ class SocialMediaController extends Controller
             ->pluck('id')->toArray();
 
         $latest_group_sms = ChatGroupMessage::select(
-                'chat_group_messages.group_id as id',
-                'chat_groups.group_name as name',
-                'profiles.profile_image',
-                'chat_group_messages.text',
-                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-            )
+            'chat_group_messages.group_id as id',
+            'chat_groups.group_name as name',
+            'profiles.profile_image',
+            'chat_group_messages.text',
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+        )
             ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
@@ -1763,7 +1744,7 @@ class SocialMediaController extends Controller
             }
         }
         //to user
-        $messages_to =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
           join
@@ -1788,46 +1769,49 @@ class SocialMediaController extends Controller
                 and users.id != $admin_id
             order by chats.created_at desc");
 
-            $groups_to = DB::table('chat_group_members')
-                        ->select('group_id')
-                        ->groupBy('group_id')
-                        ->where('chat_group_members.member_id',$to_user_id)
-                        ->get()
-                        ->pluck('group_id')->toArray();
+        $groups_to = DB::table('chat_group_members')
+            ->select('group_id')
+            ->groupBy('group_id')
+            ->where('chat_group_members.member_id', $to_user_id)
+            ->get()
+            ->pluck('group_id')->toArray();
 
-            $latest_group_message_to = DB::table('chat_group_messages')
-                        ->groupBy('group_id')
-                        ->whereIn('group_id',$groups_to)
-                        ->select(DB::raw('max(id) as id'))
-                        ->get()
-                        ->pluck('id')->toArray();
-            $latest_group_sms_to =ChatGroupMessage::
-                    select('chat_group_messages.group_id as id','chat_groups.group_name as name',
-                    'profiles.profile_image','chat_group_messages.text',
-                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date'))
-                    ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-                    ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                    ->leftJoin('profiles','users.profile_id','profiles.id')
-                    ->whereIn('chat_group_messages.id',$latest_group_message_to)->get()->toArray();
-                    //   $ids = json_encode($messages);
-            $arr_to = json_decode(json_encode ( $messages_to ) , true);
-            foreach($arr_to as $key=>$value){
-                $arr_to[$key]['is_group'] = 0;
+        $latest_group_message_to = DB::table('chat_group_messages')
+            ->groupBy('group_id')
+            ->whereIn('group_id', $groups_to)
+            ->select(DB::raw('max(id) as id'))
+            ->get()
+            ->pluck('id')->toArray();
+        $latest_group_sms_to = ChatGroupMessage::select(
+            'chat_group_messages.group_id as id',
+            'chat_groups.group_name as name',
+            'profiles.profile_image',
+            'chat_group_messages.text',
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+        )
+            ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+            ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->whereIn('chat_group_messages.id', $latest_group_message_to)->get()->toArray();
+        //   $ids = json_encode($messages);
+        $arr_to = json_decode(json_encode($messages_to), true);
+        foreach ($arr_to as $key => $value) {
+            $arr_to[$key]['is_group'] = 0;
+        }
+        foreach ($latest_group_sms_to as $key => $value) {
+            $latest_group_sms_to[$key]['is_group'] = 1;
+        }
+        $merged_to = array_merge($arr_to, $latest_group_sms_to);
+        $keys_to = array_column($merged_to, 'date');
+        array_multisort($keys_to, SORT_DESC, $merged_to);
+        $group_owner_to = ChatGroup::whereIn('chat_groups.id', $groups_to)->get();
+        foreach ($merged_to as $key => $value) {
+            $merged_to[$key]['owner_id'] = 0;
+            foreach ($group_owner_to as $owner) {
+                if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
+                    $merged_to[$key]['owner_id'] = $owner->group_owner_id;
             }
-            foreach($latest_group_sms_to as $key=>$value){
-                $latest_group_sms_to[$key]['is_group'] = 1;
-            }
-                    $merged_to = array_merge($arr_to, $latest_group_sms_to);
-                    $keys_to = array_column($merged_to, 'date');
-                    array_multisort($keys_to, SORT_DESC, $merged_to);
-                    $group_owner_to = ChatGroup::whereIn('chat_groups.id',$groups_to)->get();
-                    foreach($merged_to as $key=>$value){
-                           $merged_to[$key]['owner_id'] = 0;
-                        foreach($group_owner_to as $owner){
-                            if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
-                            $merged_to[$key]['owner_id'] = $owner->group_owner_id;
-                           }
-                    }
+        }
 
         $arr_six = array_reverse($merged);
         $arr_six = array_slice($arr_six, -6);
@@ -1839,8 +1823,8 @@ class SocialMediaController extends Controller
 
 
 
-        $pusher->trigger('all_message.'. $to_user_id , 'all', $merged_to);
-        $pusher->trigger('all_message.'. $user_id , 'all', $merged);
+        $pusher->trigger('all_message.' . $to_user_id, 'all', $merged_to);
+        $pusher->trigger('all_message.' . $user_id, 'all', $merged);
         $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);
         $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
     }
@@ -1934,17 +1918,17 @@ class SocialMediaController extends Controller
                     ->get()
                     ->pluck('id')->toArray();
                 $latest_group_sms_all = ChatGroupMessage::select(
-                        'chat_group_messages.group_id as id',
-                        'chat_groups.group_name as name',
-                        'profiles.profile_image',
-                        'chat_group_messages.text',
-                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-                    )
+                    'chat_group_messages.group_id as id',
+                    'chat_groups.group_name as name',
+                    'profiles.profile_image',
+                    'chat_group_messages.text',
+                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+                )
                     ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
                     ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
                     ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                     ->whereIn('chat_group_messages.id', $latest_group_message_all)
-                    ->orderBy('chat_group_messages.created_at','DESC')
+                    ->orderBy('chat_group_messages.created_at', 'DESC')
                     ->get()->toArray();
                 //   $ids = json_encode($messages);
                 $arr_all = json_decode(json_encode($messages_all), true);
@@ -1973,7 +1957,7 @@ class SocialMediaController extends Controller
 
                 $pusher->trigger('groupChatting.' . $group_message[$i]['member_id'], 'group-chatting-event', ["message" => $message, "senderImg" => $request->senderImg, "senderName" => $request->senderName]);
                 $pusher->trigger('chat_message.' . $group_message[$i]['member_id'], 'chat', $merged_three);
-                $pusher->trigger('all_message.' .  $group_message[$i]['member_id'] , 'all', $merged_all);
+                $pusher->trigger('all_message.' .  $group_message[$i]['member_id'], 'all', $merged_all);
             }
         }
     }
@@ -1993,19 +1977,20 @@ class SocialMediaController extends Controller
                 $file_name = $filenames[$index];
                 Storage::put(
                     'public/customer_message_media/' . $file_name,
-                    $tmp,'public'
+                    $tmp,
+                    'public'
                 );
                 $imgData[] = $file_name;
                 $message->media = json_encode($imgData);
             }
         } else {
-                $message->media = null;
+            $message->media = null;
         }
         $message->from_user_id = auth()->user()->id;
         $message->to_user_id = $to_user_id;
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
-        
+
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
@@ -2015,19 +2000,19 @@ class SocialMediaController extends Controller
                 'encrypted' => true
             )
         );
-        
+
 
         $message_id = $message->id;
-        $message = Chat::select('chats.*','profiles.profile_image','users.name')
-                    ->leftJoin('users','users.id','chats.from_user_id')
-                    ->leftJoin('profiles','users.profile_id','profiles.id')
-                    ->where('chats.id',$message_id)
-                    ->first();
+        $message = Chat::select('chats.*', 'profiles.profile_image', 'users.name')
+            ->leftJoin('users', 'users.id', 'chats.from_user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('chats.id', $message_id)
+            ->first();
         foreach ($message as $key => $value) {
             $message['isGroup'] = 0;
         }
-       // $pusher->trigger('chat_message.' . auth()->user()->id, 'message', $message);
-       
+        // $pusher->trigger('chat_message.' . auth()->user()->id, 'message', $message);
+
         $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
         // broadcast(new Chatting($message, $request->sender));
 
@@ -2075,12 +2060,12 @@ class SocialMediaController extends Controller
             ->get()
             ->pluck('id')->toArray();
         $latest_group_sms = ChatGroupMessage::select(
-                'chat_group_messages.group_id as id',
-                'chat_groups.group_name as name',
-                'profiles.profile_image',
-                'chat_group_messages.text',
-                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-            )
+            'chat_group_messages.group_id as id',
+            'chat_groups.group_name as name',
+            'profiles.profile_image',
+            'chat_group_messages.text',
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+        )
             ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
@@ -2106,7 +2091,7 @@ class SocialMediaController extends Controller
         }
 
         //to user
-        $messages_to =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
           join
@@ -2130,47 +2115,50 @@ class SocialMediaController extends Controller
                 where deleted_by !=  $to_user_id  and delete_status != 2
                 and users.id != $admin_id
             order by chats.created_at desc limit  3");
-      // dd($messages);
-            $groups_to = DB::table('chat_group_members')
-                        ->select('group_id')
-                        ->groupBy('group_id')
-                        ->where('chat_group_members.member_id',$to_user_id)
-                        ->get()
-                        ->pluck('group_id')->toArray();
+        // dd($messages);
+        $groups_to = DB::table('chat_group_members')
+            ->select('group_id')
+            ->groupBy('group_id')
+            ->where('chat_group_members.member_id', $to_user_id)
+            ->get()
+            ->pluck('group_id')->toArray();
 
-            $latest_group_message_to = DB::table('chat_group_messages')
-                        ->groupBy('group_id')
-                        ->whereIn('group_id',$groups_to)
-                        ->select(DB::raw('max(id) as id'))
-                        ->get()
-                        ->pluck('id')->toArray();
-            $latest_group_sms_to =ChatGroupMessage::
-                    select('chat_group_messages.group_id as id','chat_groups.group_name as name',
-                    'profiles.profile_image','chat_group_messages.text',
-                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
-                    ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-                    ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                    ->leftJoin('profiles','users.profile_id','profiles.id')
-                    ->whereIn('chat_group_messages.id',$latest_group_message_to)->get()->toArray();
-                    //   $ids = json_encode($messages);
-            $arr_to = json_decode(json_encode ( $messages_to ) , true);
-            foreach($arr_to as $key=>$value){
-                $arr_to[$key]['is_group'] = 0;
+        $latest_group_message_to = DB::table('chat_group_messages')
+            ->groupBy('group_id')
+            ->whereIn('group_id', $groups_to)
+            ->select(DB::raw('max(id) as id'))
+            ->get()
+            ->pluck('id')->toArray();
+        $latest_group_sms_to = ChatGroupMessage::select(
+            'chat_group_messages.group_id as id',
+            'chat_groups.group_name as name',
+            'profiles.profile_image',
+            'chat_group_messages.text',
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date')
+        )
+            ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+            ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->whereIn('chat_group_messages.id', $latest_group_message_to)->get()->toArray();
+        //   $ids = json_encode($messages);
+        $arr_to = json_decode(json_encode($messages_to), true);
+        foreach ($arr_to as $key => $value) {
+            $arr_to[$key]['is_group'] = 0;
+        }
+        foreach ($latest_group_sms_to as $key => $value) {
+            $latest_group_sms_to[$key]['is_group'] = 1;
+        }
+        $merged_to = array_merge($arr_to, $latest_group_sms_to);
+        $keys_to = array_column($merged_to, 'date');
+        array_multisort($keys_to, SORT_DESC, $merged_to);
+        $group_owner_to = ChatGroup::whereIn('chat_groups.id', $groups_to)->get();
+        foreach ($merged_to as $key => $value) {
+            $merged_to[$key]['owner_id'] = 0;
+            foreach ($group_owner_to as $owner) {
+                if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
+                    $merged_to[$key]['owner_id'] = $owner->group_owner_id;
             }
-            foreach($latest_group_sms_to as $key=>$value){
-                $latest_group_sms_to[$key]['is_group'] = 1;
-            }
-                    $merged_to = array_merge($arr_to, $latest_group_sms_to);
-                    $keys_to = array_column($merged_to, 'date');
-                    array_multisort($keys_to, SORT_DESC, $merged_to);
-                    $group_owner_to = ChatGroup::whereIn('chat_groups.id',$groups_to)->get();
-                    foreach($merged_to as $key=>$value){
-                           $merged_to[$key]['owner_id'] = 0;
-                        foreach($group_owner_to as $owner){
-                            if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
-                            $merged_to[$key]['owner_id'] = $owner->group_owner_id;
-                           }
-                    }
+        }
 
         $arr_six = array_reverse($merged);
         $arr_six = array_slice($arr_six, -6);
@@ -2182,67 +2170,96 @@ class SocialMediaController extends Controller
         $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
         $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);
 
-        $pusher->trigger('all_message.'.$to_user_id , 'all', $merged_to);
-        $pusher->trigger('all_message.'.$user_id , 'all', $merged);
+        $pusher->trigger('all_message.' . $to_user_id, 'all', $merged_to);
+        $pusher->trigger('all_message.' . $user_id, 'all', $merged);
         return response()->json([
             'success' =>  $message
         ]);
+    }
 
-}
+    public function chat_read(Request $request)
+    {
+        $from_user_id = $request->auth_id;
+        $to_user_id = $request->user_id;
+        $read = Chat::where('from_user_id', $from_user_id)
+            ->where('to_user_id', $to_user_id)
+            ->update(['read_or_not' => 1]);
 
-public function chat_admin(Request $request)
-{
-    $message = new Chat();
-    $input = $request->all();
-    $id = User::whereHas('roles', function ($query) {
-        $query->where('name', '=', 'admin');
-    })->first();
-    $to_user_id = $id->id;
-    if ($input['images']) {
+        return response()->json([
+            'success' =>  "read"
+        ]);
+    }
+    public function gp_chat_read(Request $request)
+    {
+        $user_id = $request->auth_id;
+        $group_id = $request->group_id;
+        $read = new GroupChatMessageReadStatus();
+        $read->group_id = $group_id;
+        $read->user_id = $user_id;
+        $read->save();
+        return response()->json([
+            'success' =>  "read"
+        ]);
+    }
+    public function message_count()
+    {
+        $user_id = Auth::user()->id;
+    }
 
-        $images = $input['images'];
-        $filenames = $input['filenames'];
-        foreach ($images as $index => $file) {
-            $tmp = base64_decode($file);
-            $file_name = $filenames[$index];
-            Storage::put(
-                'public/customer_message_media/' . $file_name,
-                $tmp,'public'
-            );
-            $imgData[] = $file_name;
-            $message->media = json_encode($imgData);
-        }
-    } else {
+    public function chat_admin(Request $request)
+    {
+        $message = new Chat();
+        $input = $request->all();
+        $id = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'admin');
+        })->first();
+        $to_user_id = $id->id;
+        if ($input['images']) {
+
+            $images = $input['images'];
+            $filenames = $input['filenames'];
+            foreach ($images as $index => $file) {
+                $tmp = base64_decode($file);
+                $file_name = $filenames[$index];
+                Storage::put(
+                    'public/customer_message_media/' . $file_name,
+                    $tmp,
+                    'public'
+                );
+                $imgData[] = $file_name;
+                $message->media = json_encode($imgData);
+            }
+        } else {
             $message->media = null;
+        }
+        $message->from_user_id = auth()->user()->id;
+        $message->to_user_id = $to_user_id;
+        $message->text = $request->text == null ?  null : $request->text;
+        $message->save();
+        $message_id = $message->id;
+        $message = Chat::select('chats.*', 'profiles.profile_image')
+            ->leftJoin('users', 'users.id', 'chats.from_user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('chats.id', $message_id)
+            ->first();
+        foreach ($message as $key => $value) {
+            $message['isGroup'] = 3;
+        }
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
+        $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
+        // broadcast(new Chatting($message, $request->sender));
+        return response()->json([
+            'success' =>  $message
+        ]);
     }
-    $message->from_user_id = auth()->user()->id;
-    $message->to_user_id = $to_user_id;
-    $message->text = $request->text == null ?  null : $request->text;
-    $message->save();
-    $message_id = $message->id;
-    $message = Chat::select('chats.*','profiles.profile_image')
-                ->leftJoin('users','users.id','chats.from_user_id')
-                ->leftJoin('profiles','users.profile_id','profiles.id')
-                ->where('chats.id',$message_id)
-                ->first();
-    foreach ($message as $key => $value) {
-        $message['isGroup'] = 3;
-    }
-    $pusher = new Pusher(
-        env('PUSHER_APP_KEY'),
-        env('PUSHER_APP_SECRET'),
-        env('PUSHER_APP_ID'),
-        $options = array(
-            'cluster' => 'eu',
-            'encrypted' => true
-        )
-    );
-    $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
-    // broadcast(new Chatting($message, $request->sender));
-    return response()->json([
-        'success' =>  $message
-    ]);
-}
 
     public function chat_messages(Request $request)
     {
@@ -2259,13 +2276,13 @@ public function chat_admin(Request $request)
             }
         } else {
             $messages = ChatGroupMessage::select(
-                    'profiles.profile_image',
-                    'chat_group_messages.id',
-                    'chat_group_messages.sender_id as from_user_id',
-                    'chat_group_messages.text',
-                    'chat_group_messages.media',
-                    'chat_group_messages.created_at'
-                )
+                'profiles.profile_image',
+                'chat_group_messages.id',
+                'chat_group_messages.sender_id as from_user_id',
+                'chat_group_messages.text',
+                'chat_group_messages.media',
+                'chat_group_messages.created_at'
+            )
                 ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->where('chat_group_messages.group_id', $id)
@@ -2274,8 +2291,8 @@ public function chat_admin(Request $request)
                 $messages[$key]['to_user_id'] = 0;
             }
         }
-      
-    
+
+
 
         return response()->json([
             'messages' => $messages
@@ -2290,15 +2307,15 @@ public function chat_admin(Request $request)
         })->first();
         $id = $to_user_id->id;
         $auth_user = auth()->user();
-     
-            $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
+
+        $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
             and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
-            $receiver_user = User::select('users.id', 'users.name', 'profiles.profile_image')
-                ->where('users.id', $id)
-                ->leftjoin('profiles', 'profiles.id', 'users.profile_id')->first();
-            foreach ($messages as $key => $value) {
-                $messages[$key]->profile_image = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
-            }
+        $receiver_user = User::select('users.id', 'users.name', 'profiles.profile_image')
+            ->where('users.id', $id)
+            ->leftjoin('profiles', 'profiles.id', 'users.profile_id')->first();
+        foreach ($messages as $key => $value) {
+            $messages[$key]->profile_image = $receiver_user->profile_image == null ?  null : $receiver_user->profile_image;
+        }
         return response()->json([
             'messages' => $messages
         ]);
@@ -2331,9 +2348,9 @@ public function chat_admin(Request $request)
             $query->where('name', '=', 'admin');
         })->first();
         $id = $to_user_id->id;
-            $messages = ChatGroupMessage::select('id', 'media')->where('chat_group_messages.group_id', $id)
-                ->where('chat_group_messages.media', '!=', null)
-                ->get();
+        $messages = ChatGroupMessage::select('id', 'media')->where('chat_group_messages.group_id', $id)
+            ->where('chat_group_messages.media', '!=', null)
+            ->get();
         return response()->json([
             'messages' => $messages
         ]);
@@ -2342,19 +2359,19 @@ public function chat_admin(Request $request)
     public function see_all_message()
     {
         $user_id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
-        $array =  join(",",$b,); 
+        $array =  join(",", $b,);
         $id_admin = User::whereHas('roles', function ($query) {
             $query->where('name', '=', 'admin');
         })->first();
         $admin_id = $id_admin->id;
-        if($array){
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        if ($array) {
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not as isRead
             from
                 chats
               join
@@ -2378,9 +2395,8 @@ public function chat_admin(Request $request)
                     where users.id not in ($array)
                     and users.id != $admin_id
                     order by chats.created_at desc");
-        }
-        else{
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        } else {
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not as isRead
         from
             chats
           join
@@ -2404,7 +2420,7 @@ public function chat_admin(Request $request)
                 where users.id != $admin_id
                 order by chats.created_at desc");
         }
-        
+
         // dd($messages);
 
 
@@ -2699,7 +2715,7 @@ public function chat_admin(Request $request)
        ");
 
         foreach ($post_likes as $key => $value) {
-            if($friends){
+            if ($friends) {
                 foreach ($friends as $fri) {
                     if ($value->user_id == $fri->receiver_id and $fri->sender_id == $auth and $fri->friend_status == 1) {
                         $post_likes[$key]['friend_status'] = "cancel request";
@@ -2720,23 +2736,21 @@ public function chat_admin(Request $request)
                         $post_likes[$key]['friend_status'] = "add friend";
                     }
                 }
-            }
-            else{
+            } else {
                 $post_likes[$key]['friend_status'] = "add friend";
             }
-    
+
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $value->user_id");
-           
-                if(!empty($roles)){
-                foreach($roles as $r){
-                    $post_likes[$key]['roles'] = $r->name;  
+
+            if (!empty($roles)) {
+                foreach ($roles as $r) {
+                    $post_likes[$key]['roles'] = $r->name;
                     break;
-                 }
                 }
-                else{
-                    $post_likes[$key]['roles'] = null;
-                }
+            } else {
+                $post_likes[$key]['roles'] = null;
+            }
         }
 
         return response()->json([
@@ -2780,16 +2794,15 @@ public function chat_admin(Request $request)
             }
             $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id where model_has_roles.model_id = $value->user_id");
-           
-                if(!empty($roles)){
-                foreach($roles as $r){
-                    $comment_likes[$key]['roles'] = $r->name;  
+
+            if (!empty($roles)) {
+                foreach ($roles as $r) {
+                    $comment_likes[$key]['roles'] = $r->name;
                     break;
-                 }
                 }
-                else{
-                    $comment_likes[$key]['roles'] = null;
-                }
+            } else {
+                $comment_likes[$key]['roles'] = null;
+            }
         }
 
         return response()->json([
@@ -2807,10 +2820,11 @@ public function chat_admin(Request $request)
         ]);
     }
 
-    public function post_viewer(Request $request){
+    public function post_viewer(Request $request)
+    {
         $id = $request->id;
         $post_count = Post::findOrFail($id);
-        if(auth()->user()->id != $post_count->user_id){
+        if (auth()->user()->id != $post_count->user_id) {
             $post_count->viewers = $post_count->viewers + 1;
         }
         $post_count->update();
@@ -2823,8 +2837,8 @@ public function chat_admin(Request $request)
     {
         $id = $request->id;
         $user_id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$user_id)->orWhere('receiver_id',$user_id)->get(['sender_id', 'receiver_id'])->toArray();
-       // dd($block_list);
+        $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        // dd($block_list);
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
@@ -2836,48 +2850,45 @@ public function chat_admin(Request $request)
             //                   ↑
             // Array value which you want to delete
         });
-        if($array){
+        if ($array) {
             $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
-            ->leftJoin('users', 'users.id', 'comments.user_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->where('comments.post_id', $id)
-            ->where('comments.report_status','!=' ,1)
-            ->whereNotIn('comments.user_id',$array)
-            ->orderBy('comments.created_at', 'DESC')->get();
-        }
-        else{
+                ->leftJoin('users', 'users.id', 'comments.user_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->where('comments.post_id', $id)
+                ->where('comments.report_status', '!=', 1)
+                ->whereNotIn('comments.user_id', $array)
+                ->orderBy('comments.created_at', 'DESC')->get();
+        } else {
             $comments = Comment::select('users.name', 'users.profile_id', 'profiles.profile_image', 'comments.*')
-            ->leftJoin('users', 'users.id', 'comments.user_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->where('comments.post_id', $id)
-            ->where('comments.report_status','!=' ,1)
-            ->orderBy('comments.created_at', 'DESC')->get();
+                ->leftJoin('users', 'users.id', 'comments.user_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->where('comments.post_id', $id)
+                ->where('comments.report_status', '!=', 1)
+                ->orderBy('comments.created_at', 'DESC')->get();
         }
-        
+
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
             left join roles on model_has_roles.role_id = roles.id");
         $liked_comment_count = DB::select("SELECT COUNT(comment_id) as like_count, comment_id FROM user_react_comments GROUP BY comment_id");
-        foreach($comments as $key=>$value){
-            $already_liked=Auth::user()->user_reacted_comments->where('comment_id',$value->id)->count();
+        foreach ($comments as $key => $value) {
+            $already_liked = Auth::user()->user_reacted_comments->where('comment_id', $value->id)->count();
             $comments[$key]['roles'] = null;
-            if(!empty($roles)){
-                foreach($roles as $r){
-                    if($r->model_id == $value->user_id){
+            if (!empty($roles)) {
+                foreach ($roles as $r) {
+                    if ($r->model_id == $value->user_id) {
                         $comments[$key]['roles'] = $r->name;
                         break;
-                  }
-                  else{
+                    } else {
                         $comments[$key]['roles'] = null;
-                  }
+                    }
                 }
-            }
-            else{
+            } else {
                 $comments[$key]['roles'] = null;
             }
 
             $comments[$key]['already_liked'] = $already_liked;
 
-            
+
             foreach ($liked_comment_count as $like_count) {
                 //dd($like_count->like_count);
                 if ($like_count->comment_id == $value->id) {
@@ -2926,9 +2937,8 @@ public function chat_admin(Request $request)
                 $group_members->group_id = $id;
                 $group_members->member_id = $memberId;
                 $group_members->save();
-             }
-        }
-        else{
+            }
+        } else {
             $group_members = new ChatGroupMember();
             $group_members->group_id = $group->id;
             $group_members->member_id = $groupOwner;
@@ -2943,10 +2953,9 @@ public function chat_admin(Request $request)
         $chat_message->save();
 
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group->id)->get();
-        for ($i = 0; count($group_message) > $i; $i++)
-        {
-        $user_id_to = $group_message[$i]['member_id'];
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        for ($i = 0; count($group_message) > $i; $i++) {
+            $user_id_to = $group_message[$i]['member_id'];
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
           join
@@ -2968,58 +2977,58 @@ public function chat_admin(Request $request)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
                 order by chats.created_at desc");
-        // dd($messages);
-        $groups = DB::table('chat_group_members')
-            ->select('group_id')
-            ->groupBy('group_id')
-            ->where('chat_group_members.member_id', $user_id_to)
-            ->get()
-            ->pluck('group_id')->toArray();
+            // dd($messages);
+            $groups = DB::table('chat_group_members')
+                ->select('group_id')
+                ->groupBy('group_id')
+                ->where('chat_group_members.member_id', $user_id_to)
+                ->get()
+                ->pluck('group_id')->toArray();
 
-        $latest_group_message = DB::table('chat_group_messages')
-            ->groupBy('group_id')
-            ->whereIn('group_id', $groups)
-            ->select(DB::raw('max(id) as id'))
-            ->get()
-            ->pluck('id')->toArray();
-        $latest_group_sms = ChatGroupMessage::select(
-            'chat_group_messages.group_id as id',
-            'chat_groups.group_name as name',
-            'profiles.profile_image',
-            'chat_group_messages.text',
-            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-        )
-            ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
-            ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
-        //   $ids = json_encode($messages);
-        $arr = json_decode(json_encode($messages), true);
-        foreach ($arr as $key => $value) {
-            $arr[$key]['is_group'] = 0;
-        }
-        foreach ($latest_group_sms as $key => $value) {
-            $latest_group_sms[$key]['is_group'] = 1;
-        }
-        $merged = array_merge($arr, $latest_group_sms);
-        $keys = array_column($merged, 'date');
-        array_multisort($keys, SORT_DESC, $merged);
-        $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
-        foreach ($merged as $key => $value) {
-            $merged[$key]['owner_id'] = 0;
-            foreach ($group_owner as $owner) {
-                if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
-                    $merged[$key]['owner_id'] = $owner->group_owner_id;
+            $latest_group_message = DB::table('chat_group_messages')
+                ->groupBy('group_id')
+                ->whereIn('group_id', $groups)
+                ->select(DB::raw('max(id) as id'))
+                ->get()
+                ->pluck('id')->toArray();
+            $latest_group_sms = ChatGroupMessage::select(
+                'chat_group_messages.group_id as id',
+                'chat_groups.group_name as name',
+                'profiles.profile_image',
+                'chat_group_messages.text',
+                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+            )
+                ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+                ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
+            //   $ids = json_encode($messages);
+            $arr = json_decode(json_encode($messages), true);
+            foreach ($arr as $key => $value) {
+                $arr[$key]['is_group'] = 0;
             }
+            foreach ($latest_group_sms as $key => $value) {
+                $latest_group_sms[$key]['is_group'] = 1;
+            }
+            $merged = array_merge($arr, $latest_group_sms);
+            $keys = array_column($merged, 'date');
+            array_multisort($keys, SORT_DESC, $merged);
+            $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
+            foreach ($merged as $key => $value) {
+                $merged[$key]['owner_id'] = 0;
+                foreach ($group_owner as $owner) {
+                    if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
+                        $merged[$key]['owner_id'] = $owner->group_owner_id;
+                }
+            }
+
+            $arr_six = array_reverse($merged);
+            $arr_six = array_slice($arr_six, -6);
+            $arr_six = array_reverse($arr_six);
+
+            $pusher->trigger('chat_message.' . $user_id_to, 'chat', $arr_six);
+            $pusher->trigger('all_message.' . $user_id_to, 'all', $merged);
         }
-
-        $arr_six = array_reverse($merged);
-        $arr_six = array_slice($arr_six, -6);
-        $arr_six = array_reverse($arr_six);
-
-        $pusher->trigger('chat_message.' . $user_id_to, 'chat', $arr_six);
-        $pusher->trigger('all_message.'.$user_id_to , 'all', $merged);
-    }
         return response()->json([
             'success' => 'Success',
             'group' => $group,
@@ -3130,10 +3139,9 @@ public function chat_admin(Request $request)
             )
         );
 
-            $group_message = ChatGroupMember::select('member_id')->where('group_id', $request->id)
-            ->where('member_id','!=',auth()->user()->id)->get();
-            for ($i = 0; count($group_message) > $i; $i++)
-            {
+        $group_message = ChatGroupMember::select('member_id')->where('group_id', $request->id)
+            ->where('member_id', '!=', auth()->user()->id)->get();
+        for ($i = 0; count($group_message) > $i; $i++) {
             $user_id_to = $group_message[$i]['member_id'];
             $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
             from
@@ -3203,7 +3211,7 @@ public function chat_admin(Request $request)
                         $merged[$key]['owner_id'] = $owner->group_owner_id;
                 }
             }
-            $pusher->trigger('all_message.'.$user_id_to , 'all', $merged);
+            $pusher->trigger('all_message.' . $user_id_to, 'all', $merged);
         }
         $group_member_delete = ChatGroupMember::where('group_id', $request->id);
         $group_member_delete->delete();
@@ -3298,8 +3306,10 @@ public function chat_admin(Request $request)
             foreach ($images as $index => $file) {
                 $tmp = base64_decode($file);
                 $file_name = $filenames[$index];
-                Storage::put('public/customer_message_media/' . $file_name,
-                    $tmp,'public'
+                Storage::put(
+                    'public/customer_message_media/' . $file_name,
+                    $tmp,
+                    'public'
                 );
                 $imgData[] = $file_name;
                 $message->media = json_encode($imgData);
@@ -3341,14 +3351,14 @@ public function chat_admin(Request $request)
 
         $user_id = auth()->user()->id;
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)
-        ->get();
+            ->get();
         for ($i = 0; count($group_message) > $i; $i++) {
-        $user_id_to = $group_message[$i]['member_id'];
-        $id_admin = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'admin');
-        })->first();
-        $admin_id = $id_admin->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+            $user_id_to = $group_message[$i]['member_id'];
+            $id_admin = User::whereHas('roles', function ($query) {
+                $query->where('name', '=', 'admin');
+            })->first();
+            $admin_id = $id_admin->id;
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
             from
                 chats
               join
@@ -3371,62 +3381,65 @@ public function chat_admin(Request $request)
                     left join profiles on users.profile_id = profiles.id
                     and users.id != $admin_id
                     order by chats.created_at desc limit  3");
-        // dd($messages);
-        
-       
+            // dd($messages);
 
-        $groups = DB::table('chat_group_members')
-            ->select('group_id')
-            ->groupBy('group_id')
-            ->where('chat_group_members.member_id', $user_id_to)
-            ->get()
-            ->pluck('group_id')->toArray();
 
-                $latest_group_message = DB::table('chat_group_messages')
-                            ->groupBy('group_id')
-                            ->whereIn('group_id',$groups)
-                            ->select(DB::raw('max(id) as id'))
-                            ->get()
-                            ->pluck('id')->toArray();
-                $latest_group_sms =ChatGroupMessage::
-                        select('chat_group_messages.group_id as id','chat_groups.group_name as name',
-                        'profiles.profile_image','chat_group_messages.text',
-                        DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date'))
-                        ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-                        ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                        ->leftJoin('profiles','users.profile_id','profiles.id')
-                        ->whereIn('chat_group_messages.id',$latest_group_message)->get()->toArray();
-                        //   $ids = json_encode($messages);
-                $arr = json_decode(json_encode ( $messages ) , true);
-                foreach($arr as $key=>$value){
-                    $arr[$key]['is_group'] = 0;
-                }
-                foreach($latest_group_sms as $key=>$value){
-                    $latest_group_sms[$key]['is_group'] = 1;
-                }
-                $merged = array_merge($arr, $latest_group_sms);
-                $keys = array_column($merged, 'date');
-                array_multisort($keys, SORT_DESC, $merged);
-                $group_owner = ChatGroup::whereIn('chat_groups.id',$groups)->get();
-                foreach($merged as $key=>$value){
-                        $merged[$key]['owner_id'] = 0;
-                    foreach($group_owner as $owner){
-                        if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
+
+            $groups = DB::table('chat_group_members')
+                ->select('group_id')
+                ->groupBy('group_id')
+                ->where('chat_group_members.member_id', $user_id_to)
+                ->get()
+                ->pluck('group_id')->toArray();
+
+            $latest_group_message = DB::table('chat_group_messages')
+                ->groupBy('group_id')
+                ->whereIn('group_id', $groups)
+                ->select(DB::raw('max(id) as id'))
+                ->get()
+                ->pluck('id')->toArray();
+            $latest_group_sms = ChatGroupMessage::select(
+                'chat_group_messages.group_id as id',
+                'chat_groups.group_name as name',
+                'profiles.profile_image',
+                'chat_group_messages.text',
+                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+            )
+                ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+                ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
+            //   $ids = json_encode($messages);
+            $arr = json_decode(json_encode($messages), true);
+            foreach ($arr as $key => $value) {
+                $arr[$key]['is_group'] = 0;
+            }
+            foreach ($latest_group_sms as $key => $value) {
+                $latest_group_sms[$key]['is_group'] = 1;
+            }
+            $merged = array_merge($arr, $latest_group_sms);
+            $keys = array_column($merged, 'date');
+            array_multisort($keys, SORT_DESC, $merged);
+            $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
+            foreach ($merged as $key => $value) {
+                $merged[$key]['owner_id'] = 0;
+                foreach ($group_owner as $owner) {
+                    if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
                         $merged[$key]['owner_id'] = $owner->group_owner_id;
-                    }
                 }
+            }
 
-        $messagegp_id = $message->id;
-        $message_gp = ChatGroupMessage::select('chat_group_messages.*','profiles.profile_image','users.name','chat_groups.group_name as group_name')
-                    ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                    ->leftJoin('profiles','users.profile_id','profiles.id')
-                    ->leftJoin('chat_groups','chat_group_messages.group_id','chat_groups.id')
-                    ->where('chat_group_messages.id',$messagegp_id)
-                    ->first();
-        foreach ($message_gp as $key => $value) {
-            $message_gp['isGroup'] = 1;
-        }
-       
+            $messagegp_id = $message->id;
+            $message_gp = ChatGroupMessage::select('chat_group_messages.*', 'profiles.profile_image', 'users.name', 'chat_groups.group_name as group_name')
+                ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->leftJoin('chat_groups', 'chat_group_messages.group_id', 'chat_groups.id')
+                ->where('chat_group_messages.id', $messagegp_id)
+                ->first();
+            foreach ($message_gp as $key => $value) {
+                $message_gp['isGroup'] = 1;
+            }
+
             $pusher->trigger('groupChatting.' . $group_message[$i]['member_id'], 'group-chatting-event', ["message" => $message_gp, "senderImg" => $request->senderImg, "senderName" => $request->senderName]);
             $pusher->trigger('all_message.' . $group_message[$i]['member_id'], 'all', $merged);
         }
@@ -3484,7 +3497,7 @@ public function chat_admin(Request $request)
         $message->delete_status = 2;
         $message->deleted_by = auth()->user()->id;
         $message->update();
-        
+
         $to_user_id = Chat::select('to_user_id')->where('id', $request->id)->first();
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
@@ -3546,12 +3559,12 @@ public function chat_admin(Request $request)
             ->get()
             ->pluck('id')->toArray();
         $latest_group_sms = ChatGroupMessage::select(
-                'chat_group_messages.group_id as id',
-                'chat_groups.group_name as name',
-                'profiles.profile_image',
-                'chat_group_messages.text',
-                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-            )
+            'chat_group_messages.group_id as id',
+            'chat_groups.group_name as name',
+            'profiles.profile_image',
+            'chat_group_messages.text',
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+        )
             ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
@@ -3577,7 +3590,7 @@ public function chat_admin(Request $request)
         }
 
         //to user
-        $messages_to =DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
         from
             chats
           join
@@ -3600,47 +3613,50 @@ public function chat_admin(Request $request)
                 left join profiles on users.profile_id = profiles.id
                 where users.id != $admin_id
                 order by chats.created_at desc");
-      // dd($messages);
-            $groups_to = DB::table('chat_group_members')
-                        ->select('group_id')
-                        ->groupBy('group_id')
-                        ->where('chat_group_members.member_id',$to_user_id->to_user_id)
-                        ->get()
-                        ->pluck('group_id')->toArray();
+        // dd($messages);
+        $groups_to = DB::table('chat_group_members')
+            ->select('group_id')
+            ->groupBy('group_id')
+            ->where('chat_group_members.member_id', $to_user_id->to_user_id)
+            ->get()
+            ->pluck('group_id')->toArray();
 
-            $latest_group_message_to = DB::table('chat_group_messages')
-                        ->groupBy('group_id')
-                        ->whereIn('group_id',$groups_to)
-                        ->select(DB::raw('max(id) as id'))
-                        ->get()
-                        ->pluck('id')->toArray();
-            $latest_group_sms_to =ChatGroupMessage::
-                    select('chat_group_messages.group_id as id','chat_groups.group_name as name',
-                    'profiles.profile_image','chat_group_messages.text',
-                    DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date'))
-                    ->leftJoin('chat_groups','chat_groups.id','chat_group_messages.group_id')
-                    ->leftJoin('users','users.id','chat_group_messages.sender_id')
-                    ->leftJoin('profiles','users.profile_id','profiles.id')
-                    ->whereIn('chat_group_messages.id',$latest_group_message_to)->get()->toArray();
-                    //   $ids = json_encode($messages);
-            $arr_to = json_decode(json_encode ( $messages_to ) , true);
-            foreach($arr_to as $key=>$value){
-                $arr_to[$key]['is_group'] = 0;
+        $latest_group_message_to = DB::table('chat_group_messages')
+            ->groupBy('group_id')
+            ->whereIn('group_id', $groups_to)
+            ->select(DB::raw('max(id) as id'))
+            ->get()
+            ->pluck('id')->toArray();
+        $latest_group_sms_to = ChatGroupMessage::select(
+            'chat_group_messages.group_id as id',
+            'chat_groups.group_name as name',
+            'profiles.profile_image',
+            'chat_group_messages.text',
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%m:%s") as date')
+        )
+            ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+            ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->whereIn('chat_group_messages.id', $latest_group_message_to)->get()->toArray();
+        //   $ids = json_encode($messages);
+        $arr_to = json_decode(json_encode($messages_to), true);
+        foreach ($arr_to as $key => $value) {
+            $arr_to[$key]['is_group'] = 0;
+        }
+        foreach ($latest_group_sms_to as $key => $value) {
+            $latest_group_sms_to[$key]['is_group'] = 1;
+        }
+        $merged_to = array_merge($arr_to, $latest_group_sms_to);
+        $keys_to = array_column($merged_to, 'date');
+        array_multisort($keys_to, SORT_DESC, $merged_to);
+        $group_owner_to = ChatGroup::whereIn('chat_groups.id', $groups_to)->get();
+        foreach ($merged_to as $key => $value) {
+            $merged_to[$key]['owner_id'] = 0;
+            foreach ($group_owner_to as $owner) {
+                if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
+                    $merged_to[$key]['owner_id'] = $owner->group_owner_id;
             }
-            foreach($latest_group_sms_to as $key=>$value){
-                $latest_group_sms_to[$key]['is_group'] = 1;
-            }
-                    $merged_to = array_merge($arr_to, $latest_group_sms_to);
-                    $keys_to = array_column($merged_to, 'date');
-                    array_multisort($keys_to, SORT_DESC, $merged_to);
-                    $group_owner_to = ChatGroup::whereIn('chat_groups.id',$groups_to)->get();
-                    foreach($merged_to as $key=>$value){
-                           $merged_to[$key]['owner_id'] = 0;
-                        foreach($group_owner_to as $owner){
-                            if($value['id'] == $owner['id'] AND $value['is_group'] == 1)
-                            $merged_to[$key]['owner_id'] = $owner->group_owner_id;
-                           }
-                    }
+        }
 
         $arr_six = array_reverse($merged);
         $arr_six = array_slice($arr_six, -6);
@@ -3652,8 +3668,8 @@ public function chat_admin(Request $request)
         $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
         $pusher->trigger('chat_message.' . $to_user_id->to_user_id, 'chat', $arr_six_to);
 
-        $pusher->trigger('all_message.'.$to_user_id->to_user_id , 'all', $merged_to);
-        $pusher->trigger('all_message.'.$user_id , 'all', $merged);
+        $pusher->trigger('all_message.' . $to_user_id->to_user_id, 'all', $merged_to);
+        $pusher->trigger('all_message.' . $user_id, 'all', $merged);
         return response()->json([
             'success' => 'Deleted Success'
         ]);
@@ -3669,29 +3685,29 @@ public function chat_admin(Request $request)
         $comment_id = $request->comment_id;
         $admin_id = 1;
         $description = $request->report_msg;
-        
-            $report = new Report();
-            $report->user_id = $user_id;
-            if($post_id != null && $comment_id == null){
-                $report->post_id = $post_id;
-            }
-            if($post_id == null && $comment_id != null){
-                $report->comment_id = $comment_id;
-            }
-            $report->description = $description;
-            $report->save();
-        
-        
 
-            $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                $options = array(
-                    'cluster' => 'eu',
-                    'encrypted' => true
-                )
-            );
+        $report = new Report();
+        $report->user_id = $user_id;
+        if ($post_id != null && $comment_id == null) {
+            $report->post_id = $post_id;
+        }
+        if ($post_id == null && $comment_id != null) {
+            $report->comment_id = $comment_id;
+        }
+        $report->description = $description;
+        $report->save();
+
+
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
         $data = 'Thanks for your report,we will check.';
         $new_data = 'Reported';
 
@@ -3783,7 +3799,7 @@ public function chat_admin(Request $request)
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
 
-        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id','!=',auth()->user()->id)->get();
+        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id', '!=', auth()->user()->id)->get();
         $data['channelName'] = $channelName;
 
         foreach ($members as $member) {
@@ -3808,8 +3824,8 @@ public function chat_admin(Request $request)
 
         $token = RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $user, $role, $privilegeExpiredTs);
 
-        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id','!=',auth()->user()->id)->get();
-        $group_name = ChatGroup::select('group_name')->where('id',$request->group_id)->first();
+        $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id', '!=', auth()->user()->id)->get();
+        $group_name = ChatGroup::select('group_name')->where('id', $request->group_id)->first();
         $data['channelName'] = $channelName;
         $data['groupName'] = $group_name;
 
@@ -3840,30 +3856,33 @@ public function chat_admin(Request $request)
         ]);
     }
 
-    public function declineCallUser(Request $request) {
+    public function declineCallUser(Request $request)
+    {
         $data['userFromCall'] = $request->user_from_call;
         broadcast(new DeclineCallUser($data))->toOthers();
     }
-    public function block_list(){
+    public function block_list()
+    {
         $id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id',$id)->orWhere('receiver_id',$id)->get(['sender_id', 'receiver_id'])->toArray();
+        $block_list = BlockList::where('sender_id', $id)->orWhere('receiver_id', $id)->get(['sender_id', 'receiver_id'])->toArray();
         $b = array();
         foreach ($block_list as $block) {
             $f = (array)$block;
             array_push($b, $f['sender_id'], $f['receiver_id']);
         }
         $blockList = User::select('users.id', 'users.name', 'profiles.profile_image')
-        ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
-        ->where('users.id', '!=', $id)
-        ->whereIn('users.id', $b)
-        ->where('users.id', '!=', $id)
-        ->get();
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('users.id', '!=', $id)
+            ->whereIn('users.id', $b)
+            ->where('users.id', '!=', $id)
+            ->get();
         return response()->json([
             'data' => $blockList
         ]);
     }
 
-    public function blockUser(Request $request){
+    public function blockUser(Request $request)
+    {
         $friend_ship_delete_receiver = Friendship::where('sender_id', auth()->user()->id)
             ->where('receiver_id', $request->id)
             ->where('friend_status', 2);
@@ -3890,7 +3909,8 @@ public function chat_admin(Request $request)
         ]);
     }
 
-    public function unblockUser(Request $request){
+    public function unblockUser(Request $request)
+    {
         $unblock_delete_receiver = BlockList::where('sender_id', auth()->user()->id)
             ->where('receiver_id', $request->id);
         $unblock_delete_receiver->delete();
@@ -3901,5 +3921,4 @@ public function chat_admin(Request $request)
             'message' => 'unblocked'
         ]);
     }
-
 }
