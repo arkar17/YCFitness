@@ -3038,6 +3038,7 @@ public function chat_admin(Request $request)
             ->join('users as sender', 'sender.id', 'friendships.sender_id')
             ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
             ->get(['sender_id', 'receiver_id'])->toArray();
+            
         //dd($friends);
         $n = array();
         foreach ($friendships as $friend) {
