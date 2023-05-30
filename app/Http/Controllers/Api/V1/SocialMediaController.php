@@ -2021,7 +2021,7 @@ class SocialMediaController extends Controller
             $query->where('name', '=', 'admin');
         })->first();
         $admin_id = $id_admin->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.read_or_not as isRead
         from
             chats
           join
@@ -2061,6 +2061,7 @@ class SocialMediaController extends Controller
             ->pluck('id')->toArray();
         $latest_group_sms = ChatGroupMessage::select(
             'chat_group_messages.group_id as id',
+            'chat_group_messages.id as message_id',
             'chat_groups.group_name as name',
             'profiles.profile_image',
             'chat_group_messages.text',
@@ -2078,6 +2079,16 @@ class SocialMediaController extends Controller
         foreach ($latest_group_sms as $key => $value) {
             $latest_group_sms[$key]['is_group'] = 1;
         }
+        $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
+        foreach ($latest_group_sms as $key => $value) {
+            if (count($read) > 0)
+                if ($read->message_id == $latest_group_sms['message_id'] and $read->user_id == $user_id)
+                    $latest_group_sms[$key]['isRead'] = 1;
+                else
+                    $latest_group_sms[$key]['isRead'] = 0;
+            else
+                $latest_group_sms[$key]['isRead'] = 0;
+        }
         $merged = array_merge($arr, $latest_group_sms);
         $keys = array_column($merged, 'date');
         array_multisort($keys, SORT_DESC, $merged);
@@ -2091,7 +2102,7 @@ class SocialMediaController extends Controller
         }
 
         //to user
-        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.read_or_not as isRead
         from
             chats
           join
@@ -2131,6 +2142,7 @@ class SocialMediaController extends Controller
             ->pluck('id')->toArray();
         $latest_group_sms_to = ChatGroupMessage::select(
             'chat_group_messages.group_id as id',
+            'chat_group_messages.id as message_id',
             'chat_groups.group_name as name',
             'profiles.profile_image',
             'chat_group_messages.text',
@@ -2147,6 +2159,15 @@ class SocialMediaController extends Controller
         }
         foreach ($latest_group_sms_to as $key => $value) {
             $latest_group_sms_to[$key]['is_group'] = 1;
+        }
+        foreach ($latest_group_sms_to as $key => $value) {
+            if (count($read) > 0)
+                if ($read->message_id == $latest_group_sms_to['message_id'] and $read->user_id == $user_id)
+                    $latest_group_sms_to[$key]['isRead'] = 1;
+                else
+                    $latest_group_sms_to[$key]['isRead'] = 0;
+            else
+                $latest_group_sms_to[$key]['isRead'] = 0;
         }
         $merged_to = array_merge($arr_to, $latest_group_sms_to);
         $keys_to = array_column($merged_to, 'date');
@@ -2186,10 +2207,15 @@ class SocialMediaController extends Controller
                 ->where('to_user_id', $to_user_id)
                 ->update(['read_or_not' => 1]);
         } else {
-            $user_id = $request->auth_id;
             $group_id = $request->group_id;
+            $latest_group_message_to = DB::table('chat_group_messages')
+            ->where('group_id', $group_id)
+            ->select(DB::raw('max(id) as id'))
+            ->get()
+            ->pluck('id');
+            $user_id = $request->auth_id;
             $read = new GroupChatMessageReadStatus();
-            $read->group_id = $group_id;
+            $read->message_id = $latest_group_message_to[0];
             $read->user_id = $user_id;
             $read->save();
         }
@@ -2393,7 +2419,8 @@ class SocialMediaController extends Controller
                     and users.id != $admin_id
                     order by chats.created_at desc");
         } else {
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not as isRead
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,
+             chats.read_or_not as isRead
         from
             chats
           join
@@ -2408,7 +2435,7 @@ class SocialMediaController extends Controller
                        from chats
                        where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
                     ) t1
-               group by user) t2
+               group by user ) t2
                 on ((from_user_id= $user_id and to_user_id=user) or
                     (from_user_id=user and to_user_id= $user_id)) and
                     (created_at = m)
@@ -3356,7 +3383,7 @@ class SocialMediaController extends Controller
                 $query->where('name', '=', 'admin');
             })->first();
             $admin_id = $id_admin->id;
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date ,chats.read_or_not as isRead
             from
                 chats
               join
@@ -3518,7 +3545,7 @@ class SocialMediaController extends Controller
             $query->where('name', '=', 'admin');
         })->first();
         $admin_id = $id_admin->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not as isRead
         from
             chats
           join
@@ -3588,7 +3615,7 @@ class SocialMediaController extends Controller
         }
 
         //to user
-        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not as isRead
         from
             chats
           join

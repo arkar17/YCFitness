@@ -15,7 +15,7 @@ class CreateGroupChatMessageReadStatusesTable extends Migration
     {
         Schema::create('group_chat_message_read_statuses', function (Blueprint $table) {
             $table->id();
-            $table->integer('group_id');
+            $table->integer('message_id');
             $table->integer('user_id');
             $table->timestamps();
         });
