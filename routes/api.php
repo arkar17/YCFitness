@@ -172,7 +172,6 @@ Route::middleware(['auth:sanctum', 'activity'])->group(function () {
 
     Route::post('chat', [SocialMediaController::class, 'chat']);
     Route::post('chat_read_unread', [SocialmediaController::class, 'chat_read']);
-    Route::post('group_chat_read_unread', [SocialmediaController::class, 'gp_chat_read']);
     Route::post('message_count', [SocialmediaController::class, 'message_count']);
 
     Route::post('chat/messages', [SocialMediaController::class, 'chat_messages']);
