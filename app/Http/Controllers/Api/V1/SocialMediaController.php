@@ -3581,6 +3581,18 @@ class SocialMediaController extends Controller
             foreach ($latest_group_sms as $key => $value) {
                 $latest_group_sms[$key]['is_group'] = 1;
             }
+            $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
+            foreach ($latest_group_sms as $key => $value) {
+                if (count($read) > 0)
+                    foreach ($read as $re) {
+                        if ($re->message_id == $value['message_id'] and $re->user_id == $user_id)
+                            $latest_group_sms[$key]['isRead'] = 1;
+                        else
+                            $latest_group_sms[$key]['isRead'] = 0;
+                    }
+                else
+                    $latest_group_sms[$key]['isRead'] = 0;
+            }
             $merged = array_merge($arr, $latest_group_sms);
             $keys = array_column($merged, 'date');
             array_multisort($keys, SORT_DESC, $merged);
@@ -3741,6 +3753,19 @@ class SocialMediaController extends Controller
         foreach ($latest_group_sms as $key => $value) {
             $latest_group_sms[$key]['is_group'] = 1;
         }
+        $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
+        foreach ($latest_group_sms as $key => $value) {
+            if (count($read) > 0)
+                foreach ($read as $re) {
+                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id)
+                        $latest_group_sms[$key]['isRead'] = 1;
+                    else
+                        $latest_group_sms[$key]['isRead'] = 0;
+                }
+            else
+                $latest_group_sms[$key]['isRead'] = 0;
+        }
+        
         $merged = array_merge($arr, $latest_group_sms);
         $keys = array_column($merged, 'date');
         array_multisort($keys, SORT_DESC, $merged);
@@ -3809,6 +3834,17 @@ class SocialMediaController extends Controller
         }
         foreach ($latest_group_sms_to as $key => $value) {
             $latest_group_sms_to[$key]['is_group'] = 1;
+        }
+        foreach ($latest_group_sms_to as $key => $value) {
+            if (count($read_to) > 0)
+                foreach ($read_to as $re_to) {
+                    if ($re_to->message_id == $value['message_id'] and $re_to->user_id == $user_id)
+                        $latest_group_sms_to[$key]['isRead'] = 1;
+                    else
+                        $latest_group_sms_to[$key]['isRead'] = 0;
+                }
+            else
+                $latest_group_sms_to[$key]['isRead'] = 0;
         }
         $merged_to = array_merge($arr_to, $latest_group_sms_to);
         $keys_to = array_column($merged_to, 'date');
