@@ -3586,6 +3586,7 @@ class SocialMediaController extends Controller
                 $latest_group_sms[$key]['is_group'] = 1;
             }
             $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
+            dd($read);
             foreach ($latest_group_sms as $key => $value) {
                 if (count($read) > 0)
                     foreach ($read as $re) {
