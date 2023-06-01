@@ -27,16 +27,25 @@ use App\Events\DeclineCallUser;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
 use App\Models\UserReactComment;
+use App\Repositories\MessageRepo;
 use App\Events\MakeAgoraAudioCall;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Class\AgoraDynamicKey\RtcTokenBuilder;
 use App\Models\GroupChatMessageReadStatus;
+use App\Class\AgoraDynamicKey\RtcTokenBuilder;
 
 class SocialMediaController extends Controller
 {
+    public $page = 'Messages';
+
+    protected $messageRepo;
+    public function __construct(MessageRepo $messageRepo)
+    {
+        $this->messageRepo = $messageRepo;
+        $this->middleware('auth');
+    }
     //for user search
     public function newFeeds()
     {
@@ -2020,8 +2029,8 @@ class SocialMediaController extends Controller
             $query->where('name', '=', 'admin');
         })->first();
         $admin_id = $id_admin->id;
-        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.read_or_not as isRead
-        from
+        $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,
+        chats.from_user_id, chats.read_or_not from
             chats
           join
             (select user, max(created_at) m
@@ -2075,6 +2084,13 @@ class SocialMediaController extends Controller
         foreach ($arr as $key => $value) {
             $arr[$key]['is_group'] = 0;
         }
+        foreach ($arr as $key => $value) {
+            if ($value['from_user_id'] == $user_id)
+                $arr[$key]['isRead'] = 1;
+            else
+
+                $arr[$key]['isRead'] = $value['read_or_not'];
+        }
         foreach ($latest_group_sms as $key => $value) {
             $latest_group_sms[$key]['is_group'] = 1;
         }
@@ -2094,16 +2110,23 @@ class SocialMediaController extends Controller
         $keys = array_column($merged, 'date');
         array_multisort($keys, SORT_DESC, $merged);
         $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
-        foreach ($merged as $key => $value) {
-            $merged[$key]['owner_id'] = 0;
-            foreach ($group_owner as $owner) {
-                if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
-                    $merged[$key]['owner_id'] = $owner->group_owner_id;
-            }
+        foreach ($latest_group_sms as $key => $value) {
+            if (count($read) > 0)
+                foreach ($read as $re) {
+                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
+                        $latest_group_sms[$key]['isRead'] = 1;
+
+                    else
+                        $latest_group_sms[$key]['isRead'] = 0;
+                }
+            elseif ($value['sender_id'] == $user_id)
+                $latest_group_sms[$key]['isRead'] = 1;
+            else
+                $latest_group_sms[$key]['isRead'] = 0;
         }
 
         //to user
-        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.read_or_not as isRead
+        $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.from_user_id, chats.read_or_not
         from
             chats
           join
@@ -2158,17 +2181,27 @@ class SocialMediaController extends Controller
         foreach ($arr_to as $key => $value) {
             $arr_to[$key]['is_group'] = 0;
         }
+        foreach ($arr as $key => $value) {
+            if ($value['from_user_id'] == $user_id)
+                $arr[$key]['isRead'] = 1;
+            else
+
+                $arr[$key]['isRead'] = $value['read_or_not'];
+        }
         foreach ($latest_group_sms_to as $key => $value) {
             $latest_group_sms_to[$key]['is_group'] = 1;
         }
         foreach ($latest_group_sms_to as $key => $value) {
-            if (count($read_to) > 0)
-                foreach ($read_to as $re_to) {
-                    if ($re_to->message_id == $value['message_id'] and $re_to->user_id == $user_id)
+            if (count($read) > 0)
+                foreach ($read_to as $re) {
+                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
                         $latest_group_sms_to[$key]['isRead'] = 1;
+
                     else
-                    $latest_group_sms_to[$key]['isRead'] = 0;
+                $latest_group_sms_to[$key]['isRead'] = 0;
             }
+            elseif ($value['sender_id'] == $user_id)
+                $latest_group_sms_to[$key]['isRead'] = 1;
             else
                 $latest_group_sms_to[$key]['isRead'] = 0;
         }
@@ -2204,27 +2237,33 @@ class SocialMediaController extends Controller
     public function chat_read(Request $request)
     {
         if ($request->isGroup == 0) {
-            $from_user_id = $request->auth_id;
-            $to_user_id = $request->user_id;
-            $read = Chat::where('from_user_id', $from_user_id)
-                ->where('to_user_id', $to_user_id)
-                ->update(['read_or_not' => 1]);
+            $from_id = $request->auth_id;
+            $to_id = $request->user_id;
+            Chat::where(function ($query1) use ($from_id, $to_id) {
+                $query1->where('from_user_id', $from_id)
+                    ->orWhere('from_user_id', $to_id);
+            })
+                ->where(function ($query2) use ($from_id, $to_id) {
+                    $query2->where('to_user_id', $from_id)
+                        ->orWhere('to_user_id', $to_id);
+                })
+                ->update(['read_or_not' => 1]);        
         } else {
             $group_id = $request->user_id;
             $latest_group_message_to = DB::table('chat_group_messages')
             ->where('group_id', $group_id)
-            ->select(DB::raw('max(id) as id'))
-            ->get()
-            ->pluck('id');
+            ->select(DB::raw('max(id) as id'), 'sender_id')
+            ->first();
+            // dd($latest_group_message_to);
             $user_id = $request->auth_id;
-            // $gpRead = DB::select("SELECT message_id,user_id FROM group_chat_message_read_statuses WHERE
-            // user_id = '$from_user_id' AND message_id = $latest_group_message_to[0] ");
-            // if ($gpRead) {
+            // foreach ($latest_group_message_to as $latest) {
+            if ($latest_group_message_to->sender_id != $user_id) {
+                $read = new GroupChatMessageReadStatus();
+                $read->message_id = $latest_group_message_to->id;
+                $read->user_id = $user_id;
+                $read->save();
+            }
             // }
-            $read = new GroupChatMessageReadStatus();
-            $read->message_id = $latest_group_message_to[0];
-            $read->user_id = $user_id;
-            $read->save();
         }
         return response()->json([
             'success' =>  "read"
@@ -2233,129 +2272,127 @@ class SocialMediaController extends Controller
    
     public function message_count()
     {
-        $user_id = Auth::user()->id;
-        $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
-        $b = array();
-        foreach ($block_list as $block) {
-            $f = (array)$block;
-            array_push($b, $f['sender_id'], $f['receiver_id']);
-        }
-        $array =  join(",", $b,);
-        $id_admin = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'admin');
-        })->first();
-        $admin_id = $id_admin->id;
-        if ($array) {
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not as isRead
-            from
-                chats
-              join
-                (select user, max(created_at) m
-                    from
-                       (
-                         (select id, to_user_id user, created_at
-                           from chats
-                           where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-                       union
-                         (select id, from_user_id user, created_at
-                           from chats
-                           where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-                        ) t1
-                   group by user) t2
-                    on ((from_user_id= $user_id and to_user_id=user) or
-                        (from_user_id=user and to_user_id= $user_id)) and
-                        (created_at = m)
-                    left join users on users.id = user
-                    left join profiles on users.profile_id = profiles.id
-                    where users.id not in ($array)
-                    and users.id != $admin_id
-                    order by chats.created_at desc");
-        } else {
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,
-             chats.read_or_not as isRead
-        from
-            chats
-          join
-            (select user, max(created_at) m
-                from
-                   (
-                     (select id, to_user_id user, created_at
-                       from chats
-                       where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-                   union
-                     (select id, from_user_id user, created_at
-                       from chats
-                       where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-                    ) t1
-               group by user ) t2
-                on ((from_user_id= $user_id and to_user_id=user) or
-                    (from_user_id=user and to_user_id= $user_id)) and
-                    (created_at = m)
-                left join users on users.id = user
-                left join profiles on users.profile_id = profiles.id
-                where users.id != $admin_id
-                order by chats.created_at desc");
-        }
-        $groups = DB::table('chat_group_members')
-        ->select('group_id')
-        ->groupBy('group_id')
-        ->where('chat_group_members.member_id', $user_id)
-            ->get()
-            ->pluck('group_id')->toArray();
+        // $user_id = Auth::user()->id;
+        // $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
+        // $b = array();
+        // foreach ($block_list as $block) {
+        //     $f = (array)$block;
+        //     array_push($b, $f['sender_id'], $f['receiver_id']);
+        // }
+        // $array =  join(",", $b,);
+        // $id_admin = User::whereHas('roles', function ($query) {
+        //     $query->where('name', '=', 'admin');
+        // })->first();
+        // $admin_id = $id_admin->id;
+        // if ($array) {
+        //     $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not
+        //     from
+        //         chats
+        //       join
+        //         (select user, max(created_at) m
+        //             from
+        //                (
+        //                  (select id, to_user_id user, created_at
+        //                    from chats
+        //                    where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
+        //                union
+        //                  (select id, from_user_id user, created_at
+        //                    from chats
+        //                    where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
+        //                 ) t1
+        //            group by user) t2
+        //             on ((from_user_id= $user_id and to_user_id=user) or
+        //                 (from_user_id=user and to_user_id= $user_id)) and
+        //                 (created_at = m)
+        //             left join users on users.id = user
+        //             left join profiles on users.profile_id = profiles.id
+        //             where users.id not in ($array)
+        //             and users.id != $admin_id
+        //             order by chats.created_at desc");
+        // } else {
+        //     $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,
+        //      chats.read_or_not
+        // from
+        //     chats
+        //   join
+        //     (select user, max(created_at) m
+        //         from
+        //            (
+        //              (select id, to_user_id user, created_at
+        //                from chats
+        //                where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
+        //            union
+        //              (select id, from_user_id user, created_at
+        //                from chats
+        //                where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
+        //             ) t1
+        //        group by user ) t2
+        //         on ((from_user_id= $user_id and to_user_id=user) or
+        //             (from_user_id=user and to_user_id= $user_id)) and
+        //             (created_at = m)
+        //         left join users on users.id = user
+        //         left join profiles on users.profile_id = profiles.id
+        //         where users.id != $admin_id
+        //         order by chats.created_at desc");
+        // }
 
-        $latest_group_message = DB::table('chat_group_messages')
-        ->groupBy('group_id')
-        ->whereIn('group_id', $groups)
-            ->select(DB::raw('max(id) as id'))
-            ->get()
-            ->pluck('id')->toArray();
-        $latest_group_sms = ChatGroupMessage::select(
-            'chat_group_messages.group_id as id',
-            'chat_group_messages.id as message_id',
-            'chat_groups.group_name as name',
-            'profiles.profile_image',
-            'chat_group_messages.text',
-            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-        )
-            ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
-            ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
-        //   $ids = json_encode($messages);
-        $arr = json_decode(json_encode($messages), true);
-        foreach ($arr as $key => $value) {
-            $arr[$key]['is_group'] = 0;
-        }
-        foreach ($latest_group_sms as $key => $value) {
-            $latest_group_sms[$key]['is_group'] = 1;
-        }
-        $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
-        foreach ($latest_group_sms as $key => $value) {
-            if (count($read) > 0)
-                foreach ($read as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id)
-                        $latest_group_sms[$key]['isRead'] = 1;
-                    else
-                        $latest_group_sms[$key]['isRead'] = 0;
-                }
-            else
-                $latest_group_sms[$key]['isRead'] = 0;
-        }
+        // $groups = DB::table('chat_group_members')
+        //     ->select('group_id')
+        //     ->groupBy('group_id')
+        //     ->where('chat_group_members.member_id', $user_id)
+        //     ->get()
+        //     ->pluck('group_id')->toArray();
 
-        $message_count = collect($messages);
+        // $latest_group_message = DB::table('chat_group_messages')
+        // ->groupBy('group_id')
+        // ->whereIn('group_id', $groups)
+        //     ->select(DB::raw('max(id) as id'))
+        //     ->get()
+        //     ->pluck('id')->toArray();
+        // $latest_group_sms = ChatGroupMessage::select(
+        //     'chat_group_messages.group_id as id',
+        //     'chat_group_messages.id as message_id',
+        //     'chat_group_messages.sender_id',
+        //     'chat_groups.group_name as name',
+        //     'profiles.profile_image',
+        //     'chat_group_messages.text',
+        //     DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
+        // )
+        //     ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
+        //     ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
+        //     ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+        //     ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
+        // //   $ids = json_encode($messages);
+        // $arr = json_decode(json_encode($messages), true);
+        // foreach ($arr as $key => $value) {
+        //     $arr[$key]['is_group'] = 0;
+        // }
+        // foreach ($latest_group_sms as $key => $value) {
+        //     $latest_group_sms[$key]['is_group'] = 1;
+        // }
+        // $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
+        // // dd(count($read));
+        // foreach ($latest_group_sms as $key => $value) {
+        //     if (count($read) > 0)
+        //         foreach ($read as $re) {
+        //         if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
+        //                 $latest_group_sms[$key]['isRead'] = 1;
 
-        $count_one_to_one = $message_count->where('isRead', 0);
-        
-        $gp_count = collect($messages);
-        $count_gp_message = $gp_count->where('isRead', 0);
-        $count_gg = count($count_gp_message);
-        $onetoone_message_count = count($count_one_to_one);
-        $total_count = count($count_one_to_one) + count($count_gp_message);
-        return response()->json([
-            'data' =>  $total_count,
-            'one_to_one_message' => $messages,
-            'gp_count' => $count_gg,
-            'one_to_one' =>  $onetoone_message_count,
+        //             else
+        //                 $latest_group_sms[$key]['isRead'] = 0;
+        //         }
+        //     elseif ($value['sender_id'] == $user_id)
+        //         $latest_group_sms[$key]['isRead'] = 1;
+        //     else
+        //         $latest_group_sms[$key]['isRead'] = 0;
+        // }
+        // $merged = array_merge($arr, $latest_group_sms);
+        // // dd($merged);
+        $merged = $this->messageRepo->auth_chat();
+        $merged = collect($merged);
+        $message_count = $merged->where('isRead', 0);
+        $total = count($message_count);
+        return response()->json(['data' =>  $total,
         ]);
     }
 
@@ -2511,129 +2548,7 @@ class SocialMediaController extends Controller
 
     public function see_all_message()
     {
-        $user_id = auth()->user()->id;
-        $block_list = BlockList::where('sender_id', $user_id)->orWhere('receiver_id', $user_id)->get(['sender_id', 'receiver_id'])->toArray();
-        $b = array();
-        foreach ($block_list as $block) {
-            $f = (array)$block;
-            array_push($b, $f['sender_id'], $f['receiver_id']);
-        }
-        $array =  join(",", $b,);
-        $id_admin = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'admin');
-        })->first();
-        $admin_id = $id_admin->id;
-        if ($array) {
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.read_or_not as isRead
-            from
-                chats
-              join
-                (select user, max(created_at) m
-                    from
-                       (
-                         (select id, to_user_id user, created_at
-                           from chats
-                           where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-                       union
-                         (select id, from_user_id user, created_at
-                           from chats
-                           where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-                        ) t1
-                   group by user) t2
-                    on ((from_user_id= $user_id and to_user_id=user) or
-                        (from_user_id=user and to_user_id= $user_id)) and
-                        (created_at = m)
-                    left join users on users.id = user
-                    left join profiles on users.profile_id = profiles.id
-                    where users.id not in ($array)
-                    and users.id != $admin_id
-                    order by chats.created_at desc");
-        } else {
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,
-             chats.read_or_not as isRead
-        from
-            chats
-          join
-            (select user, max(created_at) m
-                from
-                   (
-                     (select id, to_user_id user, created_at
-                       from chats
-                       where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-                   union
-                     (select id, from_user_id user, created_at
-                       from chats
-                       where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-                    ) t1
-               group by user ) t2
-                on ((from_user_id= $user_id and to_user_id=user) or
-                    (from_user_id=user and to_user_id= $user_id)) and
-                    (created_at = m)
-                left join users on users.id = user
-                left join profiles on users.profile_id = profiles.id
-                where users.id != $admin_id
-                order by chats.created_at desc");
-        }
-
-        // dd($messages);
-
-
-        $groups = DB::table('chat_group_members')
-            ->select('group_id')
-            ->groupBy('group_id')
-            ->where('chat_group_members.member_id', $user_id)
-            ->get()
-            ->pluck('group_id')->toArray();
-
-        $latest_group_message = DB::table('chat_group_messages')
-            ->groupBy('group_id')
-            ->whereIn('group_id', $groups)
-            ->select(DB::raw('max(id) as id'))
-            ->get()
-            ->pluck('id')->toArray();
-        $latest_group_sms = ChatGroupMessage::select(
-            'chat_group_messages.group_id as id',
-            'chat_group_messages.id as message_id',
-            'chat_groups.group_name as name',
-            'profiles.profile_image',
-            'chat_group_messages.text',
-            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
-        )
-            ->leftJoin('chat_groups', 'chat_groups.id', 'chat_group_messages.group_id')
-            ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->whereIn('chat_group_messages.id', $latest_group_message)->get()->toArray();
-        //   $ids = json_encode($messages);
-        $arr = json_decode(json_encode($messages), true);
-        foreach ($arr as $key => $value) {
-            $arr[$key]['is_group'] = 0;
-        }
-        foreach ($latest_group_sms as $key => $value) {
-            $latest_group_sms[$key]['is_group'] = 1;
-        }
-        $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
-        foreach ($latest_group_sms as $key => $value) {
-            if (count($read) > 0)
-                foreach ($read as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id)
-                        $latest_group_sms[$key]['isRead'] = 1;
-                    else
-                        $latest_group_sms[$key]['isRead'] = 0;
-                }
-            else
-                $latest_group_sms[$key]['isRead'] = 0;
-        }
-        $merged = array_merge($arr, $latest_group_sms);
-        $keys = array_column($merged, 'date');
-        array_multisort($keys, SORT_DESC, $merged);
-        $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
-        foreach ($merged as $key => $value) {
-            $merged[$key]['owner_id'] = 0;
-            foreach ($group_owner as $owner) {
-                if ($value['id'] == $owner['id'] and $value['is_group'] == 1)
-                    $merged[$key]['owner_id'] = $owner->group_owner_id;
-            }
-        }
+        $merged = $this->messageRepo->auth_chat();
         return response()->json([
             'all_messages' => $merged
         ]);
@@ -3526,7 +3441,7 @@ class SocialMediaController extends Controller
                 $query->where('name', '=', 'admin');
             })->first();
             $admin_id = $id_admin->id;
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date ,chats.read_or_not as isRead
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date ,chats.from_user_id, chats.read_or_not
             from
                 chats
               join
@@ -3584,6 +3499,13 @@ class SocialMediaController extends Controller
             foreach ($arr as $key => $value) {
                 $arr[$key]['is_group'] = 0;
             }
+            foreach ($arr as $key => $value) {
+                if ($value['from_user_id'] == $user_id)
+                    $arr[$key]['isRead'] = 1;
+                else
+
+                    $arr[$key]['isRead'] = $value['read_or_not'];
+            }
             foreach ($latest_group_sms as $key => $value) {
                 $latest_group_sms[$key]['is_group'] = 1;
             }
@@ -3592,11 +3514,14 @@ class SocialMediaController extends Controller
             foreach ($latest_group_sms as $key => $value) {
                 if (count($read) > 0)
                     foreach ($read as $re) {
-                        if ($re->message_id == $value['message_id'] and $re->user_id == $user_id)
+                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
                             $latest_group_sms[$key]['isRead'] = 1;
+
                         else
                             $latest_group_sms[$key]['isRead'] = 0;
                     }
+                elseif ($value['sender_id'] == $user_id)
+                $latest_group_sms[$key]['isRead'] = 1;
                 else
                     $latest_group_sms[$key]['isRead'] = 0;
             }
