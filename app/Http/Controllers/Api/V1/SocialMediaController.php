@@ -3566,9 +3566,11 @@ class SocialMediaController extends Controller
                 ->select(DB::raw('max(id) as id'))
                 ->get()
                 ->pluck('id')->toArray();
+
             $latest_group_sms = ChatGroupMessage::select(
                 'chat_group_messages.group_id as id',
                 'chat_groups.group_name as name',
+                'chat_group_messages.id as message_id',
                 'profiles.profile_image',
                 'chat_group_messages.text',
                 DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
@@ -3586,7 +3588,7 @@ class SocialMediaController extends Controller
                 $latest_group_sms[$key]['is_group'] = 1;
             }
             $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
-            dd($read);
+            // dd($read);
             foreach ($latest_group_sms as $key => $value) {
                 if (count($read) > 0)
                     foreach ($read as $re) {
