@@ -2210,7 +2210,7 @@ class SocialMediaController extends Controller
                 ->where('to_user_id', $to_user_id)
                 ->update(['read_or_not' => 1]);
         } else {
-            $group_id = $request->group_id;
+            $group_id = $request->user_id;
             $latest_group_message_to = DB::table('chat_group_messages')
             ->where('group_id', $group_id)
             ->select(DB::raw('max(id) as id'))
