@@ -2124,9 +2124,8 @@ class SocialMediaController extends Controller
                     (created_at = m)
                 left join users on users.id = user
                 left join profiles on users.profile_id = profiles.id
-                where deleted_by !=  $to_user_id  and delete_status != 2
-                and users.id != $admin_id
-            order by chats.created_at desc limit  3");
+                where users.id != $admin_id
+            order by chats.created_at desc");
         // dd($messages);
         $groups_to = DB::table('chat_group_members')
             ->select('group_id')
@@ -2346,12 +2345,17 @@ class SocialMediaController extends Controller
         $message_count = collect($messages);
 
         $count_one_to_one = $message_count->where('isRead', 0);
-
+        
         $gp_count = collect($messages);
         $count_gp_message = $gp_count->where('isRead', 0);
+        $count_gg = count($count_gp_message);
+        $onetoone_message_count = count($count_one_to_one);
         $total_count = count($count_one_to_one) + count($count_gp_message);
         return response()->json([
-            'data' =>  $total_count
+            'data' =>  $total_count,
+            'one_to_one_message' => $messages,
+            'gp_count' => $count_gg,
+            'one_to_one' =>  $onetoone_message_count,
         ]);
     }
 
