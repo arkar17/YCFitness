@@ -2071,6 +2071,7 @@ class SocialMediaController extends Controller
             'chat_group_messages.group_id as id',
             'chat_group_messages.id as message_id',
             'chat_groups.group_name as name',
+            'chat_group_messages.sender_id',
             'profiles.profile_image',
             'chat_group_messages.text',
             DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
@@ -2098,32 +2099,23 @@ class SocialMediaController extends Controller
         foreach ($latest_group_sms as $key => $value) {
             if (count($read) > 0)
                 foreach ($read as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id)
-                        $latest_group_sms[$key]['isRead'] = 1;
-                    else
-                        $latest_group_sms[$key]['isRead'] = 0;
-            }
-            else
-                $latest_group_sms[$key]['isRead'] = 0;
-        }
-        $merged = array_merge($arr, $latest_group_sms);
-        $keys = array_column($merged, 'date');
-        array_multisort($keys, SORT_DESC, $merged);
-        $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
-        foreach ($latest_group_sms as $key => $value) {
-            if (count($read) > 0)
-                foreach ($read as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
+                if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
                         $latest_group_sms[$key]['isRead'] = 1;
 
                     else
                         $latest_group_sms[$key]['isRead'] = 0;
-                }
+            }
             elseif ($value['sender_id'] == $user_id)
                 $latest_group_sms[$key]['isRead'] = 1;
             else
                 $latest_group_sms[$key]['isRead'] = 0;
         }
+       
+        $merged = array_merge($arr, $latest_group_sms);
+        $keys = array_column($merged, 'date');
+        array_multisort($keys, SORT_DESC, $merged);
+        $group_owner = ChatGroup::whereIn('chat_groups.id', $groups)->get();
+        
 
         //to user
         $messages_to = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date,chats.from_user_id, chats.read_or_not
@@ -3487,6 +3479,7 @@ class SocialMediaController extends Controller
                 'chat_group_messages.group_id as id',
                 'chat_groups.group_name as name',
                 'chat_group_messages.id as message_id',
+                'chat_group_messages.sender_id',
                 'profiles.profile_image',
                 'chat_group_messages.text',
                 DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
