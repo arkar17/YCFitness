@@ -3414,7 +3414,6 @@ class SocialMediaController extends Controller
         foreach ($sms as $key => $value) {
             $sms['to_user_id'] = 0;
         }
-
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
@@ -3455,12 +3454,9 @@ class SocialMediaController extends Controller
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
-                    and users.id != $admin_id
-                    order by chats.created_at desc limit  3");
+                    where users.id != $admin_id
+                    order by chats.created_at desc");
             // dd($messages);
-
-
-
             $groups = DB::table('chat_group_members')
                 ->select('group_id')
                 ->groupBy('group_id')
