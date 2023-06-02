@@ -385,6 +385,15 @@ class CustomerProfileController extends Controller
         ]);
     }
 
+    public function workout($date)
+    {
+        $auth_user = auth()->user();
+        $data = PersonalWorkOutInfo::where('user_id', $auth_user->id)->where('date', $date)->with('workout')->get();
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
     public function customerLast7daysWorkout()
     {
         // $auth_user = auth()->user();
