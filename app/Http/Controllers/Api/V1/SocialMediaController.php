@@ -2070,7 +2070,7 @@ class SocialMediaController extends Controller
         $latest_group_sms = ChatGroupMessage::select(
             'chat_group_messages.group_id as id',
             'chat_group_messages.id as message_id',
-            'chat_group_messages.sender_id'
+            'chat_group_messages.sender_id',
             'chat_groups.group_name as name',
             'profiles.profile_image',
             'chat_group_messages.text',
@@ -3269,6 +3269,7 @@ class SocialMediaController extends Controller
             $latest_group_sms = ChatGroupMessage::select(
                 'chat_group_messages.group_id as id',
                 'chat_groups.group_name as name',
+                'chat_group_messages.sender_id',
                 'profiles.profile_image',
                 'chat_group_messages.text',
                 DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
