@@ -3335,8 +3335,8 @@ class SocialMediaController extends Controller
             'chat_group_messages.sender_id as from_user_id',
             'chat_group_messages.text',
             'chat_group_messages.media',
-            'chat_group_messages.created_at as Date',
-            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as created_at')
+            'chat_group_messages.created_at as DateTime',
+            DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as created_at')   
         )
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
