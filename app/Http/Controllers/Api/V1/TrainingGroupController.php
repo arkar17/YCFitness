@@ -126,19 +126,33 @@ class TrainingGroupController extends Controller
         ]);
     }
 
-    public function eatMeals(Request $request)
+    public function  eatMeals(Request $request)
     {
         $meal_infos = $request->all();
         $meal_infos = json_decode(json_encode($meal_infos));
         $current_date = Carbon::now()->toDateString();
-
+        $current_data = PersonalMealInfo::where('personal_meal_infos.client_id', auth()->user()->id)
+            ->where('personal_meal_infos.date', $current_date)->get();
         foreach ($meal_infos->eat_meal as $meal_info) {
-            $personal_meal_info = new PersonalMealInfo();
-            $personal_meal_info->meal_id = $meal_info->meal_id;
-            $personal_meal_info->client_id = auth()->user()->id;
-            $personal_meal_info->date = $current_date;
-            $personal_meal_info->serving = $meal_info->meal_count;
+            foreach ($current_data as $data) {
+                $personal_meal_info = new PersonalMealInfo();
+                $personal_meal_info->meal_id = $meal_info->meal_id;
+                $personal_meal_info->client_id = auth()->user()->id;
+                $personal_meal_info->date = $current_date;
+                if ($data->meal_id == $meal_info->meal_id) {
+                    $personal_meal_info = PersonalMealInfo::findOrFail($meal_info->meal_id);
+                    $personal_meal_info->serving = $meal_info->meal_count + $data->serving;
+                } else {
+                    $personal_meal_info->serving = $meal_info->meal_count;
+                }
+            }
             $personal_meal_info->save();
+            // $personal_meal_info = new PersonalMealInfo();
+            // $personal_meal_info->meal_id = $meal_info->meal_id;
+            // $personal_meal_info->client_id = auth()->user()->id;
+            // $personal_meal_info->date = $current_date;
+            // $personal_meal_info->serving = $meal_info->meal_count;
+            // $personal_meal_info->save();
         }
 
         return response()->json([
