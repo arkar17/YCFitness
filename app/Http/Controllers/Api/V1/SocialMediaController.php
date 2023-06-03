@@ -2174,13 +2174,21 @@ class SocialMediaController extends Controller
         foreach ($arr_to as $key => $value) {
             $arr_to[$key]['is_group'] = 0;
         }
+        // foreach ($arr_to as $key => $value) {
+        //     if ($value['from_user_id'] == $to_user_id)
+        //         $arr[$key]['isRead'] = 1;
+        //     else
+
+        //         $arr[$key]['isRead'] = $value['read_or_not'];
+        // }
+
         foreach ($arr_to as $key => $value) {
             if ($value['from_user_id'] == $to_user_id)
-                $arr[$key]['isRead'] = 1;
+                $arr_to[$key]['isRead'] = 1;
             else
-
-                $arr[$key]['isRead'] = $value['read_or_not'];
+                $arr_to[$key]['isRead'] = $value['read_or_not'];
         }
+
         foreach ($latest_group_sms_to as $key => $value) {
             $latest_group_sms_to[$key]['is_group'] = 1;
         }
