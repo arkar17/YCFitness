@@ -2464,7 +2464,7 @@ class SocialMediaController extends Controller
                 'chat_group_messages.sender_id as from_user_id',
                 'chat_group_messages.text',
                 'chat_group_messages.media',
-                'chat_group_messages.created_at'
+                DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as created_at')
             )
                 ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
@@ -3491,6 +3491,9 @@ class SocialMediaController extends Controller
                 $arr[$key]['is_group'] = 0;
             }
             foreach ($arr as $key => $value) {
+                $arr[$key]['is_group'] = 0;
+            }
+            foreach ($arr as $key => $value) {
                 if ($value['from_user_id'] == $user_id)
                     $arr[$key]['isRead'] = 1;
                 else
@@ -3538,7 +3541,6 @@ class SocialMediaController extends Controller
             foreach ($message_gp as $key => $value) {
                 $message_gp['isGroup'] = 1;
             }
-
             $pusher->trigger('groupChatting.' . $group_message[$i]['member_id'], 'group-chatting-event', ["message" => $message_gp, "senderImg" => $request->senderImg, "senderName" => $request->senderName]);
             $pusher->trigger('all_message.' . $group_message[$i]['member_id'], 'all', $merged);
         }
