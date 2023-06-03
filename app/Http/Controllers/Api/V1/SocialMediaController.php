@@ -2175,7 +2175,7 @@ class SocialMediaController extends Controller
             $arr_to[$key]['is_group'] = 0;
         }
         foreach ($arr_to as $key => $value) {
-            if ($value['from_user_id'] == $user_id)
+            if ($value['from_user_id'] == $to_user_id)
                 $arr[$key]['isRead'] = 1;
             else
 
@@ -2187,13 +2187,13 @@ class SocialMediaController extends Controller
         foreach ($latest_group_sms_to as $key => $value) {
             if (count($read_to) > 0)
                 foreach ($read_to as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
+                if ($re->message_id == $value['message_id'] and $re->to_user_id == $to_user_id or $value['sender_id'] == $to_user_id)
                         $latest_group_sms_to[$key]['isRead'] = 1;
 
                     else
                 $latest_group_sms_to[$key]['isRead'] = 0;
             }
-            elseif ($value['sender_id'] == $user_id)
+            elseif ($value['sender_id'] == $to_user_id)
                 $latest_group_sms_to[$key]['isRead'] = 1;
             else
                 $latest_group_sms_to[$key]['isRead'] = 0;
