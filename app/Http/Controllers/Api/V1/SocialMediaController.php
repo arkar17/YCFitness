@@ -3137,6 +3137,10 @@ class SocialMediaController extends Controller
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
+        $group_id = $request->id;
+        $group_member = ChatGroupMember::where('chat_group_members.group_id', $group_id)
+            ->where('chat_group_members.member_id', '!=', $id)->pluck('member_id')->toArray();
+        // dd($group_member);
         $friend = User::select('users.id', 'users.name', 'profiles.profile_image')
             ->leftjoin('friendships', function ($join) {
                 $join->on('friendships.receiver_id', '=', 'users.id')
@@ -3149,25 +3153,11 @@ class SocialMediaController extends Controller
             ->orWhere('friendships.sender_id', $id)
             ->whereIn('users.id', $n)
             ->where('users.id', '!=', $id)
+            ->whereNotIn('users.id', $group_member)
             ->get()->toArray();
-        $group_id = $request->id;
-        $group_members = ChatGroupMember::select('users.id', 'users.name', 'profiles.profile_image')
-            ->leftJoin('users', 'users.id', 'chat_group_members.member_id')
-            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-            ->where('chat_group_members.group_id', $group_id)
-            ->where('chat_group_members.member_id', '!=', $id)
-            ->get()->toArray();
+        //  dd($friend, $group_member);
 
-        foreach ($friend as $key => $fri) {
-            foreach ($group_members as $value => $gp) {
-                if ($fri['id'] == $gp['id']) {
-                    unset($friend[$key]);
-                }
-            }
-        }
-        // dd($friend);
         return response()->json([
-            'success' => 'Success',
             'data' => $friend
         ]);
     }
