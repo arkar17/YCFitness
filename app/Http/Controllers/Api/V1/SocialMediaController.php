@@ -3494,7 +3494,7 @@ class SocialMediaController extends Controller
                 $arr[$key]['is_group'] = 0;
             }
             foreach ($arr as $key => $value) {
-                if ($value['from_user_id'] == $user_id)
+                if ($value['from_user_id'] == $user_id_to)
                     $arr[$key]['isRead'] = 1;
                 else
 
@@ -3503,18 +3503,18 @@ class SocialMediaController extends Controller
             foreach ($latest_group_sms as $key => $value) {
                 $latest_group_sms[$key]['is_group'] = 1;
             }
-            $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
+            $read = GroupChatMessageReadStatus::where('user_id', $user_id_to)->get();
             // dd($read);
             foreach ($latest_group_sms as $key => $value) {
                 if (count($read) > 0)
                     foreach ($read as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
+                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id_to or $value['sender_id'] == $user_id_to)
                             $latest_group_sms[$key]['isRead'] = 1;
 
                         else
                             $latest_group_sms[$key]['isRead'] = 0;
                     }
-                elseif ($value['sender_id'] == $user_id)
+                elseif ($value['sender_id'] == $user_id_to)
                 $latest_group_sms[$key]['isRead'] = 1;
                 else
                     $latest_group_sms[$key]['isRead'] = 0;
