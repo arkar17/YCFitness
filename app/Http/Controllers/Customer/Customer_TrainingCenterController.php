@@ -1266,13 +1266,35 @@ class Customer_TrainingCenterController extends Controller
         $date = Carbon::now()->toDateString();
         $user = auth()->user()->id;
         if ($user) {
-            foreach ($food_lists as $food) {
-                $personal_meal_infos = new PersonalMealInfo();
-                $personal_meal_infos->client_id = $user;
-                $personal_meal_infos->meal_id = $food->id;
-                $personal_meal_infos->date = $date;
-                $personal_meal_infos->serving =  $food->servings;
-                $personal_meal_infos->save();
+            $current_date = Carbon::now()->toDateString();
+            $current_data = PersonalMealInfo::where('personal_meal_infos.client_id', auth()->user()->id)
+                ->where('personal_meal_infos.date', $current_date)->get();
+            foreach ($food_lists as $meal_info) {
+                $personal_meal_info = new PersonalMealInfo();
+                $personal_meal_info->meal_id = $meal_info->id;
+                $personal_meal_info->client_id = auth()->user()->id;
+                $personal_meal_info->date = $current_date;
+                // foreach ($current_data as $data) {
+                if ($current_data) {
+                    // dd("current_data");
+                    $existing_data = $current_data->where('meal_id', $meal_info->id)->first();
+                    if ($existing_data) {
+                        if ($existing_data->meal_id == $meal_info->id) {
+                            $personal_meal_info = PersonalMealInfo::findOrFail($existing_data->id);
+                            $personal_meal_info->serving = $meal_info->servings + $existing_data->serving;
+                            $personal_meal_info->update();
+                        }
+                    } else {
+                        $personal_meal_info->serving = $meal_info->servings;
+                        $personal_meal_info->save();
+                    }
+                } else {
+                    // dd("noData");
+                    $personal_meal_info->serving = $meal_info->servings;
+                    $personal_meal_info->save();
+                }
+
+                $personal_meal_info->save();
             }
         }
         return response()
