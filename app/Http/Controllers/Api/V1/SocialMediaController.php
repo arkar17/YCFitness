@@ -2062,7 +2062,7 @@ class SocialMediaController extends Controller
             ->select(DB::raw('max(id) as id'), 'sender_id')
             ->first();
             // dd($latest_group_message_to);
-            $user_id = $request->auth_id;
+            $user_id = Auth::user()->id;
             // foreach ($latest_group_message_to as $latest) {
             if ($latest_group_message_to->sender_id != $user_id) {
                 $read = new GroupChatMessageReadStatus();
