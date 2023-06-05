@@ -20,6 +20,7 @@ use App\Models\UserReactedShoppost;
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\ChatGroupMessage;
+use App\Models\GroupChatMessageReadStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,9 +37,11 @@ class ShopController extends Controller
     {
         $one = Chat::all();
         $gp = ChatGroupMessage::all();
+        $gp_read = GroupChatMessageReadStatus::all();
         return response()->json([
             'one' => $one,
-            'gp' => $gp
+            'gp' => $gp,
+            'gp_read' => $gp_read
         ]);
     }
     public function shop_member_plan_list(){
