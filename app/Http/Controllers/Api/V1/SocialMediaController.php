@@ -2052,12 +2052,12 @@ class SocialMediaController extends Controller
             // dd($latest_group_message_to);
             $user_id = Auth::user()->id;
             // foreach ($latest_group_message_to as $latest) {
-            if ($latest_group_message_to->sender_id != $user_id) {
+           // if ($latest_group_message_to->sender_id != $user_id) {
                 $read = new GroupChatMessageReadStatus();
                 $read->message_id = $latest_group_message_to->id;
                 $read->user_id = $user_id;
                 $read->save();
-            }
+            //}
             // dd($latest_group_message_to);
         } else {
             $from_id = $request->auth_id;
