@@ -18,6 +18,8 @@ use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserReactedShoppost;
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
+use App\Models\ChatGroupMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,7 +32,15 @@ class ShopController extends Controller
             'data' => $user
         ]);
     }
-
+    public function message()
+    {
+        $one = Chat::all();
+        $gp = ChatGroupMessage::all();
+        return response()->json([
+            'one' => $one,
+            'gp' => $gp
+        ]);
+    }
     public function shop_member_plan_list(){
         $member_plan = ShopMember::get();
         return response()->json([
