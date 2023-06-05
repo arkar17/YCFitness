@@ -2043,20 +2043,7 @@ class SocialMediaController extends Controller
 
     public function chat_read(Request $request)
     {
-        if ($request->isGroup == 0) {
-            $from_id = $request->auth_id;
-            $to_id = $request->user_id;
-            Chat::where(function ($query1) use ($from_id, $to_id) {
-                $query1->where('from_user_id', $from_id)
-                    ->orWhere('from_user_id', $to_id);
-            })
-                ->where(function ($query2) use ($from_id, $to_id) {
-                    $query2->where('to_user_id', $from_id)
-                        ->orWhere('to_user_id', $to_id);
-                })
-                ->update(['read_or_not' => 1]);
-            dd("one to one");
-        } else {
+        if ($request->isGroup == 1) {
             $group_id = $request->user_id;
             $latest_group_message_to = DB::table('chat_group_messages')
             ->where('group_id', $group_id)
@@ -2072,6 +2059,18 @@ class SocialMediaController extends Controller
                 $read->save();
             }
             dd($latest_group_message_to);
+        } else {
+            $from_id = $request->auth_id;
+            $to_id = $request->user_id;
+            Chat::where(function ($query1) use ($from_id, $to_id) {
+                $query1->where('from_user_id', $from_id)
+                    ->orWhere('from_user_id', $to_id);
+            })
+                ->where(function ($query2) use ($from_id, $to_id) {
+                    $query2->where('to_user_id', $from_id)
+                        ->orWhere('to_user_id', $to_id);
+                })
+                ->update(['read_or_not' => 1]);
             dd("one to one");
             // }
         }
