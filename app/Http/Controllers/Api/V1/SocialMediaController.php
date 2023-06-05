@@ -2008,7 +2008,7 @@ class SocialMediaController extends Controller
             )
         );
         $message_id = $message->id;
-        $message = Chat::select('chats.*', 'profiles.profile_image', 'users.name')
+        $message = Chat::select('chats.*', 'chats.created_at as data', 'profiles.profile_image', 'users.name')
             ->leftJoin('users', 'users.id', 'chats.from_user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('chats.id', $message_id)
@@ -2054,7 +2054,8 @@ class SocialMediaController extends Controller
                     $query2->where('to_user_id', $from_id)
                         ->orWhere('to_user_id', $to_id);
                 })
-                ->update(['read_or_not' => 1]);        
+                ->update(['read_or_not' => 1]);
+            dd("one to one");
         } else {
             $group_id = $request->user_id;
             $latest_group_message_to = DB::table('chat_group_messages')
@@ -2070,6 +2071,8 @@ class SocialMediaController extends Controller
                 $read->user_id = $user_id;
                 $read->save();
             }
+            dd($latest_group_message_to);
+            dd("one to one");
             // }
         }
         return response()->json([
@@ -3094,6 +3097,7 @@ class SocialMediaController extends Controller
             'chat_group_messages.text',
             'chat_group_messages.media',
             'chat_group_messages.created_at',
+            'chat_group_messages.created_at as date',
             'chat_group_messages.id'
         )
             ->leftJoin('users', 'users.id', 'chat_group_messages.sender_id')
