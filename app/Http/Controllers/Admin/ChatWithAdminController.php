@@ -22,29 +22,7 @@ class ChatWithAdminController extends Controller
     {
         $id = 7;
         $user_id = Auth()->user()->id;
-       
-        // $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
-        //         from
-        //             chats
-        //         join
-        //             (select user, max(created_at) m
-        //                 from
-        //                 (
-        //                     (select id, to_user_id user, created_at
-        //                     from chats
-        //                     where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-        //                 union
-        //                     (select id, from_user_id user, created_at
-        //                     from chats
-        //                     where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-        //                     ) t1
-        //             group by user) t2
-        //                 on ((from_user_id= $user_id and to_user_id=user) or
-        //                     (from_user_id=user and to_user_id= $user_id)) and
-        //                     (created_at = m)
-        //                 left join users on users.id = user
-        //                 left join profiles on users.profile_id = profiles.id
-        //                 order by chats.created_at desc");
+    
         $auth_user = auth()->user();
 
         $messages = Chat::where(function ($que) use ($id) {
@@ -107,29 +85,6 @@ class ChatWithAdminController extends Controller
 
     public function user_list_one($id){
         $user_id = Auth()->user()->id;
-       
-        // $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date, chats.from_user_id as from_id,chats.to_user_id as to_id
-        //         from
-        //             chats
-        //         join
-        //             (select user, max(created_at) m
-        //                 from
-        //                 (
-        //                     (select id, to_user_id user, created_at
-        //                     from chats
-        //                     where from_user_id= $user_id  and delete_status <> 2 and deleted_by != $user_id)
-        //                 union
-        //                     (select id, from_user_id user, created_at
-        //                     from chats
-        //                     where to_user_id= $user_id and delete_status <> 2 and deleted_by != $user_id)
-        //                     ) t1
-        //             group by user) t2
-        //                 on ((from_user_id= $user_id and to_user_id=user) or
-        //                     (from_user_id=user and to_user_id= $user_id)) and
-        //                     (created_at = m)
-        //                 left join users on users.id = user
-        //                 left join profiles on users.profile_id = profiles.id
-        //                 order by chats.created_at desc");
         $auth_user = auth()->user();
 
         $messages = Chat::where(function ($que) use ($id) {

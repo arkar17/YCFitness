@@ -79,8 +79,6 @@ class MessageRepo
         }
 
         // dd($messages);
-
-
         $groups = DB::table('chat_group_members')
             ->select('group_id')
             ->groupBy('group_id')
@@ -124,20 +122,37 @@ class MessageRepo
         }
         $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
         // dd(count($read));
-        foreach ($latest_group_sms as $key => $value) {
-            if (count($read) > 0)
-                foreach ($read as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
-                        $latest_group_sms[$key]['isRead'] = 1;
+        // foreach ($latest_group_sms as $key => $value) {
+        //     if (count($read) > 0)
+        //         foreach ($read as $re) {
+        //             if ($re->message_id == $value['message_id'] and $re->user_id == $user_id or $value['sender_id'] == $user_id)
+        //         $latest_group_sms[$key]['isRead'] = 1;
+        //             else
+        //                 $latest_group_sms[$key]['isRead'] = 0;
+        //         }
+        //     // elseif ($value['sender_id'] == $user_id)
+        //     //     $latest_group_sms[$key]['isRead'] = 1;
+        //     else
+        //         $latest_group_sms[$key]['isRead'] = 0;
+        // }
 
-                    else
-                        $latest_group_sms[$key]['isRead'] = 0;
+        foreach ($latest_group_sms as $key => $value) {
+            $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
+
+            if (count($read) > 0) {
+                foreach ($read as $re) {
+                    if (($re->message_id == $value['message_id'] && $re->user_id == $user_id) || $value['sender_id'] == $user_id) {
+                        $latest_group_sms[$key]['isRead'] = 1;
+                        break; // Exit the inner loop once isRead is set to 1
+                    }
                 }
-            elseif ($value['sender_id'] == $user_id)
+            } elseif (
+                $value['sender_id'] == $user_id
+            ) {
                 $latest_group_sms[$key]['isRead'] = 1;
-            else
-                $latest_group_sms[$key]['isRead'] = 0;
+            }
         }
+
         $merged = array_merge($arr, $latest_group_sms);
         $keys = array_column($merged, 'date');
         array_multisort($keys, SORT_DESC, $merged);
@@ -227,19 +242,35 @@ class MessageRepo
         foreach ($latest_group_sms_to as $key => $value) {
             $latest_group_sms_to[$key]['is_group'] = 1;
         }
-        foreach ($latest_group_sms_to as $key => $value) {
-            if (count($read_to) > 0)
-                foreach ($read_to as $re) {
-                    if ($re->message_id == $value['message_id'] and $re->to_user_id == $to_user_id or $value['sender_id'] == $to_user_id)
-                        $latest_group_sms_to[$key]['isRead'] = 1;
+        // foreach ($latest_group_sms_to as $key => $value) {
+        //     if (count($read_to) > 0)
+        //         foreach ($read_to as $re) {
+        //             if ($re->message_id == $value['message_id'] and $re->to_user_id == $to_user_id or $value['sender_id'] == $to_user_id)
+        //                 $latest_group_sms_to[$key]['isRead'] = 1;
 
-                    else
-                        $latest_group_sms_to[$key]['isRead'] = 0;
+        //             else
+        //                 $latest_group_sms_to[$key]['isRead'] = 0;
+        //         }
+        //     elseif ($value['sender_id'] == $to_user_id)
+        //         $latest_group_sms_to[$key]['isRead'] = 1;
+        //     else
+        //         $latest_group_sms_to[$key]['isRead'] = 0;
+        // }
+        foreach ($latest_group_sms_to as $key => $value) {
+            $latest_group_sms_to[$key]['isRead'] = 0; // Set initial value to 0
+
+            if (count($read_to) > 0) {
+                foreach ($read_to as $re) {
+                    if (($re->message_id == $value['message_id'] && $re->user_id == $to_user_id)) {
+                        $latest_group_sms_to[$key]['isRead'] = 1;
+                        break; // Exit the inner loop once isRead is set to 1
+                    }
                 }
-            elseif ($value['sender_id'] == $to_user_id)
+            } elseif (
+                $value['sender_id'] == $to_user_id
+            ) {
                 $latest_group_sms_to[$key]['isRead'] = 1;
-            else
-                $latest_group_sms_to[$key]['isRead'] = 0;
+            }
         }
         $merged_to = array_merge($arr_to, $latest_group_sms_to);
         $keys_to = array_column($merged_to, 'date');

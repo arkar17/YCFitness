@@ -415,12 +415,8 @@
         }
     }
 
-
-
-
-
     //image and video select end
-    to_user_id = {{ $receiver_user->id }}
+    to_user_id = {{ $receiver_user->id }};
     // console.log(to_user_id , "touserid");
 
 
@@ -502,17 +498,248 @@
     }
 
 
-    var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
-            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
-            encrypted: true
-        });
+//     var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+//             cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+//             encrypted: true
+//         });
+//         Echo.channel('chatting.' + auth_user_id)
+//         .listen('.one2one-event', (data) => {
+//                 if (data.message.from_user_id == recieveUserId) {
+//                     if (data.message.media == null && data.message.text == null) {} else {
+//                         if (data.message.media != null) {
 
-    
+//                             var imageFile = data.message.media
+//                             var imageArr = JSON.parse(imageFile)
+//                             var receiverMessageMedia
 
-        Echo.channel('chatting.' + auth_user_id + '.' + recieveUserId)
-        .listen('.chatting-event', (data) => {
-      
-                if (data.message.from_user_id == recieveUserId) {
+//                             receiverMessageMedia = `
+//                         <div class = "group-chat-imgs-vids-container">
+//                         ${Object.keys(imageArr).map(key => {
+//                             if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
+//                                 .split('.').pop() ===
+//                                 'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split(
+//                                     '.')
+//                                 .pop() === 'gif') {
+//                                 return `
+//                                                 <div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+//                                                     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+//                                                     <div class="modal-dialog modal-dialog-centered">
+//                                                         <div class="modal-content">
+//                                                             <div class="modal-header">
+//                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
+//                                                                     aria-label="Close"></button>
+//                                                             </div>
+//                                                             <div class="modal-body">
+//                                                                 <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
+//                                                                     alt="test" class="w-100">
+//                                                             </div>
+//                                                         </div>
+//                                                     </div>
+//                                                 </div>
+
+//                                             <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+//                                                 <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
+//                                             </a>`
+
+
+//                                     } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
+//                                         .pop() ===
+//                                         'mov' || imageArr[key].split('.').pop() === 'webm') {
+//                                             return `<video width = "100%" height = "100%" controls>
+//                                 <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
+//                                 </video>`
+//                     }
+//                 }).join('')
+//         } </div>`;
+
+//             if (receive_user_img != null) {
+//                 messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+//                                                         <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${receive_user_img}" />
+//                                                         <div class="group-chat-receiver-text-container">
+
+//                                                             ${receiverMessageMedia}
+//                                                         </div>
+//                                                     </div>`;
+//             } else {
+//                 messageContainer.innerHTML += `<div class="group-chat-receiver-container" data-messageId="${data.message.id}">
+//                                                         <img src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+//                                                         <div class="group-chat-receiver-text-container">
+
+//                                                             ${receiverMessageMedia}
+//                                                         </div>
+//                                                     </div>`;
+//             }
+
+
+//         }
+//     }
+//     }
+//     else {
+//         if (data.message.media == null && data.message.text == null) {} else {
+//             if (data.message.media != null) {
+
+//                 var imageFile = data.message.media
+//                 var imageArr = JSON.parse(imageFile)
+//                 var messageMediaContainer
+
+//                 var messageMediaContainer = `<div class="group-chat-imgs-vids-container">
+//                     ${
+//                         Object.keys(imageArr).map(key => {
+
+//                         if (imageArr[key].split('.').pop() === 'png' || imageArr[key]
+//                             .split('.').pop() ===
+//                             'jpg' || imageArr[key].split('.').pop() === 'jpeg' || imageArr[key].split('.')
+//                             .pop() === 'gif') {
+//                                 return `<div class="modal fade" id="exampleModalToggle${data.message.id}${key}" aria-hidden="true"
+//                                                                         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+//                                                                         <div class="modal-dialog modal-dialog-centered">
+//                                                                             <div class="modal-content">
+//                                                                                 <div class="modal-header">
+//                                                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
+//                                                                                         aria-label="Close"></button>
+//                                                                                 </div>
+//                                                                                 <div class="modal-body">
+//                                                                                     <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}"
+//                                                                                         alt="test" class="w-100">
+//                                                                                 </div>
+//                                                                             </div>
+//                                                                         </div>
+//                                                                 </div>
+
+//                                                         <a data-bs-toggle="modal" href="#exampleModalToggle${data.message.id}${key}" role="button">
+//                                                             <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}">
+//                                                         </a>`
+
+
+
+
+//                         } else if (imageArr[key].split('.').pop() === 'mp4' || imageArr[key].split('.')
+//                             .pop() ===
+//                             'mov' || imageArr[key].split('.').pop() === 'webm') {
+
+//                             return `<video width = "100%" height = "100%" controls>
+//                     <source src = "https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/customer_message_media/${imageArr[key]}" type = "video/mp4">
+//                     </video>`
+
+//         }
+//     }).join('')
+// } </div>`
+
+//     if (sender_user_img != null) {
+//         messageContainer.innerHTML += `
+//                                 <div class="group-chat-sender-container">
+//                                     <div class="message-actions-parent-container">
+//                                         <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+
+//                                         </iconify-icon>
+//                                         <div class="message-actions-box">
+//                                             <p onclick="message_hide(event,${data.message.id})">
+//                                                 <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+//                                                 Delete
+//                                             </p>
+//                                             <p onclick="message_delete(event,${data.message.id})">
+//                                                 <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+//                                                 Unsend
+//                                             </p>
+//                                         </div>
+
+//                                     </div>
+//                                     <div class="group-chat-sender-text-container">
+
+//                                         ${messageMediaContainer}
+//                                         </div>
+//                                     <img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${sender_user_img}" />
+//                                 </div>`;
+//     } else {
+//         messageContainer.innerHTML += `
+//                                 <div class="group-chat-sender-container">
+//                                     <div class="message-actions-parent-container">
+//                                         <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+
+//                                         </iconify-icon>
+//                                         <div class="message-actions-box">
+//                                             <p onclick="message_hide(event,${data.message.id})">
+//                                                 <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+//                                                 Delete
+//                                             </p>
+//                                             <p onclick="message_delete(event,${data.message.id})">
+//                                                 <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+//                                                 Unsend
+//                                             </p>
+//                                         </div>
+
+//                                     </div>
+//                                     <div class="group-chat-sender-text-container">
+
+//                                         ${messageMediaContainer}
+//                                         </div>
+//                                     <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+//                                 </div>`;
+//     }
+
+//     } else {
+//         if (sender_user_img != null) {
+//             messageContainer.innerHTML += `<div class="group-chat-sender-container">
+//                 <div class="message-actions-parent-container">
+//                             <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+
+//                             </iconify-icon>
+//                             <div class="message-actions-box">
+//                                 <p onclick="message_hide(event,${data.message.id})">
+//                                     <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+//                                     Delete
+//                                 </p>
+//                                 <p onclick="message_delete(event,${data.message.id})">
+//                                     <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+//                                     Unsend
+//                                 </p>
+//                             </div>
+
+//                         </div>
+//                                     <div class="group-chat-sender-text-container">
+
+//                                         <p>${data.message.text}</p>
+//                                     </div>
+//                                     <img class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/${sender_user_img}" />
+//                                 </div>`;
+//         } else {
+//             messageContainer.innerHTML += `<div class="group-chat-sender-container">
+//                 <div class="message-actions-parent-container">
+//                             <iconify-icon icon="mdi:dots-vertical" class="message-icon" onclick="toggleActionBox(event)">
+
+//                             </iconify-icon>
+//                             <div class="message-actions-box">
+//                                 <p onclick="message_hide(event,${data.message.id})">
+//                                     <iconify-icon icon="mdi:hide" class="message-action-icon"></iconify-icon>
+//                                     Delete
+//                                 </p>
+//                                 <p onclick="message_delete(event,${data.message.id})">
+//                                     <iconify-icon icon="material-symbols:cancel-schedule-send-rounded" class="message-action-icon"></iconify-icon>
+//                                     Unsend
+//                                 </p>
+//                             </div>
+
+//                 </div>
+//                                     <div class="group-chat-sender-text-container">
+
+//                                         <p>${data.message.text}</p>
+//                                     </div>
+//                                     <img class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}" />
+//                                 </div>`;
+//         }
+
+//     }
+//     }
+//     }
+//     })
+               var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+                cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+                encrypted: true
+              });
+                var channel = pusher.subscribe('channel-one2one.14');
+                channel.bind('one2one-event', function(data) {
+                    // console.log(data.from_user_id)
+                      if (data.message.from_user_id == recieveUserId) {
                     if (data.message.media == null && data.message.text == null) {} else {
                         if (data.message.media != null) {
 
@@ -739,7 +966,7 @@
     }
     }
     }
-    })
+                })
 
 
   
