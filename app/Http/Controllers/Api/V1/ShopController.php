@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Pusher\Pusher;
+use App\Models\Chat;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\ShopPost;
@@ -13,16 +15,16 @@ use App\Models\ShopRating;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
+use App\Models\ChatGroupMember;
+use App\Models\ChatGroupMessage;
 use App\Models\UserReactShoppost;
 use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserReactedShoppost;
 use App\Http\Controllers\Controller;
-use App\Models\Chat;
-use App\Models\ChatGroupMessage;
-use App\Models\GroupChatMessageReadStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\GroupChatMessageReadStatus;
 
 class ShopController extends Controller
 {
@@ -471,5 +473,28 @@ class ShopController extends Controller
         return response()->json([
             'data' =>  $post_count
         ]);
+    }
+
+    public function cancel(Request $request)
+    {
+        $id = $request->id;
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
+        if ($request->isGroup == 1) {
+            $group_member = ChatGroupMember::select('member_id')->where('group_id', $id)->get();
+            for ($i = 0; count($group_member) > $i; $i++) {
+                $to_user_id = $group_member[$i]['member_id'];
+                $pusher->trigger('channel-one2one.' . $group_member[$i]['member_id'], 'cancel-event', 'Call Canceled!');
+            }
+        } else {
+            $pusher->trigger('channel-one2one.' . $id, 'cancel-event', 'Call Canceled!');
+        }
     }
 }
