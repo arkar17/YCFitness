@@ -2909,7 +2909,11 @@ class SocialMediaController extends Controller
             ->where('member_id', '!=', auth()->user()->id)->get();
         for ($i = 0; count($group_message) > $i; $i++) {
             $user_id_to = $group_message[$i]['member_id'];
-            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date
+            $id_admin = User::whereHas('roles', function ($query) {
+                $query->where('name', '=', 'admin');
+            })->first();
+            $admin_id = $id_admin->id;
+            $messages = DB::select("SELECT users.id as id,users.name,profiles.profile_image,chats.text,chats.created_at as date ,chats.from_user_id, chats.read_or_not
             from
                 chats
               join
@@ -2922,7 +2926,7 @@ class SocialMediaController extends Controller
                        union
                          (select id, from_user_id user, created_at
                            from chats
-                           where to_user_id= $user_id_to and delete_status <> 2 and deleted_by != $user_id_to)
+                           where to_user_id= $user_id_to  and delete_status <> 2 and deleted_by != $user_id_to)
                         ) t1
                    group by user) t2
                     on ((from_user_id= $user_id_to and to_user_id=user) or
@@ -2930,10 +2934,9 @@ class SocialMediaController extends Controller
                         (created_at = m)
                     left join users on users.id = user
                     left join profiles on users.profile_id = profiles.id
+                    where users.id != $admin_id
                     order by chats.created_at desc");
             // dd($messages);
-
-
             $groups = DB::table('chat_group_members')
                 ->select('group_id')
                 ->groupBy('group_id')
@@ -2947,9 +2950,12 @@ class SocialMediaController extends Controller
                 ->select(DB::raw('max(id) as id'))
                 ->get()
                 ->pluck('id')->toArray();
+
             $latest_group_sms = ChatGroupMessage::select(
                 'chat_group_messages.group_id as id',
                 'chat_groups.group_name as name',
+                'chat_group_messages.id as message_id',
+                'chat_group_messages.sender_id',
                 'profiles.profile_image',
                 'chat_group_messages.text',
                 DB::raw('DATE_FORMAT(chat_group_messages.created_at, "%Y-%m-%d %H:%i:%s") as date')
@@ -2963,8 +2969,43 @@ class SocialMediaController extends Controller
             foreach ($arr as $key => $value) {
                 $arr[$key]['is_group'] = 0;
             }
+
+            foreach ($arr as $key => $value) {
+                if ($value['from_user_id'] == $user_id_to)
+                    $arr[$key]['isRead'] = 1;
+                else
+                    $arr[$key]['isRead'] = $value['read_or_not'];
+            }
             foreach ($latest_group_sms as $key => $value) {
                 $latest_group_sms[$key]['is_group'] = 1;
+            }
+            $read = GroupChatMessageReadStatus::where('user_id', $user_id_to)->get();
+            // dd($read);
+            // foreach ($latest_group_sms as $key => $value) {
+            //     if (count($read) > 0)
+            //         foreach ($read as $re) {
+            //         if ($re->message_id == $value['message_id'] and $re->user_id == $user_id_to or $value['sender_id'] == $user_id_to)
+            //                 $latest_group_sms[$key]['isRead'] = 1;
+
+            //             else
+            //                 $latest_group_sms[$key]['isRead'] = 0;
+            //         }
+            //     elseif ($value['sender_id'] == $user_id_to)
+            //     $latest_group_sms[$key]['isRead'] = 1;
+            //     else
+            //         $latest_group_sms[$key]['isRead'] = 0;
+            // }
+            foreach ($latest_group_sms as $key => $value) {
+                $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
+
+                if (count($read) > 0) {
+                    foreach ($read as $re) {
+                        if (($re->message_id == $value['message_id'] && $re->user_id == $user_id)) {
+                            $latest_group_sms[$key]['isRead'] = 1;
+                            break; // Exit the inner loop once isRead is set to 1
+                        }
+                    }
+                }
             }
             $merged = array_merge($arr, $latest_group_sms);
             $keys = array_column($merged, 'date');
@@ -3217,10 +3258,6 @@ class SocialMediaController extends Controller
                             break; // Exit the inner loop once isRead is set to 1
                         }
                     }
-                } elseif (
-                    $value['sender_id'] == $user_id
-                ) {
-                    $latest_group_sms[$key]['isRead'] = 1;
                 }
             }
             $merged = array_merge($arr, $latest_group_sms);
