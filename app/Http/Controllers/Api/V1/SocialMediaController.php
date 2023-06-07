@@ -3161,11 +3161,11 @@ class SocialMediaController extends Controller
         );
 
         $user_id = auth()->user()->id;
-        $read = new GroupChatMessageReadStatus();
-        $read->message_id = $id;
-        $read->user_id = $user_id;
-        $read->save();
-
+        $read_chat = new GroupChatMessageReadStatus();
+        $read_chat->message_id = $id;
+        $read_chat->user_id = $user_id;
+        $read_chat->save();
+        
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)
             ->get();
         for ($i = 0; count($group_message) > $i; $i++) {

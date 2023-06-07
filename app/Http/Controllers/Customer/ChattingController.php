@@ -141,8 +141,16 @@ class ChattingController extends Controller
             $message->from_user_id = auth()->user()->id;
             $message->to_user_id = $to_user_id;
             $message->save();
-            // dd($request->sender);
-            // broadcast(new Chatting($message, $request->sender));
+
+            $message_id = $message->id;
+            $message = Chat::select('chats.*', 'profiles.profile_image')
+            ->leftJoin('users', 'users.id', 'chats.from_user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('chats.id', $message_id)
+            ->first();
+            foreach ($message as $key => $value) {
+                $message['isGroup'] = 3;
+            }
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),
