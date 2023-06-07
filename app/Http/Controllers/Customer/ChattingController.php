@@ -143,7 +143,7 @@ class ChattingController extends Controller
             $message->save();
 
             $message_id = $message->id;
-            $message = Chat::select('chats.*', 'profiles.profile_image')
+            $message = Chat::select('chats.*',  'chats.created_at as date', 'profiles.profile_image')
             ->leftJoin('users', 'users.id', 'chats.from_user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('chats.id', $message_id)

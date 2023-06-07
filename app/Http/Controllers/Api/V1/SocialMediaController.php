@@ -2123,7 +2123,7 @@ class SocialMediaController extends Controller
         $message->text = $request->text == null ?  null : $request->text;
         $message->save();
         $message_id = $message->id;
-        $message = Chat::select('chats.*', 'profiles.profile_image')
+        $message = Chat::select('chats.*', 'chats.created_at as date', 'profiles.profile_image')
             ->leftJoin('users', 'users.id', 'chats.from_user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('chats.id', $message_id)
@@ -2193,8 +2193,7 @@ class SocialMediaController extends Controller
         })->first();
         $id = $to_user_id->id;
         $auth_user = auth()->user();
-
-        $messages = DB::select("SELECT * FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
+        $messages = DB::select("SELECT 'chats.*','chats.created_at as date' FROM chats where (from_user_id =  $auth_user->id or to_user_id =  $auth_user->id) and (from_user_id = $id or to_user_id = $id)
             and  deleted_by !=  $auth_user->id  and delete_status != 2 ");
         $receiver_user = User::select('users.id', 'users.name', 'profiles.profile_image')
             ->where('users.id', $id)
