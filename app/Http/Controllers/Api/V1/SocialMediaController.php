@@ -3161,6 +3161,11 @@ class SocialMediaController extends Controller
         );
 
         $user_id = auth()->user()->id;
+        $read = new GroupChatMessageReadStatus();
+        $read->message_id = $id;
+        $read->user_id = $user_id;
+        $read->save();
+
         $group_message = ChatGroupMember::select('member_id')->where('group_id', $group_id)
             ->get();
         for ($i = 0; count($group_message) > $i; $i++) {
@@ -3205,7 +3210,7 @@ class SocialMediaController extends Controller
                 ->whereIn('group_id', $groups)
                 ->select(DB::raw('max(id) as id'))
                 ->get()
-                ->pluck('id')->toArray();
+                ->pluck('id')->toArray(); 
 
             $latest_group_sms = ChatGroupMessage::select(
                 'chat_group_messages.group_id as id',
@@ -3236,21 +3241,6 @@ class SocialMediaController extends Controller
                 $latest_group_sms[$key]['is_group'] = 1;
             }
             $read = GroupChatMessageReadStatus::where('user_id', $user_id_to)->get();
-            // dd($read);
-            // foreach ($latest_group_sms as $key => $value) {
-            //     if (count($read) > 0)
-            //         foreach ($read as $re) {
-            //         if ($re->message_id == $value['message_id'] and $re->user_id == $user_id_to or $value['sender_id'] == $user_id_to)
-            //                 $latest_group_sms[$key]['isRead'] = 1;
-
-            //             else
-            //                 $latest_group_sms[$key]['isRead'] = 0;
-            //         }
-            //     elseif ($value['sender_id'] == $user_id_to)
-            //     $latest_group_sms[$key]['isRead'] = 1;
-            //     else
-            //         $latest_group_sms[$key]['isRead'] = 0;
-            // }
             foreach ($latest_group_sms as $key => $value) {
                 $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
 
