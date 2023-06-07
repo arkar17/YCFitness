@@ -142,7 +142,7 @@ class TrainingGroupController extends Controller
             // foreach ($current_data as $data) {
             if ($current_data) {
                 // dd("current_data");
-                $existing_data = $current_data->where('meal_id', $meal_info->id)->first();
+                $existing_data = $current_data->where('meal_id', $meal_info->meal_id)->first();
                 if ($existing_data) {
                     if ($existing_data->meal_id == $meal_info->meal_id) {
                         $personal_meal_info = PersonalMealInfo::findOrFail($existing_data->id);
