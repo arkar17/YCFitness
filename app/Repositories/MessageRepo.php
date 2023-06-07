@@ -239,9 +239,9 @@ class MessageRepo
                 $arr_to[$key]['isRead'] = $value['read_or_not'];
         }
 
-        // foreach ($latest_group_sms_to as $key => $value) {
-        //     $latest_group_sms_to[$key]['is_group'] = 1;
-        // }
+         foreach ($latest_group_sms_to as $key => $value) {
+             $latest_group_sms_to[$key]['is_group'] = 1;
+         }
 
         // foreach ($latest_group_sms_to as $key => $value) {
         //     $latest_group_sms_to[$key]['isRead'] = 0; // Set initial value to 0
