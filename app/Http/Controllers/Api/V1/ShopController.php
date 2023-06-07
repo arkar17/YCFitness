@@ -491,10 +491,10 @@ class ShopController extends Controller
             $group_member = ChatGroupMember::select('member_id')->where('group_id', $id)->get();
             for ($i = 0; count($group_member) > $i; $i++) {
                 $to_user_id = $group_member[$i]['member_id'];
-                $pusher->trigger('channel-one2one.' . $group_member[$i]['member_id'], 'cancel-event', 'Call Canceled!');
+                $pusher->trigger('cancel-call.' . $group_member[$i]['member_id'], 'cancel-event', 'Call Canceled!');
             }
         } else {
-            $pusher->trigger('channel-one2one.' . $id, 'cancel-event', 'Call Canceled!');
+            $pusher->trigger('cancel-call.' . $id, 'cancel-event', 'Call Canceled!');
         }
     }
 }

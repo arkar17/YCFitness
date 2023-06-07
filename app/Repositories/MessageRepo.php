@@ -142,7 +142,6 @@ class MessageRepo
 
         foreach ($latest_group_sms as $key => $value) {
             $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
-
             if (count($read) > 0) {
                 foreach ($read as $re) {
                     if (($re->message_id == $value['message_id'] && $re->user_id == $user_id)) {
@@ -239,9 +238,9 @@ class MessageRepo
                 $arr_to[$key]['isRead'] = $value['read_or_not'];
         }
 
-        // foreach ($latest_group_sms_to as $key => $value) {
-        //     $latest_group_sms_to[$key]['is_group'] = 1;
-        // }
+         foreach ($latest_group_sms_to as $key => $value) {
+             $latest_group_sms_to[$key]['is_group'] = 1;
+         }
 
         // foreach ($latest_group_sms_to as $key => $value) {
         //     $latest_group_sms_to[$key]['isRead'] = 0; // Set initial value to 0
