@@ -2043,7 +2043,9 @@ class SocialMediaController extends Controller
 
     public function chat_read(Request $request)
     {
+        // dd($request->isGroup);
         if ($request->isGroup == 1) {
+            // dd("group");
             $group_id = $request->user_id;
             $latest_group_message_to = DB::table('chat_group_messages')
             ->where('group_id', $group_id)
@@ -2060,6 +2062,7 @@ class SocialMediaController extends Controller
             //}
             // dd($latest_group_message_to);
         } else {
+            // dd("chat");
             $from_id = $request->auth_id;
             $to_id = $request->user_id;
             Chat::where(function ($query1) use ($from_id, $to_id) {
@@ -3255,7 +3258,7 @@ class SocialMediaController extends Controller
                     foreach ($read as $re) {
                         if (($re->message_id == $value['message_id'] && $re->user_id == $user_id)) {
                             $latest_group_sms[$key]['isRead'] = 1;
-                            break; // Exit the inner loop once isRead is set to 1
+                            // break; // Exit the inner loop once isRead is set to 1
                         }
                     }
                 }

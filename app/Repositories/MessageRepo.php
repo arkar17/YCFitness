@@ -146,7 +146,7 @@ class MessageRepo
                 foreach ($read as $re) {
                     if (($re->message_id == $value['message_id'] && $re->user_id == $user_id)) {
                         $latest_group_sms[$key]['isRead'] = 1;
-                        break; // Exit the inner loop once isRead is set to 1
+                        // break; // Exit the inner loop once isRead is set to 1
                     }
                 }
             }
@@ -266,7 +266,7 @@ class MessageRepo
                 foreach ($read_to as $re) {
                     if (($re->message_id == $value['message_id'] && $re->user_id == $to_user_id)) {
                         $latest_group_sms[$key]['isRead'] = 1;
-                        break; // Exit the inner loop once isRead is set to 1
+                        // break; // Exit the inner loop once isRead is set to 1
                     }
                 }
             }
