@@ -87,7 +87,7 @@ class ChattingController extends Controller
             $user_id = Auth::user()->id;
             $message_id = $message->id;
 
-            $message = Chat::select('chats.*', 'profiles.profile_image', 'users.name')
+            $message = Chat::select('chats.*', 'chats.created_at as date', 'profiles.profile_image', 'users.name')
                 ->leftJoin('users', 'users.id', 'chats.from_user_id')
                 ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
                 ->where('chats.id', $message_id)
@@ -143,7 +143,7 @@ class ChattingController extends Controller
             $message->save();
 
             $message_id = $message->id;
-            $message = Chat::select('chats.*',  'chats.created_at as date', 'profiles.profile_image')
+            $message = Chat::select('chats.*',  'chats.created_at as date', 'users.name', 'profiles.profile_image')
             ->leftJoin('users', 'users.id', 'chats.from_user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('chats.id', $message_id)
@@ -193,6 +193,15 @@ class ChattingController extends Controller
             $message->from_user_id = auth()->user()->id;
             $message->to_user_id = $to_user_id;
             $message->save();
+            $message_id = $message->id;
+            $message = Chat::select('chats.*',  'chats.created_at as date', 'users.name', 'profiles.profile_image')
+            ->leftJoin('users', 'users.id', 'chats.from_user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('chats.id', $message_id)
+            ->first();
+            foreach ($message as $key => $value) {
+                $message['isGroup'] = 3;
+            }
 
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
