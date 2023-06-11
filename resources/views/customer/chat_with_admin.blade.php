@@ -175,7 +175,7 @@
 
 
         </div>
-        <input type="hidden" value="{{ $id }}" id="recieveUser">
+        <input type="hidden" value="{{ $id[0] }}" id="recieveUser">
         <input type="hidden" value="{{ $receiver_user->name }}" id="receiverUserName">
 
         <div class="group-chat-messages-container">
@@ -646,12 +646,17 @@
 
     }
 
+    
 
-
-    Echo.channel('chatting.' + auth_user_id + '.' + recieveUserId)
+    var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            encrypted: true
+        });
+       Echo.channel('chatting.' + auth_user_id + '.' + recieveUserId)
         .listen('.chatting-event', (data) => {
-                console.log('asdufsasusiui', data);
-                if (data.message.from_user_id == recieveUserId) {
+            alert("sender", auth_user_id);
+                    // console.log(data.from_user_id)
+                      if (data.message.from_user_id == recieveUserId) {
                     if (data.message.media == null && data.message.text == null) {} else {
                         if (data.message.media != null) {
 
@@ -878,7 +883,8 @@
     }
     }
     }
-    })
+                })
+
 
     Echo.channel('chatting.' + recieveUserId + '.' + auth_user_id)
         .listen('.chatting-event', (data) => {

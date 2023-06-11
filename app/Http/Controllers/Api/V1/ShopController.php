@@ -496,5 +496,8 @@ class ShopController extends Controller
         } else {
             $pusher->trigger('cancel-call.' . $id, 'cancel-event', 'Call Canceled!');
         }
+        return response()->json([
+            'message' =>  'success'
+        ]);
     }
 }

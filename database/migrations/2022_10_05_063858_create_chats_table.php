@@ -21,6 +21,7 @@ class CreateChatsTable extends Migration
             $table->integer('deleted_by')->default(0);
             $table->longText('text')->nullable();
             $table->string('media')->nullable();
+            $table->string('read_or_not	')->default(0);
             $table->timestamps();
         });
     }

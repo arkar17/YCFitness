@@ -27,27 +27,29 @@ use App\Repositories\ChatRepo;
 use App\Events\DeclineCallUser;
 use App\Models\ChatGroupMember;
 use App\Models\ChatGroupMessage;
+use App\Repositories\MessageRepo;
 use App\Events\MakeAgoraAudioCall;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\GroupChatMessageReadStatus;
 use App\Class\AgoraDynamicKey\RtcTokenBuilder;
 
 class ChattingController extends Controller
 {
     //
-    public $page = 'Chatting';
+    public $page = 'Messages';
 
-    protected $chatRepo;
-    public function __construct(ChatRepo $chatRepo)
+    protected $messageRepo;
+    public function __construct(MessageRepo $messageRepo)
     {
-        $this->chatRepo = $chatRepo;
+        $this->messageRepo = $messageRepo;
         $this->middleware('auth');
     }
     public function chatting(Request $request, User $user)
     {
-       
+        // dd($user->id);
         if ($request->text == null && $request->fileSend == null) {
         } else {
             $message = new Chat();
@@ -73,6 +75,17 @@ class ChattingController extends Controller
             $message->to_user_id = $user->id;
             $message->save();
 
+            $message_id = $message->id;
+            $message = Chat::select('chats.*', 'chats.created_at as date', 'profiles.profile_image', 'users.name')
+            ->leftJoin('users', 'users.id', 'chats.from_user_id')
+            ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+            ->where('chats.id', $message_id)
+            ->first();
+            foreach ($message as $key => $value) {
+                $message['isGroup'] = 0;
+            }
+            // $pusher->trigger('chat_message.' . auth()->user()->id, 'message', $message);
+
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),
@@ -82,41 +95,40 @@ class ChattingController extends Controller
                     'encrypted' => true
                 )
             );
+            $pusher->trigger('channel-one2one.' . $user->id, 'one2one-event', ['message' => $message]);
+            // $pusher->trigger('channel-one2one.' . Auth::user()->id, 'one2one-event', ['message' => $message]);
+            broadcast(new Chatting($message, $request->sender));
 
-            $to_user_id = $request->receiver;
-            $user_id = Auth::user()->id;
-            $message_id = $message->id;
+            $user_id = auth()->user()->id;
 
-            $message = Chat::select('chats.*', 'chats.created_at as date', 'profiles.profile_image', 'users.name')
-                ->leftJoin('users', 'users.id', 'chats.from_user_id')
-                ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
-                ->where('chats.id', $message_id)
-                ->first();
-            foreach ($message as $key => $value) {
-                $message['isGroup'] = 0;
-            }
-            $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
+            $merged = $this->messageRepo->auth_chat();
+
+
+            $to_user_id = $user->id;
+            $user_id = auth()->user()->id;
+
+            $merged = $this->messageRepo->auth_chat();
+            $merged_to = $this->messageRepo->to_chat_user($user);
+            $arr_six = $this->messageRepo->six_message();
+            $merged_to =  $merged_to;
+            $arr_six_to = array_reverse($merged_to);
+            $arr_six_to = array_slice($arr_six_to, -6);
+            $arr_six_to = array_reverse($arr_six_to);
+
+            $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
+            $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);
+
+            $pusher->trigger('all_message.' . $to_user_id, 'all', $merged_to);
+            $pusher->trigger('all_message.' . $user_id, 'all', $merged);
         }
-
-
-        $merged = $this->chatRepo->auth_chat();
-        $arr_six = $this->chatRepo->six_message();
-
-        $merged_to = $this->chatRepo->to_chat($request->receiver);
-        $arr_six_to = $this->chatRepo->six_message_to($request->receiver);
-
-        $pusher->trigger('all_message.'. $to_user_id , 'all', $merged_to);
-        $pusher->trigger('all_message.'. $user_id , 'all', $merged);
-        $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);
-        $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
     }
 
     public function chatting_admin(Request $request, User $user)
     {
      $id = User::whereHas('roles', function ($query) {
         $query->where('name', '=', 'admin');
-    })->first();
-    $to_user_id = $id->id;
+        })->first();
+        $to_user_id = $id->id;
         if ($request->text == null && $request->fileSend == null) {
         } else {
             $message = new Chat();
@@ -143,14 +155,16 @@ class ChattingController extends Controller
             $message->save();
 
             $message_id = $message->id;
-            $message = Chat::select('chats.*',  'chats.created_at as date', 'users.name', 'profiles.profile_image')
+            $message = Chat::select('chats.*', 'chats.created_at as date', 'profiles.profile_image', 'users.name')
             ->leftJoin('users', 'users.id', 'chats.from_user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->where('chats.id', $message_id)
-            ->first();
+                ->first();
             foreach ($message as $key => $value) {
                 $message['isGroup'] = 3;
             }
+            // $pusher->trigger('chat_message.' . auth()->user()->id, 'message', $message);
+
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),
@@ -160,15 +174,17 @@ class ChattingController extends Controller
                     'encrypted' => true
                 )
             );
-            $pusher->trigger('channel-one2one.' . $to_user_id, 'one2one-event', $message);
-            // $pusher->trigger('friend_request.' . $id, 'friendRequest', $fri_noti);
+            $pusher->trigger('channel-one2one.' . $to_user_id, 'one2one-event', ['message' => $message]);
+            // $pusher->trigger('channel-one2one.' . Auth::user()->id, 'one2one-event', ['message' => $message]);
+            broadcast(new Chatting($message, $request->sender));
         }
+          
     }
 
 
     public function chatting_admin_side(Request $request, User $user)
-    { 
-    $to_user_id = $request->to_user_id;
+    {
+        $to_user_id = $request->to_user_id;
         if ($request->text == null && $request->fileSend == null) {
         } else {
             $message = new Chat();
@@ -213,7 +229,7 @@ class ChattingController extends Controller
                 )
             );
             $pusher->trigger('channel-one2one.' . $to_user_id, 'one2one-event', ['message' => $message]);
-            $pusher->trigger('channel-one2one.' . Auth::user()->id, 'one2one-event', ['message' => $message]);
+            broadcast(new Chatting($message, $request->sender));
         }
     }
 }

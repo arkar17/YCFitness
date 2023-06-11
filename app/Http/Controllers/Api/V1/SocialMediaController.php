@@ -2071,7 +2071,7 @@ class SocialMediaController extends Controller
 
         // $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
         $pusher->trigger('channel-one2one.' . $to_user_id, 'one2one-event', ['message' => $message]);
-        // broadcast(new Chatting($message, $request->sender));
+        broadcast(new Chatting($message, $request->sender));
 
         $user_id = auth()->user()->id;
 
@@ -2103,18 +2103,12 @@ class SocialMediaController extends Controller
             ->where('group_id', $group_id)
             ->select(DB::raw('max(id) as id'), 'sender_id')
             ->first();
-            // dd($latest_group_message_to);
             $user_id = Auth::user()->id;
-            // foreach ($latest_group_message_to as $latest) {
-           // if ($latest_group_message_to->sender_id != $user_id) {
                 $read = new GroupChatMessageReadStatus();
                 $read->message_id = $latest_group_message_to->id;
                 $read->user_id = $user_id;
-                $read->save();
-            //}
-            // dd($latest_group_message_to);
+            $read->save();
         } else {
-            // dd("chat");
             $from_id = $request->auth_id;
             $to_id = $request->user_id;
             Chat::where(function ($query1) use ($from_id, $to_id) {
@@ -2126,9 +2120,29 @@ class SocialMediaController extends Controller
                         ->orWhere('to_user_id', $to_id);
                 })
                 ->update(['read_or_not' => 1]);
-            // dd("one to one");
-            // }
+            
         }
+        $user_id = auth()->user()->id;
+        $to_user_id = $request->user_id;
+        $merged = $this->messageRepo->auth_chat();
+        $merged_to = $this->messageRepo->to_chat($request);
+
+        $arr_six = $this->messageRepo->six_message();
+        $arr_six_to = $this->messageRepo->six_message_to($request);
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options = array(
+                'cluster' => 'eu',
+                'encrypted' => true
+            )
+        );
+        $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
+        $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);
+
+        $pusher->trigger('all_message.' . $to_user_id, 'all', $merged_to);
+        $pusher->trigger('all_message.' . $user_id, 'all', $merged);
         return response()->json([
             'success' =>  "read"
         ]);
@@ -2194,7 +2208,8 @@ class SocialMediaController extends Controller
         );
         // $pusher->trigger('channel-one2one.' . $to_user_id, 'message', $message);
         $pusher->trigger('channel-one2one.' . $to_user_id, 'one2one-event', ['message' => $message]);
-        // broadcast(new Chatting($message, $request->sender));
+        // $pusher->trigger('channel-one2one.' . $to_user_id, 'one2one-event', ['message' => $message]);
+        broadcast(new Chatting($message, $request->sender));
         return response()->json([
             'success' =>  $message
         ]);
@@ -3620,8 +3635,6 @@ class SocialMediaController extends Controller
         $report->description = $description;
         $report->save();
 
-
-
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
@@ -3653,12 +3666,26 @@ class SocialMediaController extends Controller
         $admin_rp->report_id = $report->id;
         $admin_rp->save();
 
-        $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
+        $notification = Notification::select(
+            'users.id as user_id',
+            'users.name',
+            'notifications.*',
+            'notifications.post_id as post',
+            'profiles.profile_image'
+        )
+            ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('id', $user_rp->id)
+            ->first();
+
+        $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $report);
+        $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $notification);
 
         $pusher->trigger('friend_request.' . $admin_id, 'friendRequest', $new_data);
 
         return response()->json([
-            'success' => 'Reported Success'
+            'success' => 'Reported Success',
+            'data' => $report
         ]);
     }
 
