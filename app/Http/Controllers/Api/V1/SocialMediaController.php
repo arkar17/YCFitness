@@ -2441,9 +2441,11 @@ class SocialMediaController extends Controller
             $query->where('name', '=', 'admin');
         })->first();
         $id = $to_user_id->id;
-        $messages = ChatGroupMessage::select('id', 'media')->where('chat_group_messages.group_id', $id)
-            ->where('chat_group_messages.media', '!=', null)
-            ->get();
+        $messages = Chat::select('id', 'media')->where(function ($query) use ($auth_user) {
+            $query->where('from_user_id', $auth_user->id)->orWhere('to_user_id', $auth_user->id);
+        })->where(function ($que) use ($id) {
+            $que->where('from_user_id', $id)->orWhere('to_user_id', $id);
+        })->where('media', '!=', null)->get();
         return response()->json([
             'messages' => $messages
         ]);
