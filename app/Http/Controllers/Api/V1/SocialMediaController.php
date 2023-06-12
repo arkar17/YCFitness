@@ -3544,7 +3544,8 @@ class SocialMediaController extends Controller
         $message->deleted_by = auth()->user()->id;
         $message->update();
 
-        $to_user_id = Chat::select('to_user_id')->where('id', $request->id)->first();
+        $to_user = Chat::select('to_user_id')->where('id', $request->id)->first();
+        $to_user_id = $to_user->id;
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
@@ -3555,7 +3556,7 @@ class SocialMediaController extends Controller
             )
         );
 
-        $pusher->trigger('message-delete.' . $to_user_id->to_user_id, 'message', $message);
+        $pusher->trigger('message-delete.' . $to_user_id, 'message', $message);
         //$pusher->trigger('message-delete.' . $to_user_id->to_user_id . '.' . auth()->user()->id, 'message-delete-event', ['message' => $message]);
 
         //$pusher->trigger('message-delete.' . auth()->user()->id . '.' . $to_user_id->to_user_id, 'message-delete-event', ['message' => $message]);
