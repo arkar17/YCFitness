@@ -123,25 +123,6 @@ class MessageRepo
             $latest_group_sms[$key]['is_group'] = 1;
         }
         $read = GroupChatMessageReadStatus::where('user_id', $user_id)->get();
-
-
-        // foreach ($latest_group_sms as $key => $value) {
-        //     $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
-
-        //     if (count($read) > 0) {
-        //         foreach ($read as $re) {
-        //             if (($re->message_id == $value['message_id'] && $re->user_id == $user_id) || $value['sender_id'] == $user_id) {
-        //                 $latest_group_sms[$key]['isRead'] = 1;
-        //                 break; // Exit the inner loop once isRead is set to 1
-        //             }
-        //         }
-        //     } elseif (
-        //         $value['sender_id'] == $user_id
-        //     ) {
-        //         $latest_group_sms[$key]['isRead'] = 1;
-        //     }
-        // }
-
         foreach ($latest_group_sms as $key => $value) {
             $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
             if (count($read) > 0) {
