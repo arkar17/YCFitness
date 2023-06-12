@@ -146,8 +146,8 @@ class MessageRepo
                     $merged[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-        // return $merged;
-        return ($merged) ? $merged : FALSE;
+        return $merged;
+        // return ($merged) ? $merged : FALSE;
     }
 
     public function to_chat(Request $request)
@@ -283,7 +283,8 @@ class MessageRepo
         $arr_six_to = array_reverse($merged_to);
         $arr_six_to = array_slice($arr_six_to, -6);
         $arr_six_to = array_reverse($arr_six_to);
-        return ($arr_six_to) ? $arr_six_to : FALSE;
+        return $arr_six_to;
+        // return ($arr_six_to) ? $arr_six_to : FALSE;
     }
 
     public function to_chat_user(User $user)
@@ -383,6 +384,7 @@ class MessageRepo
                     $merged_to[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-        return ($merged_to) ? $merged_to : FALSE;
+        // return ($merged_to) ? $merged_to : FALSE;
+        return $merged_to;
     }
 }
