@@ -577,7 +577,8 @@
 
         var channel = pusher.subscribe('chat_message.' + user_id);
         channel.bind('chat', function(data) {
-
+            console.log("chat",data)
+            alert("chat")
             let htmlView = '';
             for (let i = 0; i < data.length; i++) {
                 var id = data[i].id;
