@@ -109,11 +109,15 @@ class ChattingController extends Controller
 
             $merged = $this->messageRepo->auth_chat();
             $merged_to = $this->messageRepo->to_chat_user($user);
+            
+
             $arr_six = $this->messageRepo->six_message();
-            $merged_to =  $merged_to;
+
             $arr_six_to = array_reverse($merged_to);
             $arr_six_to = array_slice($arr_six_to, -6);
             $arr_six_to = array_reverse($arr_six_to);
+
+            //dd($arr_six_to);
 
             $pusher->trigger('chat_message.' . $user_id, 'chat', $arr_six);
             $pusher->trigger('chat_message.' . $to_user_id, 'chat', $arr_six_to);

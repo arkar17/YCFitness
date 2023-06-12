@@ -165,7 +165,8 @@ class MessageRepo
                     $merged[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-        return $merged;
+        // return $merged;
+        return ($merged) ? $merged : FALSE;
     }
 
     public function to_chat(Request $request)
@@ -232,7 +233,7 @@ class MessageRepo
             $arr_to[$key]['is_group'] = 0;
         }
 
-
+        
         foreach ($arr_to as $key => $value) {
             if ($value['from_user_id'] == $to_user_id)
                 $arr_to[$key]['isRead'] = 1;
@@ -262,12 +263,12 @@ class MessageRepo
         // }
 
         foreach ($latest_group_sms_to as $key => $value) {
-            $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
+            $latest_group_sms_to[$key]['isRead'] = 0; // Set initial value to 0
 
             if (count($read_to) > 0) {
                 foreach ($read_to as $re) {
                     if (($re->message_id == $value['message_id'] && $re->user_id == $to_user_id)) {
-                        $latest_group_sms[$key]['isRead'] = 1;
+                        $latest_group_sms_to[$key]['isRead'] = 1;
                         // break; // Exit the inner loop once isRead is set to 1
                     }
                 }
@@ -301,7 +302,7 @@ class MessageRepo
         $arr_six_to = array_reverse($merged_to);
         $arr_six_to = array_slice($arr_six_to, -6);
         $arr_six_to = array_reverse($arr_six_to);
-        return $arr_six_to;
+        return ($arr_six_to) ? $arr_six_to : FALSE;
     }
 
     public function to_chat_user(User $user)
@@ -368,7 +369,6 @@ class MessageRepo
             $arr_to[$key]['is_group'] = 0;
         }
 
-
         foreach ($arr_to as $key => $value) {
             if ($value['from_user_id'] == $to_user_id)
                 $arr_to[$key]['isRead'] = 1;
@@ -381,12 +381,11 @@ class MessageRepo
         }
 
         foreach ($latest_group_sms_to as $key => $value) {
-            $latest_group_sms[$key]['isRead'] = 0; // Set initial value to 0
-
+            $latest_group_sms_to[$key]['isRead'] = 0; // Set initial value to 0
             if (count($read_to) > 0) {
                 foreach ($read_to as $re) {
                     if (($re->message_id == $value['message_id'] && $re->user_id == $to_user_id)) {
-                        $latest_group_sms[$key]['isRead'] = 1;
+                        $latest_group_sms_to[$key]['isRead'] = 1;
                         // break; // Exit the inner loop once isRead is set to 1
                     }
                 }
@@ -403,6 +402,6 @@ class MessageRepo
                     $merged_to[$key]['owner_id'] = $owner->group_owner_id;
             }
         }
-        return $merged_to;
+        return ($merged_to) ? $merged_to : FALSE;
     }
 }
