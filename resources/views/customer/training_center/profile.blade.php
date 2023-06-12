@@ -869,6 +869,9 @@
         }
 
         $( document ).ready(function() {
+
+
+        
             //destroyChart();
             var data = @json($weight_history);
             // destroyChart();
@@ -1962,7 +1965,41 @@
 
                             $(this).children('li:first').addClass("active")
                         })
+                       
+                        //comment like
+                        $(document).on('click', '.like_comment', function(e) {
+                            e.preventDefault();
+                            var isLike=e.target.previousElementSibiling == null ? true : false;
+                            var comment_id=$(this).attr('id');
+                            console.log(comment_id)
+                            var add_url = "{{ route('user.react.comment', [':comment_id']) }}";
+                            add_url = add_url.replace(':comment_id', comment_id);
+                            var that = $(this)
+                            $.ajaxSetup({
+                                            headers: {
+                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                            }
+                                        });
+                                    $.ajax({
+                                        method: "POST",
+                                        url: add_url,
+                                        data:{ isLike : isLike , comment_id: comment_id },
+                                        success:function(data){
+                                            that.siblings('p').children('.total_likes_comment').html(data.total_likes)
+                                            if(that.children('.like-icon-comment').hasClass("already-liked-comment")){
+                                                that.children('.like-icon-comment').attr('style','')
+                                                that.children('.like-icon-comment').attr('class','like-icon-comment')
+                                                that.children(".like-icon-comment").attr('icon','mdi:cards-heart-outline')
+                                            }else{
+                                                that.children('.like-icon-comment').attr('style','color : red')
+                                                that.children('.like-icon-comment').attr('class','like-icon-comment already-liked-comment')
+                                                that.children(".like-icon-comment").attr('icon','mdi:cards-heart')
+                                            }
 
+                                        }
+                                    })
+
+                    })
 
 
 
@@ -2481,7 +2518,7 @@
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                             <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span>`
                                                                             if(save_posts[i].total_comments > 1){
-                                                                                htmlView+=`Comments`
+                                                                                htmlView+=`Comments--`
                                                                             }else{
                                                                                 htmlView+=`Comment`
                                                                             }
@@ -3292,10 +3329,52 @@
                                     }
 
                                     htmlView+=`</div>
-                                        <p>`+res.comment[i].Replace+`</p>
-                                    </div>
-                                </div>
+                                        <p>`+res.comment[i].Replace+` </p>
+                                    
+                                    <div class="comment-like-reply-container">
+                                                        <div class="comment-like-container">
+                                                            <a class="like_comment" style = "font-size:12px; text-decoration:none" herf = "#" id=`+res.comment[i].id+`>
+
+                                                            
                                     `
+                                    if(res.comment[i].already_liked==0 ){
+                                        
+                                        htmlView += `
+                                                    <div class="social-media-post-comment-container">
+                                                                    <iconify-icon icon="mdi:cards-heart-outline" class="like-icon-comment">
+                                                                    </iconify-icon>`
+                                                    }
+
+                                                    else{
+                                        htmlView += `
+                                       
+                                        <div class="social-media-post-comment-container">
+                                                        <iconify-icon icon="mdi:cards-heart" style="color: red;" class="like-icon-comment already-liked-comment">
+                                                        </iconify-icon>`
+                                                    }
+
+                                        htmlView +=`</a>
+                                        <p>
+                                                                        <span class="total_likes">
+                                                                            `+res.comment[i].like_count+`
+                                                                        </span>
+                                                                        <a class="viewlikes" id="`+res.comment[i].id+`" style="display:inline;text-decoration:none;cursor: pointer, color: var(--customer-text-color);">`
+                                                                    if(res.comment[i].like_count >1 ){
+                                                                        htmlView+=`Likes`
+                                                                    }else{
+                                                                        htmlView+=`Like`
+                                                                    }
+                                                                    console.log(res.comment[i].like_count,'first cmt');
+                                                            htmlView +=`</a>
+                                                                    </p>
+                                        `
+
+                                    htmlView+=`
+                                </div>
+                                    </div>
+                                    </div>
+                                    `
+                                    
                                 }
                             $('.social-media-all-comments').html(htmlView);
             }

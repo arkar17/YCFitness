@@ -236,4 +236,14 @@ class ChattingController extends Controller
             broadcast(new Chatting($message, $request->sender));
         }
     }
+
+    public function read_unread(Request $request)
+    {
+        $this->messageRepo->changeStatus($request);
+        if ($request->isGroup == 1) {
+            return redirect()->route("socialmedia.group", $request->user_id);
+        } else {
+            return redirect()->route("message.chat", $request->user_id);
+        }
+    }
 }

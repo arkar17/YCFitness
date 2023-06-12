@@ -121,10 +121,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         //new chat
         Route::post('message/chat/{user}',[ChattingController::class,'chatting']);
-        Route::post('message/chat_admin',[ChattingController::class,'chatting_admin']);//web
-        Route::post('message/chat_admin/admin_side',[ChattingController::class,'chatting_admin_side']);//web
+        Route::post('message/chat_admin', [
+            ChattingController::class, 'chatting_admin'
+        ]);
+        Route::post('message/chat_admin/admin_side', [ChattingController::class, 'chatting_admin_side']);
 
-        
+        Route::post('message/read-unread', [ChattingController::class, 'read_unread'])->name('read.unread');
 
         Route::get('/socialmedia/message/deletechat', [SocialmediaController::class, 'delete_allchat_message'])->name('message.all.delete');
         Route::get('/socialmedia/message/viewmedia/{id}', [SocialmediaController::class, 'viewmedia_message'])->name('message.viewmedia');

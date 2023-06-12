@@ -191,7 +191,7 @@
                     if(res.data[i].is_group == 0){
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
-                        <a href=` + url + ` class="social-media-allchats-message-row">
+                        <a href=` + url + ` class="social-media-allchats-message-row" id="0" data-id= `+id+`>
                             <div class="social-media-allchats-message-img">`
                         if(res.data[i].profile_image==null){
                             htmlView +=` <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
@@ -227,7 +227,7 @@
                     } else {
                         htmlView += `
                             <div class="social-media-allchats-message-row-container">
-                                <a href=` + group_url + ` class="social-media-allchats-message-row">
+                                <a href=` + group_url + ` class="social-media-allchats-message-row" id="1" data-id= `+id+`>
                                     <div class="social-media-allchats-message-img">
                                     <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
                                         <p>` + res.data[i].name + `</p>
@@ -259,6 +259,30 @@
                 }
                 $('.social-media-allchats-messages-container').html(htmlView);
             }
+
+
+
+
+        $(document).on('click', '.social-media-allchats-message-row', function(e){
+            //e.preventDefault();
+            var user_id =$(this).data('id')
+            var isGroup = $(this).attr('id');
+            var url = "{{ route('read.unread')}}";
+            //alert(isGroup);
+             $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url: url,
+                            data:{ isGroup : isGroup , user_id: user_id },
+                            success:function(data){
+
+                            }
+        })
+        })
 
 
             $('.social-media-seeallmessage-header-icon').click(function() {

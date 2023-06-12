@@ -775,7 +775,7 @@
 
                     if (latest_messages[i].profile_image === null) {
                         htmlView += `
-                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none">
+                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none" id="0" data-id= `+id+`>
                                             <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
@@ -785,7 +785,7 @@
                             `
                     } else {
                         htmlView += `
-                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none"> 
+                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none" id="0" data-id= `+id+`> 
                                             <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+latest_messages[i].profile_image+`"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
@@ -798,6 +798,28 @@
 
                 $('.social-media-left-messages-rows-container').html(htmlView);
             }
+
+
+            $(document).on('click', '.social-media-left-messages-row', function(e){
+            //e.preventDefault();
+            var user_id =$(this).data('id')
+            var isGroup = $(this).attr('id');
+            var url = "{{ route('read.unread')}}";
+            //alert(isGroup);
+             $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url: url,
+                            data:{ isGroup : isGroup , user_id: user_id },
+                            success:function(data){
+
+                            }
+        })
+        })
         })
     </script>
     <script>
