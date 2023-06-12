@@ -3545,7 +3545,7 @@ class SocialMediaController extends Controller
         $message->update();
 
         $to_user = Chat::select('to_user_id')->where('id', $request->id)->first();
-        $to_user_id = $to_user->id;
+        $to_user_id = $to_user->to_user_id;
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
