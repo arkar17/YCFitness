@@ -2549,8 +2549,7 @@ class SocialMediaController extends Controller
                 'encrypted' => true
             )
         );
-        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == null) {
-            dd("first if ", $post_owner->user_id);
+        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == '') {
             $data2 = auth()->user()->name . ' commented on your post!';
             $fri_noti = new Notification();
             $fri_noti->description = $data2;
