@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\TrainingGroup;
-use App\Models\Message;
 use App\Models\Chat;
 use App\Models\User;
+use App\Models\Message;
+use App\Models\TrainingUser;
+use Illuminate\Http\Request;
+use App\Models\TrainingGroup;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class ChatWithAdminController extends Controller
 {
@@ -79,6 +80,8 @@ class ChatWithAdminController extends Controller
             ->whereIn('id', $n)
             ->where('id', '!=', $user->id)
             ->get();
+
+
 
         return view('admin.chat_admin', compact('id', 'messages', 'auth_user_name', 'receiver_user', 'sender_user', 'friends'));
     }

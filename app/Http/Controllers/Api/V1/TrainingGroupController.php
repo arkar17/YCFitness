@@ -339,8 +339,12 @@ class TrainingGroupController extends Controller
         $group_id = $request->id;
         $group = TrainingGroup::where('id', $group_id)->first();
 
+        $group = TrainingGroup::where('id', $group_id)->first();
+
         if ($group->group_type == 'weight loss') {
-            $members = User::select('name', 'id')->where('ingroup', '!=', 1)
+            $members = User::select('name', 'users.id', 'profiles.profile_image')
+                ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+                ->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
                 ->where('membertype_level', $group->member_type_level)
@@ -355,14 +359,17 @@ class TrainingGroupController extends Controller
         }
 
         if ($group->group_type == 'weight gain') {
-            $members = User::select('name', 'id')->where('ingroup', '!=', 1)
+            $members =
+                User::select('name', 'users.id', 'profiles.profile_image')
+                ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+                ->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
                 ->where('membertype_level', $group->member_type_level)
                 ->where('gender', $group->gender)
                 ->where('bmi', '<=', 18.5)
                 ->get();
-
+            // dd($messages);
             return response()->json([
                 'message' => 'success',
                 'members' => $members
@@ -370,7 +377,9 @@ class TrainingGroupController extends Controller
         }
 
         if ($group->group_type == 'body beauty') {
-            $members = User::select('name', 'id')->where('ingroup', '!=', 1)
+            $members =
+                User::select('name', 'users.id', 'profiles.profile_image')
+                ->leftJoin('profiles', 'profiles.id', 'users.profile_id')->where('ingroup', '!=', 1)
                 ->where('active_status', 2)
                 ->where('member_type', $group->member_type)
                 ->where('membertype_level', $group->member_type_level)
@@ -388,7 +397,18 @@ class TrainingGroupController extends Controller
     public function viewMembers(Request $request)
     {
         $training_group_id = $request->training_group_id;
-        $training_users = TrainingUser::where('training_group_id', $training_group_id)->with('user')->get();
+        // $training_users = TrainingUser::where('training_group_id', $training_group_id)
+        // ->with('user')->get();
+        $training_users = TrainingUser::select(
+            'users.id as user_id',
+            'users.name',
+            'training_users.*',
+            'profiles.profile_image'
+        )
+            ->leftJoin('users', 'training_users.user_id', '=', 'users.id')
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('training_users.training_group_id', $training_group_id)
+            ->get();
 
         return response()->json([
             'message' => 'success',
