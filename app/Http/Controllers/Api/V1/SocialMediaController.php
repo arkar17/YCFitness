@@ -416,6 +416,13 @@ class SocialMediaController extends Controller
         $auth = Auth()->user()->id;
         $id = $request->id;
 
+        $block_list = BlockList::where('sender_id', $auth)->orWhere('receiver_id', $auth)->get(['sender_id', 'receiver_id'])->toArray();
+        $b = array();
+        foreach ($block_list as $block) {
+            $f = (array)$block;
+            array_push($b, $f['sender_id'], $f['receiver_id']);
+        }
+
         $profile = DB::table('users')
             ->select('users.id', 'users.name', 'users.bio', 'profiles.profile_image', 'profiles.cover_photo')
             ->leftjoin('profiles', 'profiles.id', '=', 'users.profile_id')
@@ -449,10 +456,32 @@ class SocialMediaController extends Controller
             ->where('user_react_posts.user_id', $auth)->get();
         $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
 
-        $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where deleted_at = null GROUP BY post_id");
+        // $comment_post_count = DB::select("SELECT COUNT(post_id) as comment_count, post_id FROM comments where deleted_at = null GROUP BY post_id");
         $roles = DB::select("SELECT roles.name,model_has_roles.model_id FROM model_has_roles 
         left join roles on model_has_roles.role_id = roles.id");
         // dd($liked_post);
+        $array = \array_filter($b, static function ($element) {
+            $user_id = auth()->user()->id;
+            return $element !== $user_id;
+            //                   ↑
+            // Array value which you want to delete
+        });
+        if ($array) {
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('report_status', 0)
+            ->where('deleted_at', null)
+            ->whereNotIn('user_id', $array)
+            ->groupBy('post_id')
+                ->get();
+        } else {
+            $comment_post_count =  DB::table('comments')
+            ->select('post_id', DB::raw('count(*) as comment_count'))
+            ->where('report_status', 0)
+            ->where('deleted_at', null)
+            ->groupBy('post_id')
+                ->get();
+        }
 
         foreach ($posts as $key => $value) {
             $posts[$key]['is_save'] = 0;
@@ -2571,7 +2600,6 @@ class SocialMediaController extends Controller
                         ->where('notifications.id', $fri_noti->id)
                         ->first();
                     $pusher->trigger('friend_request.' . $fri_noti->receiver_id, 'friendRequest', $notification);
-
                     // $pusher->trigger('friend_request.' . $fri_noti->receiver_id, 'friendRequest', $fri_noti);
                 }
             }
