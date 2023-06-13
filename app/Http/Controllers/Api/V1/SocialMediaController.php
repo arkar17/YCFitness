@@ -2550,6 +2550,7 @@ class SocialMediaController extends Controller
             )
         );
         if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == "null") {
+            dd("first if ", $post_owner->user_id);
             $data2 = auth()->user()->name . ' commented on your post!';
             $fri_noti = new Notification();
             $fri_noti->description = $data2;
