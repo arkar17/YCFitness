@@ -2574,7 +2574,7 @@ class SocialMediaController extends Controller
                 ->first();
             $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $notification);
             // $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $fri_noti);
-        } elseif ($comments->mentioned_users != null) {
+        } elseif ($comments->mentioned_users != "null") {
             $data = auth()->user()->name . ' mentioned you in a comment!';
             $ids = json_decode($comments->mentioned_users);
             $arr = json_decode(json_encode($ids), true);
