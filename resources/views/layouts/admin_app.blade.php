@@ -775,7 +775,7 @@
 
                     if (latest_messages[i].profile_image === null) {
                         htmlView += `
-                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none">
+                                    <a href=` + url + ` class="social-media-left-messages-row unread-msg" style= "text-decoration:none">
                                             <img  class="nav-profile-img" src="{{ asset('img/customer/imgs/user_default.jpg') }}"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>
@@ -785,7 +785,7 @@
                             `
                     } else {
                         htmlView += `
-                                    <a href=` + url + ` class="social-media-left-messages-row" style= "text-decoration:none"> 
+                                    <a href=` + url + ` class="social-media-left-messages-row unread-msg" style= "text-decoration:none"> 
                                             <img  class="nav-profile-img" src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/`+latest_messages[i].profile_image+`"/>
                                         <p>
                                             ` + latest_messages[i].name + `<br>

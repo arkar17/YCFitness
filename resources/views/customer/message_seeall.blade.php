@@ -51,7 +51,7 @@
 
         <div class="social-media-allchats-messages-container">
             {{-- @forelse ($messages as $list)
-                    <div class="social-media-allchats-message-row-container">
+                    <div class="social-media-allchats-message-row-container unread-msg">
                         <a href="{{route('message.chat',$list->id)}}" class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">
                                 @if ($list->profile_image == null)
@@ -187,12 +187,20 @@
 
                     var group_detail = "{{ route('socialmedia.group.detail', [':id']) }}";
                     group_detail = group_detail.replace(':id',id);
-
+                    console.log(res.data[i])
                     if(res.data[i].is_group == 0){
-                        htmlView += `
+                        if(Number(res.data[i].isRead) === 0){
+                            htmlView += `
+                            <div class="social-media-allchats-message-row-container unread-msg">
+                        <a href=` + url + ` class="social-media-allchats-message-row">
+                            <div class="social-media-allchats-message-img">`
+                        }else{
+                            htmlView += `
                             <div class="social-media-allchats-message-row-container">
                         <a href=` + url + ` class="social-media-allchats-message-row">
                             <div class="social-media-allchats-message-img">`
+                        }
+                        
                         if(res.data[i].profile_image==null){
                             htmlView +=` <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>`
                         }else{
@@ -225,7 +233,39 @@
                     </div>`
 
                     } else {
-                        htmlView += `
+                        if(Number(res.data[i].isRead) === 0){
+                            htmlView += `
+                            <div class="social-media-allchats-message-row-container unread-msg">
+                                <a href=` + group_url + ` class="social-media-allchats-message-row">
+                                    <div class="social-media-allchats-message-img">
+                                    <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
+                                        <p>` + res.data[i].name + `</p>
+                                    </div>
+
+                                    <p>` + res.data[i].text + `</p>
+
+                                    <span>` + res.data[i].date + `</span>
+                                </a>
+
+                        <div class="social-media-allchats-actions-container">
+                            <iconify-icon icon="mdi:dots-vertical" class="social-media-allchats-actions-toggle"></iconify-icon>
+                            <div class="social-media-allchats-actions-box">
+                                <div  data-id=` + res.data[i].from_id + ` class="leave_group"
+                                id= `+ res.data[i].to_id + `>
+                                    <iconify-icon icon="tabler:trash" class="social-media-allchats-action-icon"></iconify-icon>
+                                    <span>Leave</span>
+                                </div>
+                                <a  href=` + group_detail + `>
+                                    <iconify-icon icon="material-symbols:person" class="social-media-allchats-action-icon"></iconify-icon>
+                                    Detail
+                                </a>
+                            </div>
+
+                        </div>
+                            </div>
+                            `
+                        }else{
+                            htmlView += `
                             <div class="social-media-allchats-message-row-container">
                                 <a href=` + group_url + ` class="social-media-allchats-message-row">
                                     <div class="social-media-allchats-message-img">
@@ -255,6 +295,8 @@
                         </div>
                             </div>
                             `
+                        }
+                        
                     }
                 }
                 $('.social-media-allchats-messages-container').html(htmlView);

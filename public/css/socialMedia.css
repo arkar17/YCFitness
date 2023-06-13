@@ -152,14 +152,20 @@
 }
 
 .social-media-left-messages-row{
-    display: inline-flex;
+    display: flex;
     gap: 0 5px;
     align-items: center;
     margin-bottom: 15px;
     text-decoration: none;
-
-
+    /* padding: 5px 0; */
+    border-radius: 5px;
 }
+
+.social-media-left-messages-row.unread-msg p{
+    color: var(--customer-primary-color) !important;
+    font-weight: bold;
+}
+
 
 .social-media-left-messages-row img{
     width: 25px;
@@ -871,7 +877,7 @@ a:hover{
 .social-media-allchats-message-row{
     padding: 5px 10px;
 
-    background-color: var(--customer-card-bg-color);
+    /* background-color: var(--customer-card-bg-color); */
     /* box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25); */
     display: flex;
     flex: 1;
@@ -1874,6 +1880,10 @@ ul{
     margin-bottom: 5px;
     border-radius: 5px;
     position: relative;
+}
+
+.social-media-allchats-message-row-container.unread-msg{
+    background-color: var(--customer-primary-soft-color);
 }
 
 .social-media-allchats-actions-container{

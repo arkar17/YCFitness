@@ -123,7 +123,7 @@
 
                 if(data[i].is_group == 0){
                     if(data[i].profile_image!=null){
-                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
+                        htmlView += `<a href=`+url+` class="social-media-left-messages-row unread-msg">
                                             <img  class="nav-profile-img" src="{{asset('storage/post/`+data[i].profile_image+`')}}"/>
                                         <p>
                                             ` + data[i].name + `<br>
@@ -132,7 +132,7 @@
                                     </a>
                             `
                     }else{
-                        htmlView += `<a href=`+url+` class="social-media-left-messages-row">
+                        htmlView += `<a href=`+url+` class="social-media-left-messages-row unread-msg">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}" />
                                         <p>
                                             ` + data[i].name + `<br>
@@ -145,7 +145,7 @@
                 }
                 else{
                     htmlView += `
-                                    <a href=`+group_url+` class="social-media-left-messages-row">
+                                    <a href=`+group_url+` class="social-media-left-messages-row unread-msg">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}" />
                                         <p>
                                             ` + data[i].name + `<br>
@@ -179,7 +179,18 @@
                 if(latest_messages[i].is_group == 0){
 
                     if(latest_messages[i].profile_image===null){
-                        htmlView += `
+                        if(Number(latest_messages[i].isRead) === 0){
+                            htmlView += `
+                                    <a href=`+url+` class="social-media-left-messages-row unread-msg">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                        }else{
+                            htmlView += `
                                     <a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                                         <p>
@@ -188,8 +199,21 @@
                                         </p>
                                     </a>
                             `
+                        }
+                        
                     }else{
-                        htmlView += `
+                        if(Number(latest_messages[i].isRead) === 0){
+                            htmlView += `
+                                    <a href=`+url+` class="social-media-left-messages-row unread-msg">
+                                            <img  class="nav-profile-img" src="{{asset('storage/post/`+latest_messages[i].profile_image+`')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                        }else{
+                            htmlView += `
                                     <a href=`+url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('storage/post/`+latest_messages[i].profile_image+`')}}"/>
                                         <p>
@@ -198,11 +222,24 @@
                                         </p>
                                     </a>
                             `
+                        }
+                        
                     }
 
                 }
                 else{
-                    htmlView += `
+                    if(Number(latest_messages[i].isRead) === 0){
+                        htmlView += `
+                                    <a href=`+group_url+` class="social-media-left-messages-row unread-msg">
+                                            <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
+                                        <p>
+                                            ` + latest_messages[i].name + `<br>
+                                            <span>` + latest_messages[i].text + ` </span>
+                                        </p>
+                                    </a>
+                            `
+                    }else{
+                        htmlView += `
                                     <a href=`+group_url+` class="social-media-left-messages-row">
                                             <img  class="nav-profile-img" src="{{asset('img/customer/imgs/group_default.png')}}"/>
                                         <p>
@@ -211,6 +248,8 @@
                                         </p>
                                     </a>
                             `
+                    }
+                    
                 }
 
             }
