@@ -2549,7 +2549,31 @@ class SocialMediaController extends Controller
                 'encrypted' => true
             )
         );
-        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == '') {
+        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users) {
+            $data2 = auth()->user()->name . ' commented on your post!';
+            $fri_noti = new Notification();
+            $fri_noti->description = $data2;
+            $fri_noti->date = Carbon::Now()->toDateTimeString();
+            $fri_noti->sender_id = auth()->user()->id;
+            $fri_noti->receiver_id = $post_owner->user_id;
+            $fri_noti->post_id = $request->post_id;
+            $fri_noti->comment_id = $comments->id;
+            $fri_noti->notification_status = 1;
+            $fri_noti->save();
+            $notification = Notification::select(
+                'users.id as user_id',
+                'users.name',
+                'notifications.*',
+                'notifications.post_id as post',
+                'profiles.profile_image'
+            )
+                ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
+                ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+                ->where('notifications.id', $fri_noti->id)
+                ->first();
+            $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $notification);
+            // $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $fri_noti);
+        } else if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == '') {
             $data2 = auth()->user()->name . ' commented on your post!';
             $fri_noti = new Notification();
             $fri_noti->description = $data2;
