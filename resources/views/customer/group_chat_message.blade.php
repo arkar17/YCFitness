@@ -362,6 +362,11 @@
 
 
         $(document).ready(function() {
+            //change read status onfocus start
+            $(".group-chat-send-form-input").focus(function(){
+                console.log("change status on focus")
+            })
+            //change read status onfocus end
             $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
             //image and video select start
             $("#groupChatImg_message").on("change", handleFileSelect_message);

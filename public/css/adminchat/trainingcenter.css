@@ -1,3 +1,8 @@
+.social-media-left-messages-row.unread-msg p{
+    color: #3CDD57 !important;
+    font-weight: bold;
+}
+
 .wrapper:last-child{
     width: auto;
 }
