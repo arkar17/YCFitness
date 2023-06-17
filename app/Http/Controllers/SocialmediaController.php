@@ -147,7 +147,31 @@ class SocialmediaController extends Controller
                 $fri_noti->post_id = $request->post_id;
                 $fri_noti->notification_status = 1;
                 $fri_noti->save();
-                $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data);
+                $notification = Notification::select(
+                    'users.id as user_id',
+                    'users.name',
+                    'notifications.*',
+                    'notifications.post_id as post',
+                    'profiles.profile_image'
+                )
+                    ->leftJoin(
+                        'users',
+                        'notifications.sender_id',
+                        '=',
+                        'users.id'
+                    )
+                    ->leftJoin(
+                        'profiles',
+                        'profiles.id',
+                        'users.profile_id'
+                    )
+                    ->where(
+                        'notifications.id',
+                        $fri_noti->id
+                    )
+                    ->first();
+                $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $notification);
+                // $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data);
             }
         }
         $total_likes = UserReactPost::where('post_id', $post_id)->count();
@@ -210,7 +234,31 @@ class SocialmediaController extends Controller
                 $fri_noti->comment_id = $request->comment_id;
                 $fri_noti->notification_status = 1;
                 $fri_noti->save();
-                $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data);
+                $notification = Notification::select(
+                    'users.id as user_id',
+                    'users.name',
+                    'notifications.*',
+                    'notifications.post_id as post',
+                    'profiles.profile_image'
+                )
+                    ->leftJoin(
+                        'users',
+                        'notifications.sender_id',
+                        '=',
+                        'users.id'
+                    )
+                    ->leftJoin(
+                        'profiles',
+                        'profiles.id',
+                        'users.profile_id'
+                    )
+                    ->where(
+                        'notifications.id',
+                        $fri_noti->id
+                    )
+                    ->first();
+                $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $notification);
+                // $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data);
             }
         }
         $total_likes = UserReactComment::where('comment_id', $comment_id)->count();
@@ -988,8 +1036,24 @@ class SocialmediaController extends Controller
         $fri_noti->receiver_id = $id;
         $fri_noti->notification_status = 1;
         $fri_noti->save();
+        $notification = Notification::select(
+            'users.id as user_id',
+            'users.name',
+            'notifications.*',
+            'notifications.post_id as post',
+            'profiles.profile_image'
+        )
+        ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
+        ->leftJoin(
+            'profiles',
+            'profiles.id',
+            'users.profile_id'
+        )
+        ->where('notifications.id', $fri_noti->id)
+        ->first();
+        $pusher->trigger('friend_request.' . $id, 'friendRequest', $notification);
 
-        $pusher->trigger('friend_request.' . $id, 'friendRequest', $data);
+        // $pusher->trigger('friend_request.' . $id, 'friendRequest', $data);
         return response()
             ->json([
                 'data' => $data
@@ -1035,16 +1099,7 @@ class SocialmediaController extends Controller
                     'encrypted' => true
                 )
             );
-        // $pusher = new Pusher(
-        //     env('PUSHER_APP_KEY'),
-        //     env('PUSHER_APP_SECRET'),
-        //     env('PUSHER_APP_ID'),
-        //     [
-        //         'cluster' => env('PUSHER_APP_CLUSTER'),
-        //         'encrypted' => true
-        //     ]
-        // );
-       // dd($pusher);
+       
 
         $data = $user->name . ' accepted your friend request!';
 
@@ -1055,8 +1110,32 @@ class SocialmediaController extends Controller
         $fri_noti->receiver_id = $request->id;
         $fri_noti->notification_status = 1;
         $fri_noti->save();
+        $notification = Notification::select(
+            'users.id as user_id',
+            'users.name',
+            'notifications.*',
+            'notifications.post_id as post',
+            'profiles.profile_image'
+        )
+        ->leftJoin(
+            'users',
+            'notifications.sender_id',
+            '=',
+            'users.id'
+        )
+            ->leftJoin(
+                'profiles',
+                'profiles.id',
+                'users.profile_id'
+            )
+            ->where(
+                'notifications.id',
+                $fri_noti->id
+            )
+            ->first();
+        $pusher->trigger('friend_request.' . $request->id, 'friendRequest', $notification);
 
-        $pusher->trigger('friend_request.' . $request->id, 'App\\Events\\Friend_Request', $data);
+        // $pusher->trigger('friend_request.' . $request->id, 'App\\Events\\Friend_Request', $data);
         return redirect()->back();
     }
 
@@ -1671,7 +1750,7 @@ class SocialmediaController extends Controller
                 'encrypted' => true
             )
         );
-        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == "null") {
+        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == null) {
             $data2 = auth()->user()->name . ' commented on your post!';
             $fri_noti = new Notification();
             $fri_noti->description = $data2;
@@ -1682,8 +1761,20 @@ class SocialmediaController extends Controller
             $fri_noti->comment_id = $comments->id;
             $fri_noti->notification_status = 1;
             $fri_noti->save();
-            $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data2);
-        } elseif ($comments->mentioned_users != "null") {
+            $notification = Notification::select(
+                'users.id as user_id',
+                'users.name',
+                'notifications.*',
+                'notifications.post_id as post',
+                'profiles.profile_image'
+            )
+                ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
+                ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+                ->where('notifications.id', $fri_noti->id)
+                ->first();
+            // $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data2);
+            $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $notification);
+        } elseif ($comments->mentioned_users != null) {
             $data = auth()->user()->name . ' mentioned you in a comment!';
             $ids = json_decode($comments->mentioned_users);
             $arr = json_decode(json_encode($ids), true);
@@ -1698,7 +1789,19 @@ class SocialmediaController extends Controller
                     $fri_noti->comment_id = $comments->id;
                     $fri_noti->notification_status = 1;
                     $fri_noti->save();
-                    $pusher->trigger('friend_request.' . $fri_noti->receiver_id, 'friendRequest', $data);
+                    $notification = Notification::select(
+                        'users.id as user_id',
+                        'users.name',
+                        'notifications.*',
+                        'notifications.post_id as post',
+                        'profiles.profile_image'
+                    )
+                        ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
+                        ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+                        ->where('notifications.id', $fri_noti->id)
+                        ->first();
+                    // $pusher->trigger('friend_request.' . $fri_noti->receiver_id, 'friendRequest', $data);
+                    $pusher->trigger('friend_request.' . $fri_noti->receiver_id, 'friendRequest', $notification);
                 }
             }
         }
@@ -2192,7 +2295,20 @@ class SocialmediaController extends Controller
         $admin_rp->report_id = $report->id;
         $admin_rp->save();
 
-        $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
+        $notification = Notification::select(
+            'users.id as user_id',
+            'users.name',
+            'notifications.*',
+            'notifications.post_id as post',
+            'profiles.profile_image'
+        )
+        ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
+        ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+        ->where('notifications.id', $user_rp->id)
+        ->first();
+        $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $notification);
+
+        // $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $data);
 
         $pusher->trigger('friend_request.' . $admin_id, 'friendRequest', $new_data);
         // return response()->json([
