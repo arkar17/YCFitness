@@ -364,7 +364,24 @@
         $(document).ready(function() {
             //change read status onfocus start
             $(".group-chat-send-form-input").focus(function(){
-                console.log("change status on focus")
+            console.log('groupId ', groupId);
+            var user_id =groupId
+            var isGroup = 1;
+            var url = "{{ route('read.unread')}}";
+            //alert(isGroup);
+             $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                        $.ajax({
+                            method: "POST",
+                            url: url,
+                            data:{ isGroup : isGroup , user_id: user_id },
+                            success:function(data){
+
+                            }
+        })
             })
             //change read status onfocus end
             $('.group-chat-messages-container').scrollTop($('.group-chat-messages-container')[0].scrollHeight);
