@@ -6,6 +6,7 @@
 <div class="container d-flex justify-content-center">
     <div class="social-media-right-container">
         <div class="social-media-posts-parent-container">
+            @if($report_post)
             <div class="social-media-post-container">
                 <div class="social-media-post-header">
                     <div class="social-media-post-name-container">
@@ -131,6 +132,8 @@
                 <p>{{$report_post->comment}}</p>
                 @endif
             </div>
+            @else
+            <h6 class="h6">No Data ....</h6>
         </div>
     </div>
 </div>

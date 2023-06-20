@@ -65,7 +65,6 @@ class ReportController extends Controller
 
     public function delete_report($id)
     {
-        dd('delete');
         $report = Report::findOrFail($id);
         $report->delete();
         return redirect()->back();
@@ -112,8 +111,9 @@ class ReportController extends Controller
             ->where('posts.report_status',0)
             ->leftJoin('users', 'users.id', 'posts.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
+                ->where('posts.deleted_at', null)
             ->first();
-
+            // dd($report_post);
             $liked_post = UserReactPost::select('posts.*')->leftJoin('posts', 'posts.id', 'user_react_posts.post_id')->get();
 
             $liked_post_count = DB::select("SELECT COUNT(post_id) as like_count, post_id FROM user_react_posts GROUP BY post_id");
@@ -155,9 +155,12 @@ class ReportController extends Controller
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
             ->first();
-            foreach ($report_post as $key => $value) {
-                $report_post->post_id = null;
+            if ($report_post) {
+                foreach ($report_post as $key => $value) {
+                    $report_post->post_id = null;
+                }
             }
+            
         }
     //    dd($report_post);
         return view('admin.socialmedia_report.view_report',compact('report_post'));
