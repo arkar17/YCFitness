@@ -133,7 +133,9 @@
                 @endif
             </div>
             @else
-            <h6 class="h6">No Data ....</h6>
+            <div class="h-100 d-flex justify-content-center align-items-center ">
+                <h1 class="h6 text-danger">Post has been deleted.....</h1>
+            </div>
             @endif
             
         </div>
