@@ -248,6 +248,7 @@ Route::middleware(['auth:sanctum', 'activity'])->group(function () {
 
     Route::get('shop-post-count', [ShopController::class, 'shop_post_count']);
     Route::get('all/sms', [ShopController::class, 'message']);
+    Route::get('all/noti', [ShopController::class, 'notification']);
     Route::post('cancel-call', [ShopController::class, 'cancel']);
 
 
