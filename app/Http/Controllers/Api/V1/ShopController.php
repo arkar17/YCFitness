@@ -26,6 +26,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\GroupChatMessageReadStatus;
+use App\Models\Report;
 
 class ShopController extends Controller
 {
@@ -53,6 +54,14 @@ class ShopController extends Controller
         $noti = Notification::get();
         return response()->json([
             'noti' => $noti
+        ]);
+    }
+
+    public function reports()
+    {
+        $report = Report::get();
+        return response()->json([
+            'report' => $report
         ]);
     }
     
