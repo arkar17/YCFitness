@@ -12,6 +12,7 @@ use App\Models\FreeVideo;
 use App\Models\ShopReact;
 use App\Models\ShopMember;
 use App\Models\ShopRating;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
@@ -46,6 +47,15 @@ class ShopController extends Controller
             'gp_read' => $gp_read
         ]);
     }
+
+    public function notification()
+    {
+        $noti = Notification::get();
+        return response()->json([
+            'noti' => $noti
+        ]);
+    }
+    
     public function shop_member_plan_list(){
         $member_plan = ShopMember::get();
         return response()->json([
