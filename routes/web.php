@@ -410,6 +410,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::resource('feedback', FeedbackController::class);
             Route::get('getfeedbcak', [FeedbackController::class, 'getFeedback'])->name('admin.getFeedback');
 
+            Route::get('notification', [AdminController::class, 'notification'])->name('admin.notification');
+
 
         });
     }); //admin prefix

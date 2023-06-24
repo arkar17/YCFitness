@@ -104,9 +104,9 @@ class ReportController extends Controller
 
         $report=Report::findOrFail($id);
         if($report->post_id != null){
-            $report_post=DB::table('reports')
-            ->select('reports.*','reports.id as report_id','profiles.profile_image','users.name','posts.*')
-            ->where('post_id',$report->post_id)
+            $report_post = DB::table('reports')->select('reports.*', 'reports.id as report_id', 'profiles.profile_image', 'users.name', 'posts.*')
+                ->where('post_id', $report->post_id)
+                ->where('reports.id', $report->id)
             ->leftjoin('posts','posts.id','reports.post_id')
             ->where('posts.report_status',0)
             ->leftJoin('users', 'users.id', 'posts.user_id')
@@ -151,6 +151,7 @@ class ReportController extends Controller
             $report_post=DB::table('reports')
             ->select('reports.*','reports.id as report_id','reports.id as report_id','profiles.profile_image','users.name','comments.*')
             ->where('comments.id',$report->comment_id)
+                ->where('reports.id', $report->id)
             ->leftjoin('comments','comments.id','reports.comment_id')
             ->leftJoin('users', 'users.id', 'comments.user_id')
             ->leftJoin('profiles', 'users.profile_id', 'profiles.id')
@@ -171,7 +172,7 @@ class ReportController extends Controller
         $report=Report::findOrFail($report_id);
         //dd($report);
         if($report->post_id != null or $report->post_id != 0){
-            dd("post");
+            //sdd("post");
             $post=Post::findOrFail($report->post_id);
             $post_id=$post->id;
             $post_owner=$post->user_id;
@@ -222,7 +223,22 @@ class ReportController extends Controller
                 $post_rp->report_id=$report_id;
                 $post_rp->save();
 
-                $pusher->trigger('friend_request.'.$post_owner , 'friendRequest', $data);
+        $notification = Notification::select(
+            'users.id as user_id',
+            'users.name',
+            'notifications.*',
+            'notifications.post_id as post',
+            'profiles.profile_image'
+        )
+            ->leftJoin('users', 'notifications.sender_id', '=', 'users.id')
+            ->leftJoin(
+                'profiles',
+                'profiles.id',
+                'users.profile_id'
+            )
+            ->where('notifications.id', $post_rp->id)
+            ->first();
+        $pusher->trigger('friend_request.' . $post_owner, 'friendRequest', $notification);
 
         return response()->json([
             'success' => 'Deleted',

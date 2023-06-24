@@ -476,7 +476,7 @@
                     <div class="notis-box-container">
                         <div class="notis-box-header">
                             <p>Notifications</p>
-                            <a href="{{ route('notification_center') }}">See All</a>
+                            <a href="{{ route('admin.notification') }}">See All</a>
                         </div>
 
                         <div class="notis-box-notis-container">

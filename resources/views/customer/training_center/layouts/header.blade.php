@@ -110,9 +110,6 @@
                     <?php $count = 0; ?>
                     @foreach(auth()->user()->notifri->sortByDesc('created_at') as $noti)
                     <?php if($count == 10) break; ?>
-
-
-
                     @if($noti->report_id != 0 AND $noti->notification_status == 1)
                     <a href="#" >
                         <div class="notis-box-noti-row notis-box-unread-noti">
@@ -146,7 +143,7 @@
                                 </div>
                             </div>
                         </a>
-                    @elseif($noti->notification_status != 1 AND $noti->post_id == null AND $noti->report_id==0)
+                    @elseif($noti->notification_status != 2 AND $noti->post_id == null AND $noti->report_id==0)
                         <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
                             <div class="notis-box-noti-row notis-box-read-noti ">
                                 <img src="{{asset('img/avatar.png')}}">
@@ -199,6 +196,8 @@
                             </div>
                         </div>
                     </a>
+
+                    
                         @endif
                         <?php $count++; ?>
                     @endforeach

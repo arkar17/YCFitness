@@ -2,6 +2,11 @@
 
 @section('content')
 @include('sweetalert::alert')
+<style>
+    a{
+        text-decoration: none !important;
+    }
+</style>
     <div class="social-media-right-container">
         <div class="social-media-noti-tabs-container">
             <p class="social-media-noti-likes-tab ">
@@ -18,7 +23,147 @@
                 <p>Today</p>
                 @forelse ($notification as $noti)
 
-                <div class="social-media-likes-row">
+                 @if($noti->report_id != 0 )
+                  @if($noti->notification_status == 1)
+                    <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                    @endif
+                        <p>{{$noti->description}}</p>
+                    </div>
+                    <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
+
+                 @elseif($noti->notification_status == 1 AND $noti->post_id == null AND $noti->report_id==0)
+                            <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
+                                @if($noti->notification_status == 1)
+                        <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
+                        <div class="social-media-likes-name">
+                    @else
+                        <div class="social-media-likes-row" style="padding:5px;">
+                        <div class="social-media-likes-name">
+                    @endif
+                        @if($noti->profile_image == null)
+                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            @else
+                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                        @endif
+                            <p>{{$noti->description}}</p>
+                        </div>
+                        <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                    </div>
+                            </a>
+
+            @elseif($noti->notification_status == 2 AND $noti->post_id == null AND $noti->report_id==0)
+                        <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
+                             @if($noti->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                    @endif
+                        <p>{{$noti->description}}</p>
+                    </div>
+                   <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+             @elseif($noti->notification_status == 1 AND $noti->post_id != null AND $noti->comment_id != null AND $noti->report_id==0)
+                        <a href ="?id={{$noti->id}}"  class = "view_comment" id = {{$noti->post_id}}>
+                             @if($noti->notification_status == 1)
+                    <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                    @endif
+                        <p>{{$noti->description}}</p>
+                    </div>
+                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+            @elseif($noti->notification_status == 2 AND $noti->post_id != null AND $noti->comment_id != null AND $noti->report_id==0)
+                        <a href ="?id={{$noti->id}}"  class = "view_comment" id = {{$noti->post_id}}>
+                             @if($noti->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                    @endif
+                        <p>{{$noti->description}} {{ $noti->post_id }}</p>
+                    </div>
+                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+                @elseif($noti->notification_status != 1 AND $noti->post_id != null AND $noti->comment_id == null AND $noti->report_id==0)
+                        <a href ="?id={{$noti->id}}"  class = "view_like" id = {{$noti->post_id}}>
+                             @if($noti->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                    @endif
+                        <p>{{$noti->description}}</p>
+                    </div>
+                     <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+
+                        @elseif($noti->notification_status != 2 AND $noti->post_id != null AND $noti->comment_id == null AND $noti->report_id==0)
+                        <a href ="?id={{$noti->id}}"  class = "view_like" id = {{$noti->post_id}}>
+                             @if($noti->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                    @endif
+                        <p>{{$noti->description}}</p>
+                    </div>
+                     <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>                    
+                @endif
+
+                {{-- <div class="social-media-likes-row">
                     <div class="social-media-likes-name">
                     @if($noti->report_status!=0)
                     <img src="{{asset('img/customer/imgs/report.png')}}"/>
@@ -36,7 +181,7 @@
                     @else
                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
                     @endif
-                </div>
+                </div> --}}
                 @empty
                     <p class="text-secondary p-1">No notification</p>
                 @endforelse
@@ -45,10 +190,155 @@
             <div class="social-media-likes-earlier-container">
                 <p>Earlier</p>
                 @forelse ($notification_earlier as $noti_earli)
-
-                <div class="social-media-likes-row">
+                @if($noti_earli->report_id != 0 )
+                  @if($noti_earli->notification_status == 1)
+                    <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
                     <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
+                    </div>
+                    <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
 
+                 @elseif($noti_earli->notification_status == 1 AND $noti_earli->post_id == null AND $noti_earli->report_id==0)
+                            <a href ="?id={{$noti_earli->id}}"  class = "accept" id = {{$noti_earli->sender_id}}>
+                                @if($noti_earli->notification_status == 1)
+                        <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
+                        <div class="social-media-likes-name">
+                    @else
+                        <div class="social-media-likes-row" style="padding:5px;">
+                        <div class="social-media-likes-name">
+                    @endif
+                        @if($noti_earli->profile_image == null)
+                                <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                            @else
+                                <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                        @endif
+                            <p>{{$noti_earli->description}}</p>
+                        </div>
+                        <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                    </div>
+                            </a>
+
+            @elseif($noti_earli->notification_status == 2 AND $noti_earli->post_id == null AND $noti_earli->report_id==0)
+                        <a href ="?id={{$noti_earli->id}}"  class = "accept" id = {{$noti_earli->sender_id}}>
+                             @if($noti_earli->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
+                    </div>
+                   <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+             @elseif($noti_earli->notification_status == 1 AND $noti_earli->post_id != null AND $noti_earli->comment_id != null AND $noti_earli->report_id==0)
+                        <a href ="?id={{$noti_earli->id}}"  class = "view_comment" id = {{$noti_earli->post_id}}>
+                             @if($noti_earli->notification_status == 1)
+                    <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
+                    </div>
+                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+            @elseif($noti_earli->notification_status == 2 AND $noti_earli->post_id != null AND $noti_earli->comment_id != null AND $noti_earli->report_id==0)
+                        <a href ="?id={{$noti_earli->id}}"  class = "view_comment" id = {{$noti_earli->post_id}}>
+                             @if($noti_earli->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
+                    </div>
+                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+                @elseif($noti_earli->notification_status != 1 AND $noti_earli->post_id != null AND $noti_earli->comment_id == null AND $noti_earli->report_id==0)
+                        <a href ="?id={{$noti_earli->id}}"  class = "view_like" id = {{$noti_earli->post_id}}>
+                             @if($noti_earli->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
+                    </div>
+                     <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+
+                        @elseif($noti_earli->notification_status != 2 AND $noti_earli->post_id != null AND $noti_earli->comment_id == null AND $noti_earli->report_id==0)
+                        <a href ="?id={{$noti_earli->id}}"  class = "view_like" id = {{$noti_earli->post_id}}>
+                             @if($noti_earli->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
+                    </div>
+                     <iconify-icon icon="ant-design:heart-filled" class="social-media-likes-icon"></iconify-icon>
+                </div>
+                        </a>
+
+
+
+
+
+                    
+                @endif
+
+                
+                {{-- <div class="social-media-likes-row">
+                    <div class="social-media-likes-name">
                     @if($noti_earli->profile_image == null)
                             <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                         @else
@@ -61,7 +351,7 @@
                     @else
                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
                     @endif
-                </div>
+                </div> --}}
                 @empty
                     <p class="text-secondary p-1">No notification</p>
                 @endforelse

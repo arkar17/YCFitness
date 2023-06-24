@@ -982,6 +982,7 @@ class SocialmediaController extends Controller
                     ->where('receiver_id', auth()->user()->id)
                     ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"),Carbon::Now()->toDateString());
             })
+            ->orderBy('notifications.id', 'DESC')
             ->get();
             //dd($notification);
         $notification_earlier = Notification::select(
@@ -999,6 +1000,7 @@ class SocialmediaController extends Controller
                     ->where('receiver_id', auth()->user()->id)
                     ->where(DB::raw("(DATE_FORMAT(date,'%Y-%m-%d'))"), '!=', Carbon::Now()->toDateString());
             })
+            ->orderBy('notifications.id', 'DESC')
             ->get();
        
         return view('customer.noti_center', compact('friend_requests', 'friend_requests_earlier', 'notification', 'notification_earlier'));
@@ -1310,6 +1312,7 @@ class SocialmediaController extends Controller
         $post=Post::find($id);
 
         if ($post != null) {
+            Notification::where('post_id', $post->id)->delete();
             $post->delete();
             return response()->json([
                 'success' => 'Post deleted successfully!'
@@ -1634,7 +1637,7 @@ class SocialmediaController extends Controller
             ->where('comments.post_id', $id)->where('comments.report_status', 0)
             ->whereNotIn('comments.user_id', $array)
             ->orderBy('created_at', 'DESC')->get();
-        $post_likes = UserReactPost::where('post_id', $post->id)
+        $post_likes = UserReactPost::where('post_id', $id)
             ->with('user')
             ->get();
         // dd($post);
@@ -1750,7 +1753,7 @@ class SocialmediaController extends Controller
                 'encrypted' => true
             )
         );
-        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == null) {
+        if ($post_owner->user_id != auth()->user()->id and $comments->mentioned_users == "null") {
             $data2 = auth()->user()->name . ' commented on your post!';
             $fri_noti = new Notification();
             $fri_noti->description = $data2;
@@ -1774,7 +1777,7 @@ class SocialmediaController extends Controller
                 ->first();
             // $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $data2);
             $pusher->trigger('friend_request.' . $post_owner->user_id, 'friendRequest', $notification);
-        } elseif ($comments->mentioned_users != null) {
+        } elseif ($comments->mentioned_users != "null") {
             $data = auth()->user()->name . ' mentioned you in a comment!';
             $ids = json_decode($comments->mentioned_users);
             $arr = json_decode(json_encode($ids), true);
@@ -2243,7 +2246,7 @@ class SocialmediaController extends Controller
         $user_id = $request->user_id;
         $post_id = $request->post_id;
         $comment_id = $request->comment_id;
-        $admin_id = 1;
+        $admin_id = 3;
         $description = $request->report_msg;
         
             $report = new Report();

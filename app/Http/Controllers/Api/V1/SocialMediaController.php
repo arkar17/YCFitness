@@ -3832,7 +3832,7 @@ class SocialMediaController extends Controller
         $user_id = auth()->user()->id;
         $post_id = $request->post_id;
         $comment_id = $request->comment_id;
-        $admin_id = 1;
+        $admin_id = 3;
         $description = $request->report_msg;
 
         $report = new Report();
@@ -3889,7 +3889,7 @@ class SocialMediaController extends Controller
             ->where('notifications.id', $user_rp->id)
             ->first();
         $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $notification);
-        $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $report);
+        // $pusher->trigger('friend_request.' . auth()->user()->id, 'friendRequest', $report);
         
 
         $pusher->trigger('friend_request.' . $admin_id, 'friendRequest', $new_data);

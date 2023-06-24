@@ -41,4 +41,9 @@ class AdminController extends Controller
 
         return redirect()->route('admin-profile')->with('success', 'Your Profile is updated successfully!');
     }
+
+    public function notification()
+    {
+        return view('admin.noti');
+    }
 }
