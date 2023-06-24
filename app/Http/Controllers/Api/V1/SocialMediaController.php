@@ -3963,7 +3963,7 @@ class SocialMediaController extends Controller
         $members = ChatGroupMember::where('group_id', $request->group_id)->where('member_id', '!=', auth()->user()->id)->get();
         $group_name = ChatGroup::select('group_name')->where('id', $request->group_id)->first();
         $data['channelName'] = $channelName;
-        $data['group_name'] = $group_name;
+        $data['groupName'] = $group_name;
 
         foreach ($members as $member) {
             $data['memberId'] = $member->member_id;
