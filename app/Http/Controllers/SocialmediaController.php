@@ -377,7 +377,6 @@ class SocialmediaController extends Controller
     {
         $used_id = auth()->user()->id;
         if ($used_id == $id) {
-            
             return redirect()->route('customer-profile');
         } else {
             // dd("Friends");
@@ -2177,6 +2176,29 @@ class SocialmediaController extends Controller
     {
         $auth = Auth()->user()->id;
         $user = User::where('id', $auth)->first();
+        // $friendships = DB::table('friendships')
+        //     ->where('friend_status', 2)
+        //     ->where(function ($query) use ($auth) {
+        //         $query->where('sender_id', $auth)
+        //             ->orWhere('receiver_id', $auth);
+        //     })
+        //     ->join('users as sender', 'sender.id', 'friendships.sender_id')
+        //     ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
+        //     ->get(['sender_id', 'receiver_id'])->toArray();
+
+        // $n = array();
+        // foreach ($friendships as $friend) {
+        //     $f = (array)$friend;
+        //     array_push($n, $f['sender_id'], $f['receiver_id']);
+        // }
+
+        $group = ChatGroup::findOrFail($id);
+
+        // $friends = DB::table('users')->select('users.name', 'users.id')->whereIn('users.id', $n)
+        //     ->where('users.id', '!=', $user->id)
+        //     ->get();
+
+       
         $friendships = DB::table('friendships')
             ->where('friend_status', 2)
             ->where(function ($query) use ($auth) {
@@ -2187,23 +2209,39 @@ class SocialmediaController extends Controller
             ->join('users as receiver', 'receiver.id', 'friendships.receiver_id')
             ->get(['sender_id', 'receiver_id'])->toArray();
 
+        //dd($friends);
         $n = array();
         foreach ($friendships as $friend) {
             $f = (array)$friend;
             array_push($n, $f['sender_id'], $f['receiver_id']);
         }
-
-        $group = ChatGroup::findOrFail($id);
-
         $friends = DB::table('users')->select('users.name', 'users.id')->whereIn('users.id', $n)
             ->where('users.id', '!=', $user->id)
+            ->get();
+        $group_id = $id;
+        $group_member = ChatGroupMember::where('chat_group_members.group_id', $group_id)
+            ->where('chat_group_members.member_id', '!=', $auth)->pluck('member_id')->toArray();
+        // dd($group_member);
+        $friend = User::select('users.id', 'users.name', 'profiles.profile_image')
+        ->leftjoin('friendships', function ($join) {
+            $join->on('friendships.receiver_id', '=', 'users.id')
+            ->orOn('friendships.sender_id', '=', 'users.id');
+        })
+            ->leftJoin('profiles', 'profiles.id', 'users.profile_id')
+            ->where('users.id', '!=', $auth)
+            ->where('friendships.friend_status', 2)
+            ->where('friendships.receiver_id', $auth)
+            ->orWhere('friendships.sender_id', $auth)
+            ->whereIn('users.id', $n)
+            ->where('users.id', '!=', $auth)
+            ->whereNotIn('users.id', $group_member)
             ->get();
 
         $gp_admin = ChatGroup::where('id', $id)->with('user')->with('user.user_profile')->first();
 
         $members = ChatGroupMember::where('group_id', $id)->where('member_id', '!=', $gp_admin->group_owner_id)->with('user')->with('user.user_profile')->get();
 
-        return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group', 'gp_admin'));
+        return view('customer.group_chat-detail', compact('friends', 'id', 'members', 'group', 'gp_admin', 'friend'));
     }
 
     public function group_member_kick(Request $request)

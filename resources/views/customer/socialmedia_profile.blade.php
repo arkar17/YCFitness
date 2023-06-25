@@ -137,10 +137,14 @@
                             <p>{{__('msg.unfriend')}}</p>
                         </a>
                         @elseif ($friend_status->friend_status == 1 AND $friend_status->sender_id  === auth()->user()->id )
-                        <button class="customer-primary-btn add-friend-btn">
+                        {{-- <button class="customer-primary-btn add-friend-btn">
                             <iconify-icon icon="material-symbols:cancel-schedule-send-outline-rounded" class="add-friend-icon"></iconify-icon>
                             <p>{{__('msg.cancel request')}}</p>
-                        </button>
+                        </button> --}}
+                        <a href ="?id={{$user->id}}" class="customer-red-btn add-friend-btn " id="cancelRequest"  data-id = {{$user->id}}>
+                            <iconify-icon icon="mdi:account-minus-outline" class="add-friend-icon"></iconify-icon>
+                            <p>{{__('msg.cancel request')}}</p>
+                        </a>
                         @elseif ($friend_status->friend_status == 1 AND $friend_status->receiver_id  === auth()->user()->id)
                         <div class="" style = "margin-top:10px; display:flex; justify-content:right">
                         <div class="social-media-btns-container">
@@ -419,6 +423,47 @@
 <script>
     $(document).ready(function() {
 
+
+                $(document).on('click', '#cancelRequest', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    text: "Are you sure?",
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    showCancelButton: true,
+                    timerProgressBar: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        var url = new URL(this.href);
+                        var id = url.searchParams.get("id");
+                        var url = "{{ route('cancelRequest', [':id']) }}";
+                        url = url.replace(':id', id);
+                        $(".cancel-request-btn").attr('href', '');
+                        $.ajax({
+                            type: "GET",
+                            url: url,
+                            datatype: "json",
+                            success: function(data) {
+                                console.log(data)
+                                window.location.reload();
+                            }
+                        })
+
+                    }
+                })
+
+
+                $('.social-media-left-searched-items-container').empty();
+            });
+
         // $('#other_msg').hide();
         // $('#report_submit').attr("class",'btn btn-primary disabled')
         // console.log($("input[name='report_msg']:checked").val());
@@ -470,43 +515,44 @@
         //         }
         // });
 
-        // $('.post_save').click(function(e){
-        //     $('.social-media-post-header-icon').next().toggle()
-        //     e.preventDefault();
-        //     var post_id=$(this).attr('id');
-        //     var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
-        //     add_url = add_url.replace(':post_id', post_id);
-        //             $.ajax({
-        //                 method: "GET",
-        //                 url: add_url,
-        //                 data:{
-        //                         post_id : post_id
-        //                     },
-        //                     success: function(data) {
-        //                         // window.location.reload();
-        //                         if(data.save){
-        //                             Swal.fire({
-        //                                 text: data.save,
-        //                                 timerProgressBar: true,
-        //                                 timer: 5000,
-        //                                 icon: 'success',
-        //                             }).then((result) => {
-        //                                 e.target.querySelector(".save").innerHTML = `Unsave`;
-        //                             })
-        //                         }else{
-        //                             Swal.fire({
-        //                                     text: data.unsave,
-        //                                     timerProgressBar: true,
-        //                                     timer: 5000,
-        //                                     icon: 'success',
-        //                                 }).then((result) => {
-        //                                     e.target.querySelector(".save").innerHTML = `Save`;
+        $('.post_save').click(function(e){
+            $('.social-media-post-header-icon').next().toggle()
+            e.preventDefault();
+            var post_id=$(this).attr('id');
+            var add_url = "{{ route('socialmedia.post.save', [':post_id']) }}";
+            add_url = add_url.replace(':post_id', post_id);
+                    $.ajax({
+                        method: "GET",
+                        url: add_url,
+                        data:{
+                                post_id : post_id
+                            },
+                            success: function(data) {
+                                // window.location.reload();
+                                if(data.save){
+                                    Swal.fire({
+                                        text: data.save,
+                                        timerProgressBar: true,
+                                        timer: 5000,
+                                        icon: 'success',
+                                    }).then((result) => {
+                                        e.target.querySelector(".save").innerHTML = `Unsave`;
+                                    })
+                                }else{
+                                    Swal.fire({
+                                            text: data.unsave,
+                                            timerProgressBar: true,
+                                            timer: 5000,
+                                            icon: 'success',
+                                        }).then((result) => {
+                                            e.target.querySelector(".save").innerHTML = `Save`;
 
-        //                             })
-        //                         }
+                                    })
+                                }
 
-        //                     }
-        //             })
+                            }
+                    })
+                    })
 
 
         // })
