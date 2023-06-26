@@ -3101,7 +3101,11 @@
                 e.preventDefault()
                 var arr = []
                 $.each($('.social-media-all-comments-input-edit .mentiony-link'),function(){
-                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                    let name = ''
+                    if($(this).text()[0] === '@'){
+                        name = $(this).text().slice(1)
+                    }
+                    arr.push({'id' : $(this).data('item-id'),'name' : name})
                     $(this).text(`@${$(this).data('item-id')}`)
 
                 })
@@ -3183,7 +3187,11 @@
 
                 var arr = []
                 $.each($('.social-media-all-comments-input .mentiony-link'),function(){
-                    arr.push({'id' : $(this).data('item-id'),'name' : $(this).text()})
+                    let name = ''
+                    if($(this).text()[0] === '@'){
+                        name = $(this).text().slice(1)
+                    }
+                    arr.push({'id' : $(this).data('item-id'),'name' : name})
                     $(this).text(`@${$(this).data('item-id')}`)
 
                 })
