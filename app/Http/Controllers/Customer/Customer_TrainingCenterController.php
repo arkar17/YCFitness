@@ -308,18 +308,28 @@ class Customer_TrainingCenterController extends Controller
                                 //                   ↑
                                 // Array value which you want to delete
                             });
-                        
-                            $comment_post_count =  DB::table('comments')
-                                ->select('post_id', DB::raw('count(*) as total_comments'))
-                                ->where('report_status',0)
-                                ->where('deleted_at',null)
-                                ->whereNotIn('user_id',$array)
-                                ->get();
+
+            if ($array) {
+                $comment_post_count =  DB::table('comments')
+                ->select('post_id', DB::raw('count(*) as comment_count'))
+                ->where('report_status', 0)
+                ->where('deleted_at', null)
+                ->whereNotIn('user_id', $array)
+                    ->groupBy('post_id')
+                    ->get();
+            } else {
+                $comment_post_count =  DB::table('comments')
+                    ->select('post_id', DB::raw('count(*) as comment_count'))
+                    ->where('report_status', 0)
+                    ->where('deleted_at', null)
+                    ->groupBy('post_id')
+                    ->get();
+            }
 
             $posts[$key]->total_likes=$total_likes;
             foreach($comment_post_count as $comment_count){
                 if($value->post_id == $comment_count->post_id ){
-                    $posts[$key]->total_comments=$comment_count->total_comments;
+                    $posts[$key]->total_comments = $comment_count->comment_count;
                 }
                 else{
                     $posts[$key]->total_comments=0;

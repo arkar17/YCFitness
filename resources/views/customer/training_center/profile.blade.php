@@ -2518,7 +2518,7 @@
                                                                             <iconify-icon icon="bi:chat-right" class="comment-icon"></iconify-icon>
                                                                             <p id="`+save_posts[i].post_id+`"><span>`+save_posts[i].total_comments+`</span>`
                                                                             if(save_posts[i].total_comments > 1){
-                                                                                htmlView+=`Comments--`
+                                                                                htmlView+=` Comments`
                                                                             }else{
                                                                                 htmlView+=`Comment`
                                                                             }
