@@ -621,6 +621,27 @@ z-index: 20;
 .nav-icon{
     font-size: 30px;
     cursor: pointer;
+    position: relative;
+    padding: 0 !important;
+}
+
+.noti-bell-container{
+    position: relative;
+}
+
+.noti-count{
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    pointer-events: none;
 }
 
 .nav-profile-img{

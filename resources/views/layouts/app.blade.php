@@ -470,8 +470,12 @@
 
                 </a>
                 <div class="customer-navlinks-notiprofile-container">
-                    <iconify-icon icon="akar-icons:bell" class="nav-icon">
-                    </iconify-icon>
+                    <div class="noti-bell-container" style="margin-right:20px;">
+                        <iconify-icon icon="akar-icons:bell" class="nav-icon">
+                            
+                        </iconify-icon>
+                        <div class="noti-count">0</div>
+                    </div>
 
                     <div class="notis-box-container">
                         <div class="notis-box-header">

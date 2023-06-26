@@ -42,7 +42,7 @@
         </div>
 
         <div class="customer-navlinks-notiprofile-container">
-            {{-- <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a> --}}
+            {{--<div class="noti-bell-container"> <a href="#"><iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon></a> <div class="noti-count">0</div></div> --}}
             <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
             <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
         </div>
