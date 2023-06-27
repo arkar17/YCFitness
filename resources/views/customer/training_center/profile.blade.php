@@ -3101,7 +3101,7 @@
                 e.preventDefault()
                 var arr = []
                 $.each($('.social-media-all-comments-input-edit .mentiony-link'),function(){
-                    let name = ''
+                    let name = $(this).text()
                     if($(this).text()[0] === '@'){
                         name = $(this).text().slice(1)
                     }
@@ -3187,7 +3187,7 @@
 
                 var arr = []
                 $.each($('.social-media-all-comments-input .mentiony-link'),function(){
-                    let name = ''
+                    let name = $(this).text()
                     if($(this).text()[0] === '@'){
                         name = $(this).text().slice(1)
                     }
