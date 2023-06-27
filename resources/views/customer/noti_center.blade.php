@@ -23,7 +23,8 @@
                 <p>Today</p>
                 @forelse ($notification as $noti)
 
-                 @if($noti->report_id != 0 )
+                 @if($noti->report_id != 0 AND $noti->notification_status == 1)
+                <a href ="?id={{$noti->id}}"  class = "report_noti" id = {{$noti->sender_id}} >
                   @if($noti->notification_status == 1)
                     <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
                     <div class="social-media-likes-name">
@@ -40,6 +41,26 @@
                     </div>
                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
                 </div>
+              </a>
+              @elseif($noti->report_id != 0 AND $noti->notification_status == 2)
+                <a href ="?id={{$noti->id}}"  class = "report_noti" id = {{$noti->sender_id}} >
+                  @if($noti->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti->profile_image}}"/>
+                    @endif
+                        <p>{{$noti->description}}</p>
+                    </div>
+                    <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
+              </a>
 
                  @elseif($noti->notification_status == 1 AND $noti->post_id == null AND $noti->report_id==0)
                             <a href ="?id={{$noti->id}}"  class = "accept" id = {{$noti->sender_id}}>
@@ -190,7 +211,9 @@
             <div class="social-media-likes-earlier-container">
                 <p>Earlier</p>
                 @forelse ($notification_earlier as $noti_earli)
-                @if($noti_earli->report_id != 0 )
+                
+                @if($noti_earli->report_id != 0 and $noti_earli->notification_status == 1)
+                <a href ="?id={{$noti->id}}"  class = "report_noti" id = {{$noti->sender_id}} >
                   @if($noti_earli->notification_status == 1)
                     <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
                     <div class="social-media-likes-name">
@@ -207,6 +230,30 @@
                     </div>
                     <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
                 </div>
+            </a>
+
+
+            @elseif($noti_earli->report_id != 0 and $noti_earli->notification_status == 2)
+                <a href ="?id={{$noti->id}}"  class = "report_noti" id = {{$noti->sender_id}} >
+                  @if($noti_earli->notification_status == 1)
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @else
+                    <div class="social-media-likes-row" style="padding:5px;">
+                    <div class="social-media-likes-name">
+                 @endif
+                    @if($noti_earli->profile_image == null)
+                            <img src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
+                        @else
+                            <img src="https://yc-fitness.sgp1.cdn.digitaloceanspaces.com/public/post/{{$noti_earli->profile_image}}"/>
+                    @endif
+                        <p>{{$noti_earli->description}}</p>
+                    </div>
+                    <iconify-icon icon="bi:chat-left-dots-fill" class="social-media-likes-icon"></iconify-icon>
+                </div>
+            </a>
+
+            
 
                  @elseif($noti_earli->notification_status == 1 AND $noti_earli->post_id == null AND $noti_earli->report_id==0)
                             <a href ="?id={{$noti_earli->id}}"  class = "accept" id = {{$noti_earli->sender_id}}>
@@ -250,7 +297,7 @@
 
              @elseif($noti_earli->notification_status == 1 AND $noti_earli->post_id != null AND $noti_earli->comment_id != null AND $noti_earli->report_id==0)
                         <a href ="?id={{$noti_earli->id}}"  class = "view_comment" id = {{$noti_earli->post_id}}>
-                             @if($noti_earli->notification_status == 1)
+                @if($noti_earli->notification_status == 1)
                     <div class="social-media-likes-row notis-box-unread-noti" style="padding:5px;">
                     <div class="social-media-likes-name">
                  @else

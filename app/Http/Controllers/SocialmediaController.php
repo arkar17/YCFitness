@@ -1005,6 +1005,14 @@ class SocialmediaController extends Controller
         return view('customer.noti_center', compact('friend_requests', 'friend_requests_earlier', 'notification', 'notification_earlier'));
     }
 
+    public function notification_status(Request $request)
+    {
+        $noti =  DB::table('notifications')->where('id', $request->noti_id)->update(['notification_status' => 2]);
+        return response()->json([
+            'data' => 'success',
+        ]);
+    }
+
     public function addUser(Request $request)
     {
         // dd("ok");

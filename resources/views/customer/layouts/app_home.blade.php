@@ -1876,11 +1876,45 @@
                 $('.notis-box-container').toggle()
             })
 
+
+            $(document).on('click', '.report_noti', function(e) {
+                e.preventDefault();
+                var url = new URL(this.href);
+                var id = url.searchParams.get("id");
+                // console.log(id, "noti_id");
+                var sender_id = $(this).attr("id");
+                var social_url = "{{ route('socialmedia.profile', [':id']) }}";
+                social_url = social_url.replace(':id', sender_id);
+
+                var url = "{{ route('noti.status') }}";
+                $(".add-member-btn").attr('href', '');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    datatype: "json",
+                    data: {
+                        id: sender_id,
+                        noti_id: id
+                    },
+                    success: function(data) {
+                        console.log(data)
+                        // window.location.href = social_url
+                    }
+                })
+            });
+
             $(document).on('click', '.accept', function(e) {
                 e.preventDefault();
                 // alert("okk")
+                
                 var url = new URL(this.href);
                 var id = url.searchParams.get("id");
+                //  alert(id);
                 console.log(id, "noti_id");
                 var sender_id = $(this).attr("id");
                 console.log(sender_id, "rererer");

@@ -453,6 +453,17 @@
                         </a>
 
                     </li>
+
+                    <li class="sidebar-item @yield('feedback-active')">
+
+                        <a class="sidebar-link" href="{{ route('feedback.index') }}">
+
+                            <i class="fa-regular fa-file-lines"></i>
+                            <span class="align-middle">Feedback</span>
+
+                        </a>
+
+                    </li>
                     @endhasanyrole
                 </ul>
 

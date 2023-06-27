@@ -223,6 +223,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/unblock/{id}', [SocialmediaController::class, 'unblockUser'])->name('unblock');
 
         Route::get('/notification_center', [SocialmediaController::class, 'notification_center'])->name('notification_center');
+        Route::post('/noti_status', [SocialmediaController::class, 'notification_status'])->name('noti.status');
 
         Route::get('/viewFriendRequestNoti/{id}/{noti_id}', [SocialmediaController::class, 'viewFriendRequestNoti'])->name('viewFriendRequestNoti');
 
