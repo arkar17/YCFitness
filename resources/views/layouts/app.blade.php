@@ -474,7 +474,7 @@
                         <iconify-icon icon="akar-icons:bell" class="nav-icon">
                             
                         </iconify-icon>
-                        <div class="noti-count">0</div>
+                        <div class="noti-count"><span id="admin_noti_count">{{ auth()->user()->notifri->where('notification_status',1)->count() }}</span></div>
                     </div>
 
                     <div class="notis-box-container">
@@ -675,6 +675,9 @@
         var channel = pusher.subscribe('friend_request.' + user_id);
         channel.bind('friendRequest', function(data) {
             console.log(data);
+            $( "#admin_noti_count" ).load(window.location.href + " #admin_noti_count" );
+            $( ".notis-box-notis-container" ).load(window.location.href + " .notis-box-notis-container>*" );
+            
             $.notify(data, "success", {
                 position: "left"
             });

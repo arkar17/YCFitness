@@ -577,8 +577,6 @@
                 position: "left"
             });
         });
-
-
         var channel = pusher.subscribe('chat_message.' + user_id);
         channel.bind('chat', function(data) {
             console.log("chat",data)
