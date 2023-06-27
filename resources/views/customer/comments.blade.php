@@ -555,7 +555,7 @@
                         name = $(this).text().slice(1)
                     }
                     arr.push({'id' : $(this).data('item-id'),'name' : name})
-                    $(this).text(`@${$(this).data('item-id')+""+""}`)
+                    $(this).text(`@${$(this).data('item-id')+" "+" "}`)
 
                 })
 
