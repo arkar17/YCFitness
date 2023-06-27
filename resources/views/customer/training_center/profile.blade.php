@@ -3112,7 +3112,7 @@
                 var post_id = $(".social-media-all-comments-input-edit").data('id');
 
                 var comment = $('.social-media-all-comments-input-edit .mentiony-content').text()
-
+                console.log(arr, "comment mention user");
                 var search_url = "{{ route('post.comment.update') }}";
 
                     $.ajaxSetup({

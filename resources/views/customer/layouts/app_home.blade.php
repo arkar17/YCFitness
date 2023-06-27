@@ -567,7 +567,11 @@
         });
         var channel = pusher.subscribe('friend_request.' + user_id);
         channel.bind('friendRequest', function(data) {
-            console.log(data, "ted");
+            console.log(data, "noti_center");
+            count = document.getElementById('noti_count').innerHTML;
+            // alert(count);
+            $( "#noti_count" ).load(window.location.href + " #noti_count" );
+            $( ".notis-box-container" ).load(window.location.href + " .notis-box-container>*" );
             // document.getElementById("testing").text = data
             $.notify(data, "success", {
                 position: "left"

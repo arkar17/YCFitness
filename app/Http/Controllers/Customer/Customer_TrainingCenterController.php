@@ -330,6 +330,7 @@ class Customer_TrainingCenterController extends Controller
             foreach($comment_post_count as $comment_count){
                 if($value->post_id == $comment_count->post_id ){
                     $posts[$key]->total_comments = $comment_count->comment_count;
+                    break;
                 }
                 else{
                     $posts[$key]->total_comments=0;

@@ -2011,6 +2011,7 @@ class SocialmediaController extends Controller
                 ]);
             }
         }
+        // dd($request->mention);
         $comments_update = Comment::findOrFail($request->post_id);
         $comments_update->comment = $request->comment;
         $comments_update->mentioned_users = json_encode($request->mention);

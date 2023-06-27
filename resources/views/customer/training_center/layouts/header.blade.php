@@ -98,12 +98,12 @@
         <div class="customer-navlinks-notiprofile-container">
             <div class="noti-bell-container">
                 <iconify-icon icon="akar-icons:bell" class="nav-icon"></iconify-icon>
-                <div class="noti-count">0</div>
+                <div class="noti-count"><span id="noti_count">{{ auth()->user()->notifri->where('notification_status',1)->count() }}</span></div>
             </div>
             <iconify-icon icon="pajamas:hamburger" class="burger-icon"></iconify-icon>
             <iconify-icon icon="akar-icons:cross" class="close-nav-icon"></iconify-icon>
 
-            <div class="notis-box-container">
+            <div class="notis-box-container" id="noti_center">
                 <div class="notis-box-header">
                     <p>{{__('msg.notifications')}}</p>
                     <a href="{{ route('notification_center') }}">{{__('msg.see all')}}</a>

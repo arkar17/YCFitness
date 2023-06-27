@@ -19,7 +19,7 @@
 
         <div class="social-media-likes-container">
 
-            <div class="social-media-likes-today-container">
+            <div class="social-media-likes-today-container" id="today_noti_pusher">
                 <p>Today</p>
                 @forelse ($notification as $noti)
 
@@ -365,9 +365,9 @@
                 <p>Today</p>
                
                 @forelse($friend_requests as $requests)
-                <div class="social-media-request-row">
+                <div class="social-media-request-row" id="friend_today_pusher" >
 
-                        <div class="social-media-request-name">
+                        <div class="social-media-request-name" >
                             @if ($requests->profile_image==null)
                             <img  src="{{asset('img/customer/imgs/user_default.jpg')}}"/>
                             @else
@@ -384,7 +384,7 @@
                                 Decline</a>
                         </div>
 
-                    </div>
+                </div>
                 @empty
                 <p class="text-secondary p-1">No Friend Request</p>
                 @endforelse
@@ -456,5 +456,20 @@
         })
 
     })
+    var user_id = {{ auth()->user()->id }};
+        console.log(user_id);
+        var pusher = new Pusher('{{ env('MIX_PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            encrypted: true
+        });
+        var channel = pusher.subscribe('friend_request.' + user_id);
+        channel.bind('friendRequest', function(data) {
+            $( "#today_noti_pusher" ).load(window.location.href + " #today_noti_pusher" );
+            $( "#friend_today_pusher" ).load(window.location.href + " #friend_today_pusher" );
+            // document.getElementById("testing").text = data
+            $.notify(data, "success", {
+                position: "left"
+            });
+        });
 </script>
 @endpush
