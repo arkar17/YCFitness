@@ -1883,7 +1883,7 @@ class SocialmediaController extends Controller
                     ->where('post_id', $id)
                     ->where('comments.report_status','!=' ,1)
                     ->orderBy('created_at', 'DESC')->get();
-                    dd($comments[0]->comment);
+                   // dd($comments[0]->comment);
                 }
                 
                 
