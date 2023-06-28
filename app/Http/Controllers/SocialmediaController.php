@@ -22,6 +22,7 @@ use App\Models\Friendship;
 use App\Models\ShopMember;
 use App\Models\ShopRating;
 use App\Models\NotiFriends;
+use Illuminate\Support\Str;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Events\MessageDelete;
@@ -1716,7 +1717,7 @@ class SocialmediaController extends Controller
     public function post_comment_store(Request $request)
     {
 
-        // dd($request->post_id);
+        //dd(Str::length($request->comment));
         $banwords = DB::table('ban_words')->select('ban_word_english', 'ban_word_myanmar', 'ban_word_myanglish')->get();
 
         foreach ($banwords as $b) {
@@ -1872,8 +1873,7 @@ class SocialmediaController extends Controller
                     ->where('comments.report_status','!=' ,1)
                     ->whereNotIn('comments.user_id',$array)
                     ->orderBy('created_at', 'DESC')->get();
-        
-        
+                    
                 }
                 else{
                     $comments = Comment::select('users.name', 'users.profile_id', 'posts.user_id as post_owner', 'profiles.profile_image', 'comments.*')
@@ -1883,7 +1883,7 @@ class SocialmediaController extends Controller
                     ->where('post_id', $id)
                     ->where('comments.report_status','!=' ,1)
                     ->orderBy('created_at', 'DESC')->get();
-        
+                    dd($comments[0]->comment);
                 }
                 
                 
