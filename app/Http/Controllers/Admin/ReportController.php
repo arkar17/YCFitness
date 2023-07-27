@@ -86,11 +86,14 @@ class ReportController extends Controller
             // $view_icon = '<a href=" ' . route('admin.view.report', $each->id) . ' " class="btn btn-primary" title="view">
             //             <i class="fa fa-folder-open" data-id="' . $each->id . '"></i>&nbsp;&nbsp;View
             //         </a>';
-            $delete_icon = '<form action="' . route('report.destroy', $each->id) . ' " method="DELETE">
-                                <button class="btn btn-danger" type="submit">
-                                    <i class="fa fa-trash" data-id="' . $each->id . '"></i>&nbsp;&nbsp;Delete
-                                </button>
-                            </form>';
+            // $delete_icon = '<form action="' . route('report.destroy', $each->id) . ' " method="DELETE">
+            //                     <button class="btn btn-danger" type="submit">
+            //                         <i class="fa fa-trash" data-id="' . $each->id . '"></i>&nbsp;&nbsp;Delete
+            //                     </button>
+            //                 </form>';
+            $delete_icon = '<a href=" ' . route('report.destroy', $each->id) . ' " class="text-danger mx-1 delete-btn" title="delete"  data-id="' . $each->id . '" >
+                                    <i class="fa-solid fa-trash fa-xl"></i>
+                                </a>';
 
                         return '<div class="d-flex justify-content-center">' . $delete_icon . '</div>';
                     })
@@ -316,6 +319,9 @@ class ReportController extends Controller
      */
     public function destroy($id)
     {
-        dd('delete');
+        $report = Report::findOrFail($id);
+        $report->delete();
+
+        return 'success';
     }
 }

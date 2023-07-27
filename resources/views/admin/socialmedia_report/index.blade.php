@@ -189,7 +189,53 @@
                 ]
             });
 
+  const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
 
+             @if (Session::has('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ Session::get('success') }}'
+                })
+            @endif
+
+            $(document).on('click', '.delete-btn', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                swal({
+                        text: "Are you sure you want to delete?",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                method: "DELETE",
+                                url: `/admin/report/${id}`
+                            }).done(function(res) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Deleted'
+                                })
+                                table.ajax.reload();
+                                console.log("deleted");
+                            })
+                        } else {
+                            swal("Your imaginary file is safe!");
+                        }
+                    });
+            })
         });
+
+       
     </script>
 @endpush

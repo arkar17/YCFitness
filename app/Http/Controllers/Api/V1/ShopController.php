@@ -64,6 +64,14 @@ class ShopController extends Controller
             'report' => $report
         ]);
     }
+
+    public function users()
+    {
+        $user = User::get();
+        return response()->json([
+            'user' => $user
+        ]);
+    }
     
     public function shop_member_plan_list(){
         $member_plan = ShopMember::get();
