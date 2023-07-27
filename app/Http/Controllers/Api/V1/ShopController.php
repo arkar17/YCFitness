@@ -296,18 +296,35 @@ class ShopController extends Controller
 
 
         $shop_member_level = ShopMember::select('member_type')->where('id',$user->shopmember_type_id)->first();
-        // if(($user->shop_post_count == 0 AND $shop_member_level != 'level3') OR
-        //    ($user->shop_post_count == 0 AND $user->member_type != 'Ruby Premium') OR
-        //    ($user->shop_post_count == 0 AND $user->member_type != 'Ruby')){
-        if (($user->shop_post_count == 0 and $shop_member_level != 'level3') or
-            ($user->shop_post_count == 0 and $user_role != 'Ruby Premium') or
-            ($user->shop_post_count == 0 and $user_role != 'Ruby')
+
+        if (($user->shop_post_count == 0 and $shop_member_level != 'level3')
+            //($user->shop_post_count == 0 and $user_role != 'Ruby')
         ) {
             return response()->json([
-                'message' => 'cannot post',
+                'message' => 'cannot post not level 3',
                 'user' => $user,
                 'shop' => $shop_member_level,
                 'role' => $user_role
+            ]);
+        }
+
+        if (($user->shop_post_count == 0 and $user_role != 'Ruby')
+            //($user->shop_post_count == 0 and $user_role != 'Ruby')
+        ) {
+            return response()->json([
+                'message' => 'cannot post not ruby',
+                'user' => $user,
+                'shop' => $shop_member_level,
+                'role' => $user_role
+            ]);
+        }
+
+
+        if (($user->shop_post_count == 0 and $user_role != 'Ruby Premium')
+            //($user->shop_post_count == 0 and $user_role != 'Ruby')
+        ) {
+            return response()->json([
+                'message' => 'cannot post not ruby premium',
             ]);
         }
 
