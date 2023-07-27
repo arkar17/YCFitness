@@ -340,9 +340,10 @@
                               <h5 class="modal-title" id="staticBackdropLabel">Send Feedback</h5>
                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <form action = "{{ route('feedback.store') }}" method="post">
+                            <form action = "{{ route('feedback.send') }}" method="post">
                                     @csrf
+                            <div class="modal-body">
+                                
                                     <div class="mb-3">
                                       <label for="message-text" class="col-form-label">Message:</label>
                                       <textarea class="form-control" id="message-text" name="description" required></textarea>
@@ -350,7 +351,7 @@
                                   
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="customer-primary-btn addpost-submit-btn">Send</button>
+                                <button type="submit" class="customer-primary-btn">Send</button>
                             </div>
                         </form>
                           </div>

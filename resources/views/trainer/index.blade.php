@@ -645,9 +645,9 @@
             console.log('hahhahaha', id);
 
             if (trainer_message_input == null) {
-                axios.post('/api/sendmessage/' + id , formData).then();
+                axios.post('message/trainer/chat/' + id , formData).then();
             } else {
-                axios.post('/api/sendmessage/' + id, {
+                axios.post('message/trainer/chat/' + id, {
                     text: trainer_message_input.value,
                     formData
                 }).then();

@@ -9,23 +9,25 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\Comment;
+use App\Models\Feedback;
 use App\Models\ShopPost;
 use App\Models\BlockList;
 use App\Models\ChatGroup;
+use App\Models\FreeVideo;
 use App\Models\ShopReact;
 use App\Models\ShopMember;
 use App\Models\ShopRating;
 use App\Models\BankingInfo;
-use App\Models\FreeVideo;
 use Illuminate\Http\Request;
 use App\Models\UserReactPost;
 use App\Models\UserSavedPost;
 use App\Models\ChatGroupMessage;
 use App\Models\UserSavedShoppost;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Client\Response;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ShopController extends Controller
@@ -691,6 +693,17 @@ class ShopController extends Controller
         ]);
     }
 
-
+    public function feedback_send(Request $request)
+    {
+        //
+        // dd("oo");
+        $user_id = Auth::user()->id;
+        $feedback_store = new Feedback();
+        $feedback_store->user_id = $user_id;
+        $feedback_store->description = $request->description;
+        $feedback_store->save();
+        Alert::success('Success', 'Send!');
+        return redirect()->back();
+    }
     
 }

@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Report;
 use App\Models\Comment;
+use App\Models\Message;
 use App\Models\Profile;
 use App\Events\Chatting;
 use App\Models\BlockList;
@@ -30,6 +31,7 @@ use App\Models\ChatGroupMessage;
 use App\Repositories\MessageRepo;
 use App\Events\MakeAgoraAudioCall;
 use Illuminate\Support\Facades\DB;
+use App\Events\TrainingMessageEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -244,6 +246,36 @@ class ChattingController extends Controller
             return redirect()->route("socialmedia.group", $request->user_id);
         } else {
             return redirect()->route("message.chat", $request->user_id);
+        }
+    }
+
+
+    public function trainer_chat(Request $request, $id)
+    {
+
+        if ($request->text == null && $request->fileInput == null) {
+        } else {
+            $path = '';
+            if ($request->file('fileInput') != null) {
+                $request->validate([
+                    'fileInput' => 'required|mimes:png,jpg,jpeg,gif,mp4,mov,webm'
+                ], [
+                    'fileInput.required' => 'You can send png,jpg,jpeg,gif,mp4,mov and webm extension'
+                ]);
+
+                $file = $request->file('fileInput');
+                $path = uniqid() . '_' . $file->getClientOriginalName();
+                // $disk = Storage;
+                Storage::put('public/trainer_message_media/' . $path, file_get_contents($file), 'public');
+            }
+
+            $message = new Message();
+            $message->training_group_id = $id;
+            $message->text = $request->text == null ?  null : $request->text;
+            $message->media = $request->fileInput == null ? null : $path;
+            $message->save();
+
+            event(new TrainingMessageEvent($message, $path, $id));
         }
     }
 }

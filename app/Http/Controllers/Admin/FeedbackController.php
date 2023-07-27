@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Feedback;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Auth;
 
 class FeedbackController extends Controller
 {
@@ -92,6 +93,13 @@ class FeedbackController extends Controller
     public function store(Request $request)
     {
         //
+        dd("oo");
+        $user_id = Auth::user()->id;
+        $feedback_store = new Feedback();
+        $feedback_store->user_id = $user_id;
+        $feedback_store->description = $request->description;
+        $feedback_store->save();
+        return redirect()->back();
     }
 
     /**
