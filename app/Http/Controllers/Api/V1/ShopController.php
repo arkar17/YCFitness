@@ -285,14 +285,14 @@ class ShopController extends Controller
             }
         }
 
-        $shop_member_level = ShopMember::select('member_type')->where('id', $user->shopmember_type_id)->first();
-        if (($user->shop_post_count == 0 and $shop_member_level != 'level3') or
-            ($user->shop_post_count == 0 and $user_role != 'Ruby Premium') or
-            ($user->shop_post_count == 0 and $user_role != 'Ruby')
-        ) {
+        // $shop_member_level = ShopMember::select('member_type')->where('id', $user->shopmember_type_id)->first();
+        // if (($user->shop_post_count == 0 and $shop_member_level != 'level3') or
+        //     ($user->shop_post_count == 0 and $user_role != 'Ruby Premium') or
+        //     ($user->shop_post_count == 0 and $user_role != 'Ruby')
+        // ) {
 
-            $message = 'Cannot Post';
-        }
+        //     $message = 'Cannot Post';
+        // }
 
 
         $shop_member_level = ShopMember::select('member_type')->where('id',$user->shopmember_type_id)->first();
@@ -305,7 +305,9 @@ class ShopController extends Controller
         ) {
             return response()->json([
                 'message' => 'cannot post',
-                'user' => $user
+                'user' => $user,
+                'shop' => $shop_member_level,
+                'role' => $user_role
             ]);
         }
 
