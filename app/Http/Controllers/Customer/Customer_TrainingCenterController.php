@@ -79,7 +79,7 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $posts=Post::where('user_id',$user_id)
-                    ->where('report_status',0)
+            ->where('report_status', 0)
                     ->orderBy('created_at','DESC')
                     ->with('user')
                     ->paginate(30);
