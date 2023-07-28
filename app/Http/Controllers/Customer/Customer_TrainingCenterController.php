@@ -600,7 +600,7 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $current_day = Carbon::now()->format('l');
-
+        // $current_day = Carbon::now()->isoFormat('dddd');
         // $random_category =  Workout::get()->random()->category;
         $workout = Workout::count();
         // dd($workout);
@@ -611,7 +611,7 @@ class Customer_TrainingCenterController extends Controller
         }
         else{
             $random_category = null;
-        }      
+        }
         // dd($random_category, "dddd");
 
         //Storage::disk('local')->put('aa', $random_category);
@@ -623,7 +623,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
-            ->where('category',  $random_category)
+            // ->where('category',  $random_category)
             ->get();
 
         $tc_home_workoutplans = DB::table('workouts')
@@ -633,7 +633,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
-            ->where('category',  $random_category)
+            // ->where('category',  $random_category)
                 ->get();
 
            // dd($tc_home_workoutplans);
