@@ -618,7 +618,7 @@ class Customer_TrainingCenterController extends Controller
         if($random_category){
             $tc_gym_workoutplans = DB::table('workouts')
             ->where('workout_plan_type', $workout_plan)
-            ->where('place', 'gym')
+                ->where('place', 'Gym')
             ->where('member_type', $user->member_type)
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
@@ -628,15 +628,15 @@ class Customer_TrainingCenterController extends Controller
 
         $tc_home_workoutplans = DB::table('workouts')
             ->where('workout_plan_type', $workout_plan)
-            ->where('place', 'home')
+                ->where('place', 'Home')
             ->where('member_type', $user->member_type)
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
             ->where('category',  $random_category)
-            ->get();
-           
+                ->get();
 
+           // dd($tc_home_workoutplans);
             $time_sum = 0;
 
             $c_sum = 0;
