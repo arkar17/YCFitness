@@ -44,6 +44,9 @@ class RequestAcceptDeclineController extends Controller
                 'encrypted' => true
             )
         );
+        $from_date = Carbon::now();
+        $to_date = Carbon::now()->addMonths($member->duration);       
+
         if ($member_history != null && $member_history->user_id == $id) {
 
             $member_history->create([
@@ -69,6 +72,8 @@ class RequestAcceptDeclineController extends Controller
                 $u->member_type = $member->member_type;
                 $role = Role::findOrFail($member->role_id);
                 $u->syncRoles($role->name);
+                $u->from_date = $from_date;
+                $u->to_date = $to_date;
                 $u->save();
 
                 $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
@@ -78,6 +83,8 @@ class RequestAcceptDeclineController extends Controller
                 $u->request_type = 0;
                 $u->member_type = $member->member_type;
                 $role = Role::findOrFail($member->role_id);
+                $u->from_date = $from_date;
+                $u->to_date = $to_date;
                 $u->syncRoles($role->name);
                 $u->save();
                 $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
@@ -99,6 +106,8 @@ class RequestAcceptDeclineController extends Controller
                 $u->shopmember_type_id = 0;
                 $u->shop_request = 2;
                 $u->active_status = 2;
+                $u->from_date = $from_date;
+                $u->to_date = $to_date;
                 // $u->request_type = 0;
                 $u->shop_post_count = 0;
                 $u->member_type = $member->member_type;
@@ -114,6 +123,8 @@ class RequestAcceptDeclineController extends Controller
                 $u->member_type = $member->member_type;
                 $role = Role::findOrFail($member->role_id);
                 $u->syncRoles($role->name);
+                $u->from_date = $from_date;
+                $u->to_date = $to_date;
                 $u->save();
                 $u->members()->attach($u->request_type, ['member_type_level' => $u->membertype_level, 'date' => $current_date,'member_id' =>$member->id]);
                 $pusher->trigger('channel-accept.'. $id , 'accept', 'accepted');
