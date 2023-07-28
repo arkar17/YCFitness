@@ -87,7 +87,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('/download', [ShopController::class, 'download'])->name('download-image');
 
 
-        Route::post('/feedback/store', [ShopController::class, 'feedback_send'])->name('feedback.');
+        Route::post('/feedback/store', [ShopController::class, 'feedback_send'])->name('feedback.send');
         Route::get('/account_delete', [AccDeleteController::class, 'acc_delete'])->name('acc_delete');
         Route::post('/account_del', [AccDeleteController::class, 'acc_del'])->name('acc_del');
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
