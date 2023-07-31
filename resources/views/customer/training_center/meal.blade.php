@@ -2,7 +2,7 @@
 
 @section('content')
 @include('sweetalert::alert')
-@hasanyrole('Diamond|Platinum|Gym Member')
+{{-- @hasanyrole('Diamond|Platinum|Gym Member') --}}
 <a class="back-btn margin-top" href="{{route('training_center.index')}}">
     <iconify-icon icon="bi:arrow-left" class="back-btn-icon"></iconify-icon>
 </a>
@@ -51,9 +51,9 @@
 </div>
 
 <div class="customer-food-tracker-parent-container">
-    <div class="customer-food-tracker-container">
+    <div class="customer-food-tracker-container" >
         <div class="customer-food-tracker-header">
-            <h1>{{__('msg.breakfast')}}</h1>
+            <h1>Meal List</h1>
         </div>
         <form>
             <input type="text" id="breakfast" placeholder="Search for food...">
@@ -62,7 +62,7 @@
         <div class="customer-food-tracker-checkboxes-container breakfast_container">
         </div>
     </div>
-    <div class="customer-food-tracker-container">
+    {{-- <div class="customer-food-tracker-container">
         <div class="customer-food-tracker-header">
             <h1>{{__('msg.lunch')}}</h1>
 
@@ -96,7 +96,7 @@
         <div class="customer-food-tracker-checkboxes-container dinner_container">
 
         </div>
-    </div>
+    </div> --}}
 
 </div>
 <div class="table-wrapper">
@@ -155,21 +155,21 @@
         let currentDate = `${day}-${month}-${year}`;
         let currentTime =  date.toLocaleTimeString('en-US', { hour12: false });
         // let currentMins = date.getMinutes()
-        console.log(currentTime)
-        $("#breakfast").prop('disabled', true);
+        // console.log(currentTime)
+        // $("#breakfast").prop('disabled', true);
         $("#lunch").prop('disabled', true);
         $("#snack").prop('disabled', true);
         $("#dinner").prop('disabled', true);
 
 
 
-        if(currentTime >= '06:00:00'  && currentTime <= '09:00:00'){
-            console.log(typeof(currentTime),"breakfast time")
-            $("#breakfast").prop('disabled', false);
-            // $("#lunch").prop('disabled', true);
-            // $("#snack").prop('disabled', true);
-            // $("#dinner").prop('disabled', true);
-        }
+        // if(currentTime >= '06:00:00'  && currentTime <= '09:00:00'){
+        //     console.log(typeof(currentTime),"breakfast time")
+        //     $("#breakfast").prop('disabled', false);
+        //     // $("#lunch").prop('disabled', true);
+        //     // $("#snack").prop('disabled', true);
+        //     // $("#dinner").prop('disabled', true);
+        // }
 
         if(currentTime >= '12:00:00' && currentTime < '14:00:00'){
             // $("#breakfast").prop('disabled', true);
@@ -479,7 +479,7 @@
                   },
                   function(data){
                       table_post_row(data);
-                      console.log("breakfast",data);
+                    //   console.log("breakfast",data);
                   });
               }
               // table row with ajax
@@ -511,19 +511,19 @@
 
 
                   $('.breakfast_container').html(htmlView);
-                  $(".breakfast_add").prop('disabled', true);
-                  $(".breakfast_add").css("opacity", ".5");
-                  if(currentTime >= '06:00:00' && currentTime <= "09:00:00"){
-                    $(".breakfast_add").prop('disabled', false);
-                    $(".breakfast_add").css("opacity", "1");
-                  }
+                //   $(".breakfast_add").prop('disabled', true);
+                //   $(".breakfast_add").css("opacity", ".5");
+                //   if(currentTime >= '06:00:00' && currentTime <= "09:00:00"){
+                //     $(".breakfast_add").prop('disabled', false);
+                //     $(".breakfast_add").css("opacity", "1");
+                //   }
                   $(".breakfast_add").click(function(){
                       $(".customer-added-food-list-container tbody").empty()
                       var id = $(this).data('id');
                       var i = $(this).val();
                       foodObj = {
                               id : res.breakfast[i].id,
-                              type : 'Breakfast',
+                              type : "-",
                               name : res.breakfast[i].name,
                               cal : res.breakfast[i].calories,
                               carb : res.breakfast[i].carbohydrates,
@@ -531,9 +531,6 @@
                               fat : res.breakfast[i].fat,
                               servings : 1
                           }
-                          console.log(foodList)
-                          console.log(foodObj)
-
                       var rowIdx = 0;
                       if(foodList.length === 0){
                           foodList.push(foodObj)
@@ -561,7 +558,6 @@
                               foodList.push(foodObj)
                           }
                       }
-                      console.log(foodList)
                           $.each(foodList, function(index,value){
                               $(".customer-added-food-list-container tbody").append(`
                               <tr id="${value.id}">
@@ -1268,6 +1264,6 @@
             }
   }
 </script>
-@endhasanyrole
+{{-- @endhasanyrole --}}
 
 @endsection

@@ -667,7 +667,7 @@
                 Keep working out.</p>
         </div>
         {{-- @endhasanyrole --}}
-            @hasanyrole('Platinum|Diamond|Gym Member')
+            @hasanyrole('Platinum|Diamond|Gym Member|Gold|Ruby|Ruby Premium')
             <div class="customer-profile-trackers-parent-container">
                 <div class="customer-profile-trackers-headers-container">
                     <div class="customer-profile-tracker-header" id="workout">
@@ -1176,12 +1176,12 @@
                         success: function(data) {
                             //
                             var breakFast =data.meal_breafast ? data.meal_breafast : [];
-                            var lunch =data.meal_lunch ? data.meal_lunch : [];
-                            var snack =data.meal_snack ? data.meal_snack : [];
-                            var dinner =data.meal_dinner ? data.meal_dinner : [];
+                            // var lunch =data.meal_lunch ? data.meal_lunch : [];
+                            // var snack =data.meal_snack ? data.meal_snack : [];
+                            // var dinner =data.meal_dinner ? data.meal_dinner : [];
                             $(".customer-7days-meal-tables-container").append(`
             <div class="customer-profile-meal-table-container">
-                        <h1>Breakfast</h1>
+                        <h1>Meal List</h1>
                         <table class="customer-profile-meal-table">
                             <thead>
                                 <tr>
@@ -1221,126 +1221,7 @@
                                 <td>${data.total_serving_breakfast}</td>
                             </tr>
                         </table>
-                        <h1>Lunch</h1>
-                        <table class="customer-profile-meal-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Cal</th>
-                                    <th>Carb</th>
-                                    <th>Protein</th>
-                                    <th>Fat</th>
-                                    <th>Servings</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                ${lunch.map((item,index) => (
-                                    `<tr class="meal-table-total">
-                                    <td></td>
-                                    <td>${index+1}</td>
-                                    <td>${item.name}</td>
-                                    <td>${item.calories}</td>
-                                    <td>${item.carbohydrates}</td>
-                                    <td>${item.protein}</td>
-                                    <td>${item.fat}</td>
-                                    <td>${item.serving}</td>
-                                </tr>`
-                                )).join('')}
-                            </tbody>
-                            <tr class="meal-table-total">
-                                <td>Total</td>
-                                <td></td>
-                                <td></td>
-                                <td>${data.total_calories_lunch}</td>
-                                <td>${data.total_carbohydrates_lunch}</td>
-                                <td>${data.total_protein_lunch}</td>
-                                <td>${data.total_fat_lunch}</td>
-                                <td>${data.total_serving_lunch}</td>
-                            </tr>
-                        </table>
-                        <h1>Snack</h1>
-                        <table class="customer-profile-meal-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Cal</th>
-                                    <th>Carb</th>
-                                    <th>Protein</th>
-                                    <th>Fat</th>
-                                    <th>Servings</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                ${snack.map((item,index) => (
-                                    `<tr class="meal-table-total">
-                                    <td></td>
-                                    <td>${index+1}</td>
-                                    <td>${item.name}</td>
-                                    <td id = "cal">${item.calories}</td>
-                                    <td>${item.carbohydrates}</td>
-                                    <td>${item.protein}</td>
-                                    <td>${item.fat}</td>
-                                    <td>${item.serving}</td>
-                                </tr>
-                                ` )).join('')}
-                            </tbody>
-                            <tr class="meal-table-total">
-                                <td>Total</td>
-                                <td></td>
-                                <td></td>
-                                <td>${data.total_calories_snack}</td>
-                                <td>${data.total_carbohydrates_snack}</td>
-                                <td>${data.total_protein_snack}</td>
-                                <td>${data.total_fat_snack}</td>
-                                <td>${data.total_serving_snack}</td>
-                            </tr>
-                        </table>
-                        <h1>Dinner</h1>
-                        <table class="customer-profile-meal-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Cal</th>
-                                    <th>Carb</th>
-                                    <th>Protein</th>
-                                    <th>Fat</th>
-                                    <th>Servings</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                ${dinner.map((item,index) => (
-                                    `<tr class="meal-table-total">
-                                    <td></td>
-                                    <td>${index+1}</td>
-                                    <td>${item.name}</td>
-                                    <td>${item.calories}</td>
-                                    <td>${item.carbohydrates}</td>
-                                    <td>${item.protein }</td>
-                                    <td>${item.fat}</td>
-                                    <td>${item.serving}</td>
-                                </tr>`
-                                )).join('')}
-                            </tbody>
-                            <tr class="meal-table-total">
-                                <td>Total</td>
-                                <td></td>
-                                <td></td>
-                                <td>${data.total_calories_dinner}</td>
-                                <td>${data.total_carbohydrates_dinner}</td>
-                                <td>${data.total_protein_dinner}</td>
-                                <td>${data.total_fat_dinner}</td>
-                                <td>${data.total_serving_dinner}</td>
-                            </tr>
-                        </table>
+                       
                     </div>
             `);
                         }

@@ -917,7 +917,6 @@ class Customer_TrainingCenterController extends Controller
             )
             ->where('personal_meal_infos.client_id', $user_id)
             ->where('personal_meal_infos.date', $date)
-            ->where('meals.meal_plan_type', 'Breakfast')
             ->get()
             ->toArray();
         // dd($meal_personal_info);
@@ -1218,10 +1217,10 @@ class Customer_TrainingCenterController extends Controller
     public function showbreakfast(Request $request)
     {
 
-        $meals = Meal::where('meal_plan_type', 'Breakfast')->get();
+        $meals = Meal::get();
 
         if ($request->keyword != '') {
-            $meals = Meal::where('name', 'LIKE', '%' . $request->keyword . '%')->where('meal_plan_type', 'Breakfast')->get();
+            $meals = Meal::where('name', 'LIKE', '%' . $request->keyword . '%')->get();
         }
         //dd($members);
         return response()->json([
