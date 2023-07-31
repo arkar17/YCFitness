@@ -6,7 +6,7 @@
             <form action="{{ route('meal.update', $meal->id) }}" method="POST" id="edit-meal">
                 @csrf
                 @method('PUT')
-                <div class="mb-4">
+                {{-- <div class="mb-4">
                     <label class="" for="meal_plan_id">Meal Plan Type</label> <br>
                     <select class="form-control " name="meal_plan_id" id="meal_plan_id">
                             <option value="Breakfast" @if ($meal->meal_plan_type == 'Breakfast') selected @endif>
@@ -22,7 +22,7 @@
                                 Dinner
                             </option>
                         </select>
-                </div>
+                </div> --}}
 
                 <div class="mt-4">
                     <label for="name">Meal Name</label>

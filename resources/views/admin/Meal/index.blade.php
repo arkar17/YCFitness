@@ -43,7 +43,7 @@
                         <th>Fat</th>
                         <th>Carbohydrates</th>
                         <th>Protein</th>
-                        <th>Meal Plan Type</th>
+                        {{-- <th>Meal Plan Type</th> --}}
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -92,10 +92,10 @@
                         data: 'protein',
                         name: 'protein'
                     },
-                    {
-                        data: 'meal_plan_type',
-                        name: 'meal_plan_type'
-                    },
+                    // {
+                    //     data: 'meal_plan_type',
+                    //     name: 'meal_plan_type'
+                    // },
                     {
                         data: 'action',
                         name: 'action'

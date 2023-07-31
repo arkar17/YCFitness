@@ -67,7 +67,7 @@ class MealController extends Controller
         $meal_create->name = $request->name;
         // $meal_create->gender = $request->gender;
         $meal_create->calories = $request->calories;
-        $meal_create->meal_plan_type = $request->meal_plan_id;
+        //$meal_create->meal_plan_type = $request->meal_plan_id;
         $meal_create->carbohydrates = $request->carbohydrates;
         $meal_create->protein = $request->protein;
         $meal_create->fat = $request->fat;
@@ -119,7 +119,7 @@ class MealController extends Controller
         $meal_update->name = $request->name;
         // $meal_update->gender = $request->gender;
         $meal_update->calories = $request->calories;
-        $meal_update->meal_plan_type = $request->meal_plan_id;
+        // $meal_update->meal_plan_type = $request->meal_plan_id;
         $meal_update->carbohydrates = $request->carbohydrates;
         $meal_update->protein = $request->protein;
         $meal_update->fat = $request->fat;

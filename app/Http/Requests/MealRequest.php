@@ -26,7 +26,7 @@ class MealRequest extends FormRequest
         return [
             'name' => 'required',
             'calories' => 'required',
-            'meal_plan_id' => 'required',
+            // 'meal_plan_id' => 'required',
             'carbohydrates' => 'required',
             'protein' => 'required',
             'fat' => 'required',
