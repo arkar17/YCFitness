@@ -70,40 +70,40 @@ class TrainingGroupController extends Controller
         $current_day = Carbon::now('Asia/Yangon')->isoFormat('dddd');
         $current_time = Carbon::now('Asia/Yangon')->toTimeString();
 
-        if ($current_time < 10) { // Breakfast
+        // if ($current_time < 10) { // Breakfast
 
-            $meals = Meal::where('meal_plan_type', 'Breakfast')->get();
-            return response()->json([
-                'meals' => $meals
-            ]);
-        }
+        //     $meals = Meal::where('meal_plan_type', 'Breakfast')->get();
+        //     return response()->json([
+        //         'meals' => $meals
+        //     ]);
+        // }
 
-        if ($current_time >= 12 && $current_time <= 14) { // Lunch
-            $meals = Meal::where('meal_plan_type', 'Lunch')->get();
+        // if ($current_time >= 12 && $current_time <= 14) { // Lunch
+        //     $meals = Meal::where('meal_plan_type', 'Lunch')->get();
 
-            return response()->json([
-                'meals' => $meals
-            ]);
-        }
+        //     return response()->json([
+        //         'meals' => $meals
+        //     ]);
+        // }
 
-        if ($current_time > 14 && $current_time <= 16) { // Snack
-            $meals = Meal::where('meal_plan_type', 'Snack')->get();
+        // if ($current_time > 14 && $current_time <= 16) { // Snack
+        //     $meals = Meal::where('meal_plan_type', 'Snack')->get();
 
-            return response()->json([
-                'meals' => $meals
-            ]);
-        }
+        //     return response()->json([
+        //         'meals' => $meals
+        //     ]);
+        // }
 
-        if ($current_time >= 17 && $current_time <= 20) { // Dinner
-            $meals = Meal::where('meal_plan_type', 'Dinner')->get();
+        // if ($current_time >= 17 && $current_time <= 20) { // Dinner
+        //     $meals = Meal::where('meal_plan_type', 'Dinner')->get();
 
-            return response()->json([
-                'meals' => $meals
-            ]);
-        }
-
+        //     return response()->json([
+        //         'meals' => $meals
+        //     ]);
+        // }
+        $meals = Meal::get();
         return response()->json([
-            'meals' => []
+            'meals' => $meals
         ]);
     }
 

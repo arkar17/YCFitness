@@ -165,11 +165,7 @@ class CustomerProfileController extends Controller
     public function customerRequestBreakfastMealTrack($date)
     {
         $auth_user = auth()->user();
-        $data = PersonalMealInfo::where('client_id', $auth_user->id)->where('date', $date)->with('meal')
-            ->whereHas('meal', function (Builder $query) {
-                $query->where('meal_plan_type', 'Breakfast');
-            })
-            ->get();
+        $data = PersonalMealInfo::where('client_id', $auth_user->id)->where('date', $date)->with('meal')->get();
 
         return response()->json([
             'data' => $data
