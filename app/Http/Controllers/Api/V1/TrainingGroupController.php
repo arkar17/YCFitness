@@ -26,19 +26,12 @@ class TrainingGroupController extends Controller
     {
         $user = auth()->user();
 
-        $current_day = Carbon::now()->isoFormat('dddd');
-        $workout = Workout::count();
-        // dd($workout);
-        if ($workout > 0) {
-            $random_category = Cache::remember('random_category', 60 * 24, function () {
-                return Workout::get()->random()->category;
-            });
-        } else {
-            $random_category = null;
-        }
-        // dd($random_category, "dddd");
-
-        Storage::disk('local')->put('aa', $random_category);
+        //$current_day = Carbon::now()->isoFormat('dddd');
+        $current_day = Carbon::now()->format('l');
+        $categories = Workout::where('day', $current_day)->pluck('category')->toArray();
+        $randomCat = $categories[array_rand($categories)];
+        session(['randomCategory' => $randomCat]);
+        $random_category = session('randomCategory');
         if ($random_category) {
         if ($user->bmi < 18.5) { // For weight gain
             $workouts = Workout::where('workout_plan_type', 'weight gain')

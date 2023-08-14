@@ -600,21 +600,12 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $current_day = Carbon::now()->format('l');
-        // $current_day = Carbon::now()->isoFormat('dddd');
-        // $random_category =  Workout::get()->random()->category;
-        $workout = Workout::count();
-        // dd($workout);
-        if($workout > 0){
-            $random_category = Cache::remember('random_category', 60*24, function (){
-                return Workout::get()->random()->category;
-            });
-        }
-        else{
-            $random_category = null;
-        }
-        // dd($random_category, "dddd");
-
-        Storage::disk('local')->put('aa', $random_category);
+        $categories = Workout::where('day', $current_day)->pluck('category')->toArray();
+        $randomCat = $categories[array_rand($categories)];
+        session(['randomCategory' => $randomCat]);
+        $random_category = session('randomCategory');
+        // dd(session('randomCategory'));
+        // Storage::disk('local')->put('aa', $random_category);
         if($random_category){
             $tc_gym_workoutplans = DB::table('workouts')
                 ->where('workout_plan_type', $workout_plan)
@@ -1401,7 +1392,8 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $current_day = Carbon::now()->format('l');
-        $category = Cache::get('random_category');
+        // $category = Cache::get('random_category');
+        $category = session('randomCategory');
         $tc_workouts = DB::table('workouts')
             ->where('place', 'Home')
             ->where('workout_plan_type', $workout_plan)
@@ -1453,7 +1445,8 @@ class Customer_TrainingCenterController extends Controller
         }
 
         $current_day = Carbon::now()->format('l');
-        $category = Cache::get('random_category');
+        // $category = Cache::get('random_category');
+        $category = session('randomCategory');
         $tc_workouts = DB::table('workouts')
             ->where('place', 'Gym')
             ->where('workout_plan_type', $workout_plan)
