@@ -16,6 +16,8 @@ use App\Models\PersonalMealInfo;
 use Illuminate\Support\Facades\DB;
 use App\Models\PersonalWorkOutInfo;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class TrainingGroupController extends Controller
 {
@@ -25,11 +27,25 @@ class TrainingGroupController extends Controller
         $user = auth()->user();
 
         $current_day = Carbon::now()->isoFormat('dddd');
+        $workout = Workout::count();
+        // dd($workout);
+        if ($workout > 0) {
+            $random_category = Cache::remember('random_category', 60 * 24, function () {
+                return Workout::get()->random()->category;
+            });
+        } else {
+            $random_category = null;
+        }
+        // dd($random_category, "dddd");
 
+        Storage::disk('local')->put('aa', $random_category);
+        if ($random_category) {
         if ($user->bmi < 18.5) { // For weight gain
             $workouts = Workout::where('workout_plan_type', 'weight gain')
                 ->where('member_type', $user->member_type) // Platinunm
-                ->where('workout_level', $user->membertype_level) // beginner
+                    ->where('workout_level', $user->membertype_level)
+                    ->where('category',  $random_category)
+                 // beginner
                 ->where('day', $current_day)->get();
             // $workout_plan = WorkoutPlan::where('plan_type', 'weightLoss')->first();
             // $workouts = Workout::where('workout_plan_id', $workout_plan->id)->where('day', $current_day)->get();
@@ -43,7 +59,9 @@ class TrainingGroupController extends Controller
             $workouts = Workout::where('workout_plan_type', 'body beauty')
                 ->where('member_type', $user->member_type)
                 ->where('workout_level', $user->membertype_level)
-                ->where('day', $current_day)->get();
+                ->where('day', $current_day)
+                ->where('category',  $random_category)
+                ->get();
 
             return response()->json([
                 'message' => 'success',
@@ -55,6 +73,7 @@ class TrainingGroupController extends Controller
             $workouts = Workout::where('workout_plan_type', 'weight loss')
                 ->where('member_type', $user->member_type)
                 ->where('workout_level', $user->membertype_level)
+                    ->where('category',  $random_category)
                 ->where('day', $current_day)->get();
 
             return response()->json([
@@ -62,6 +81,7 @@ class TrainingGroupController extends Controller
                 'workouts' => $workouts
             ]);
         }
+    }
     }
 
 

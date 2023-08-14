@@ -614,16 +614,15 @@ class Customer_TrainingCenterController extends Controller
         }
         // dd($random_category, "dddd");
 
-        //Storage::disk('local')->put('aa', $random_category);
+        Storage::disk('local')->put('aa', $random_category);
         if($random_category){
             $tc_gym_workoutplans = DB::table('workouts')
-            ->where('workout_plan_type', $workout_plan)
+                ->where('workout_plan_type', $workout_plan)
                 ->where('place', 'Gym')
             ->where('member_type', $user->member_type)
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
-            ->where('day', $current_day)
-            // ->where('category',  $random_category)
+                ->where('day', $current_day)->where('category',  $random_category)
             ->get();
 
         $tc_home_workoutplans = DB::table('workouts')
@@ -633,7 +632,7 @@ class Customer_TrainingCenterController extends Controller
             ->where('gender_type', $user->gender)
             ->where('workout_level', $user->membertype_level)
             ->where('day', $current_day)
-            // ->where('category',  $random_category)
+                ->where('category',  $random_category)
                 ->get();
 
            // dd($tc_home_workoutplans);
